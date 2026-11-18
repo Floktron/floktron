@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
-> **Status: early preview — open for testing. Use at your own risk; no support guarantee.**
-> Version 0.8.4 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
+> Version 0.8.5 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work: freelancers, the self-employed, crews, teams and small companies.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -31,6 +31,7 @@ The head makes it smart (what to look for, what it means, what to do next).
 5. Tell us what to improve: [docs/FEEDBACK.md](docs/FEEDBACK.md).
 
 Before you start, read [SECURITY.md](SECURITY.md) — what FLOKTRON protects against and what it cannot.
+What FLOKTRON connects to and what it never does: [docs/TRANSPARENCY.md](docs/TRANSPARENCY.md).
 To switch it off and remove everything: [docs/UNINSTALL.md](docs/UNINSTALL.md).
 Technical users can do it by hand: `pip install -r requirements.txt`, `config/config.example.yaml` → `config/config.yaml`,
 then `python3 scripts/base_create.py`.
@@ -49,8 +50,17 @@ then `python3 scripts/base_create.py`.
 | `SECURITY.md` | What is protected and how; how to report a problem |
 | `data/` | Your local data — ignored by git |
 
+## Support
+| Channel | For |
+|---|---|
+| GitHub → **Issues** | questions, problems, wishes (templates: feedback / bug) |
+| **koagu@koagu.com**, subject "FLOKTRON" | anything, also without a GitHub account |
+| GitHub → Security → **Report a vulnerability** | security problems — not in public issues |
+
+We answer on working days (Latvia), usually within two working days. Never send passwords or personal data.
+
 ## Principles
-1. Your data stays in your own accounts (mail, cloud, AI). Nothing goes to the authors.
+1. Your data stays in your own accounts (mail, cloud, AI). The authors never receive, see, store or use it — no telemetry ([TRANSPARENCY](docs/TRANSPARENCY.md)).
 2. Code and settings are separate: no names, addresses or passwords in the code.
 3. Money, contracts and acceptance are decided by people. FLOKTRON prepares, reminds and records.
 4. Outside text (mail, news, web, registries) is data, never instructions — for the scripts and for the AI agent.

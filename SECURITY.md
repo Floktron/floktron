@@ -19,6 +19,10 @@ against, how, and what it cannot protect against.
 | A mistake goes out to people | Order of every new setup: `--dry` → `--test` own address → real; posts are never published automatically, a person copies them | `AGENTS.md` rule 8, `content_check.py` |
 | The agent reaches too far | Works only in the FLOKTRON folder and its storage folder; never whole-disk, browser or other accounts | `AGENTS.md` rule 2 |
 
+## Nothing hidden
+FLOKTRON connects only to your mail server, the news feeds in your radar and (optionally) the Latvian open data portal.
+It sends nothing to the authors. Full list and how to check: [docs/TRANSPARENCY.md](docs/TRANSPARENCY.md); guarded by `tests/test_network.py`.
+
 ## What FLOKTRON cannot protect against
 
 - A computer or server that is already infected, or a mailbox whose password is stolen.
@@ -34,7 +38,7 @@ against, how, and what it cannot protect against.
 ## Report a problem
 
 Found a weakness? Do not post details publicly. Use **Security → Report a vulnerability** on this repository's
-GitHub page, or the contact in the repository profile. Remove passwords and personal data from anything you send.
+GitHub page, or write to koagu@koagu.com (subject "FLOKTRON security"). Remove passwords and personal data from anything you send.
 
 ## For maintainers (GitHub settings)
 

@@ -26,6 +26,19 @@ This page is a summary. If it differs from [LICENSE.md](LICENSE.md), the licence
 
 Write to **koagu@koagu.com** with the subject "FLOKTRON licence" — terms are agreed case by case.
 
+## Responsibility and your data
+
+- **Your data.** FLOKTRON runs on your computer and in your own accounts. KOAGU ELEMENT SIA does not receive, see,
+  store or use your data, mail or passwords — under no circumstances. FLOKTRON sends nothing to us (no telemetry).
+  What it connects to: [docs/TRANSPARENCY.md](docs/TRANSPARENCY.md).
+- **Risks.** We keep the risks low: open code, automatic safety checks on every change, a separate mailbox,
+  a test run before any real letter, and a person confirms every important step ([SECURITY.md](SECURITY.md)).
+  No software is completely free of risk — test first and keep backups of your bases.
+- **Liability.** The licence provides the software "as is" ([LICENSE.md](LICENSE.md)). This limits liability only as far
+  as the applicable law allows. It does not limit liability that cannot be limited by law — for example for
+  intentional harm or gross negligence — and it does not take away rights consumers have under the law of their country.
+- **Support.** Questions and problems: GitHub Issues or koagu@koagu.com (subject "FLOKTRON").
+
 ## After two years
 
 Each released version becomes available under the **Apache License 2.0** on the second anniversary of its release.

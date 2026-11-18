@@ -6,7 +6,7 @@ FLOKTRON is in early testing; every remark helps.
 below; you check it and send it.
 
 **Where to send:** GitHub → **Issues → New issue** → "Feedback / wish" or "Something does not work".
-No GitHub account? Use the contact in the repository profile.
+No GitHub account? Write to **koagu@koagu.com**, subject "FLOKTRON".
 
 **Before sending** remove passwords, real e-mail addresses, client names and other personal data.
 

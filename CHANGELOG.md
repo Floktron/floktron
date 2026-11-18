@@ -3,6 +3,12 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.8.5 — 18.11.2026 · support, responsibility, transparency
+- Supported project: GitHub Issues, koagu@koagu.com (subject "FLOKTRON"), private vulnerability reports; answers on working days (README, AGENTS, SECURITY, FEEDBACK).
+- `LICENSING.md`: responsibility and your data — the authors never receive, see, store or use user data; risks kept low but not zero; liability limited only as far as the law allows.
+- `docs/TRANSPARENCY.md`: every place FLOKTRON connects to and every program it starts; how to check it yourself.
+- `tests/test_network.py`: network and process code allowed only in the listed files.
+
 ## 0.8.4 — 18.11.2026 · open for everyone
 - For anyone who runs work: freelancers, the self-employed, crews, teams, companies — not only companies (README, AGENTS, llms.txt, LICENSING).
 - Use only the parts you need: rays are optional (one, a few or none); the radar and the content plan work on their own. Setup wizard asks first what the person wants FLOKTRON for.
