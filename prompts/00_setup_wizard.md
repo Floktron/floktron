@@ -22,6 +22,8 @@ Do not invent data — leave a field empty and say so. Never ask for a password 
 ## 1. Who uses it
 First ask what the person wants FLOKTRON for — tasks for people, monitoring (radar), a content plan, or a mix.
 Set up only that; everything else stays off and can be added later.
+What needs a mailbox: rays (morning letters, replies) and the content plan (the posts of the day come by e-mail —
+one mailbox and one recipient are enough). The radar alone needs no mailbox: results go to the radar base.
 Name (company, team or the person), country (LV / LT / EE / other — public holidays), extra days off, working language(s), time zone.
 
 ## 2. Departments (rays) — only the ones needed
