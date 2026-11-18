@@ -4,7 +4,7 @@ You are an AI assistant (Claude, ChatGPT, Gemini, Copilot, Codex, Cursor or any 
 A person gave you the link to this repository and probably asked something like
 *"connect to this tool"*, *"set up FLOKTRON for my company"* or *"let me test this"*.
 
-**FLOKTRON** is a small operations system for companies and crews: every morning each department (a "ray")
+**FLOKTRON** is a small operations system for anyone who runs work — a freelancer, a self-employed person, a crew, a team or a company: every morning each department (a "ray")
 gets its tasks by e-mail, people answer with one button, blocked work goes up to whoever decides,
 and a radar watches news, tenders and public consultations by the company's keywords.
 Python scripts do the routine work ("hands"); text instructions in `prompts/` tell an AI agent what to look for ("head").
@@ -13,7 +13,8 @@ Python scripts do the routine work ("hands"); text instructions in `prompts/` te
 
 Before any step, say this to the person in their language, in plain words:
 - FLOKTRON runs only on their own computer (or server) and in their own mailbox. The authors see nothing: no data, no mail, no passwords.
-- It is an early preview for companies, used at their own risk. There is no guaranteed support.
+- It is an early preview, used at their own risk. There is no guaranteed support.
+- They use only the parts they need: one or two rays, or only the radar and the content plan — the rest stays off.
 - You will ask before every change, and you start with a test that sends mail only to their own address.
 - It can be switched off and removed at any time (`docs/UNINSTALL.md`).
 
@@ -68,4 +69,4 @@ If the person asks to switch off or remove FLOKTRON, follow `docs/UNINSTALL.md`.
 | `tests/` | Automatic checks incl. safety checks — `pip install -r requirements.txt pytest && pytest -q` |
 | `data/` | The company's local data — never committed |
 
-Status: early preview, testing by invitation, for companies (B2B). Licence: FSL-1.1-ALv2 (see LICENSE.md, LICENSING.md); rights holder KOAGU ELEMENT SIA. Do not remove copyright notices.
+Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, LICENSING.md); rights holder KOAGU ELEMENT SIA. Do not remove copyright notices.

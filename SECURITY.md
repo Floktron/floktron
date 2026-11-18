@@ -25,7 +25,7 @@ against, how, and what it cannot protect against.
 - A person with access to the computer editing the bases or `config.yaml` by hand.
 - An AI agent that does not follow `AGENTS.md`. Use a well-known assistant and read what it asks before you allow it.
 
-## Advice for companies
+## Practical advice
 
 - Make a separate mailbox for FLOKTRON with an app password; give it no access to other systems.
 - Run FLOKTRON under an ordinary user account, not an administrator.

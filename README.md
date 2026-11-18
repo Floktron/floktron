@@ -1,10 +1,10 @@
 # FLOKTRON (working name)
 
-> **Status: early preview — testing by invitation. Use at your own risk; no support guarantee.**
-> **For companies and teams (B2B), not for private/consumer use.**
-> Version 0.8.3 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> **Status: early preview — open for testing. Use at your own risk; no support guarantee.**
+> Version 0.8.4 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
-AI-assisted operations system for small companies and construction crews.
+AI-assisted operations system for anyone who runs work: freelancers, the self-employed, crews, teams and small companies.
+Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
 Every morning each department gets its tasks; people answer with one button; blocked work goes up the chain to whoever decides; the manager sees progress. A radar watches news, public consultations and search demand by the company's own keywords.
 
 ## How it works — two layers

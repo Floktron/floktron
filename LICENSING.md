@@ -11,7 +11,7 @@ This page is a summary. If it differs from [LICENSE.md](LICENSE.md), the licence
 
 | You may | Example |
 |---|---|
-| Use FLOKTRON inside your own company, also a commercial one | A construction company runs FLOKTRON for its own departments and crews |
+| Use FLOKTRON for yourself or inside your own company, also a commercial one | A freelancer watches news and plans posts; a construction company runs it for its own departments and crews |
 | Read, copy, change and extend the code for your own use | Add a module for your trade, translate the letters |
 | Set FLOKTRON up for a client who then uses it under this licence | A consultant installs and supports FLOKTRON for a company |
 | Use it for non-commercial education and research | A university course, a student project |
