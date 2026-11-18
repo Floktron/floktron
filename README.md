@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.8.5 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.8.6 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work: freelancers, the self-employed, crews, teams and small companies.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -18,6 +18,11 @@ The hands work without the head (letters, buttons, escalation, reports).
 The head makes it smart (what to look for, what it means, what to do next).
 
 ## Start here — with any AI assistant
+
+> **Your assistant says it cannot open this page?** Some chat assistants cannot read GitHub pages.
+> Give it this link instead: **https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt**
+> — one plain-text file with everything it needs. If that does not work either, open the link yourself,
+> select all, copy, paste it into the chat and write *"Help me test FLOKTRON"*.
 
 1. Open your AI assistant (Claude, ChatGPT, Gemini, Copilot, Codex, Cursor…), give it the link to this repository
    and write: *"Set up FLOKTRON for my company"* or *"Let me test FLOKTRON"*.

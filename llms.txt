@@ -4,6 +4,9 @@
 > one-button replies, escalation to whoever decides, and a radar for news, tenders and public consultations.
 > Python scripts + instructions for an AI agent. Early preview, open for testing; use only the parts you need. Removal: docs/UNINSTALL.md.
 
+Everything in one plain-text file (for assistants that cannot open several pages): llms-full.txt
+Raw link: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
+
 AI assistants: start with AGENTS.md (setup steps and safety rules), then prompts/00_setup_wizard.md.
 
 ## Start

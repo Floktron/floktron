@@ -3,6 +3,10 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.8.6 — 18.11.2026 · fallback for chat assistants
+- `llms-full.txt`: everything a chat-only assistant needs in one plain-text file (raw link or copy-paste) — for assistants that cannot open GitHub pages. Built by `scripts/build_llms_full.py`, kept current by `tests/test_llms_full.py`.
+- README: "assistant cannot open this page?" fallback at the top of Start here.
+
 ## 0.8.5 — 18.11.2026 · support, responsibility, transparency
 - Supported project: GitHub Issues, koagu@koagu.com (subject "FLOKTRON"), private vulnerability reports; answers on working days (README, AGENTS, SECURITY, FEEDBACK).
 - `LICENSING.md`: responsibility and your data — the authors never receive, see, store or use user data; risks kept low but not zero; liability limited only as far as the law allows.
