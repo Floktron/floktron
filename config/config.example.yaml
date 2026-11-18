@@ -65,6 +65,13 @@ radar:
   countries: ["LV", "LT", "EE"]
   news_slice_at: "18:56"   # evening news slice (after the main evening news)
   weekly_at: "Mon 07:15"   # weekly monitoring
+  fact_check:              # light fact-check of news used for posts (prompts/31_news_check.md); edit freely
+    - "https://rebaltica.lv/category/recheck/"          # LV — Re:Baltica Re:Check
+    - "https://www.delfi.lv/news/temas/melu-detektors"  # LV — Delfi Melu detektors
+    - "https://edmo.eu"                                 # EU — European Digital Media Observatory
+    - "https://toolbox.google.com/factcheck/explorer"   # world — Google Fact Check Explorer
+  correction_words: ["atsaukums", "labojums", "precizējums", "correction", "retraction", "clarification",
+                     "Berichtigung", "Richtigstellung", "опровержение", "поправка", "patikslinimas", "parandus"]
 
 site_module:
   enabled: false

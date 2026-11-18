@@ -19,6 +19,12 @@ against, how, and what it cannot protect against.
 | A mistake goes out to people | Order of every new setup: `--dry` → `--test` own address → real; posts are never published automatically, a person copies them | `AGENTS.md` rule 8, `content_check.py` |
 | The agent reaches too far | Works only in the FLOKTRON folder and its storage folder; never whole-disk, browser or other accounts | `AGENTS.md` rule 2 |
 
+## False or corrected news
+News can be wrong or deliberately false, even on official sites. FLOKTRON never publishes by itself, and every news item
+used for a post gets a light check first — echo in other outlets, primary source, fact-checkers — shown as a status
+(✅ / ℹ️ / ⚠️ / ⛔); corrections of news already used in posts are watched for 14 days and reported to the manager
+(`prompts/31_news_check.md`). One source is normal for local news; the person decides.
+
 ## Nothing hidden
 FLOKTRON connects only to your mail server, the news feeds in your radar and (optionally) the Latvian open data portal.
 It sends nothing to the authors. Full list and how to check: [docs/TRANSPARENCY.md](docs/TRANSPARENCY.md); guarded by `tests/test_network.py`.

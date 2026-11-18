@@ -3,6 +3,13 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.9.0 — 19.11.2026 · light news check
+- `prompts/31_news_check.md`: before a news item becomes a post — scale (local / national / international), echo in other outlets, primary source, fact-checkers; status ✅ confirmed · ℹ️ one source · ⚠️ check · ⛔ do not use. Information, not a filter: one source is normal for local news; sites that could not be opened are "not checked", never "unconfirmed".
+- Corrections watched for 14 days for news used in posts (`radar.correction_words`); the manager gets an e-mail to update or remove the post.
+- Posting day: status re-checked the same morning; one news item → at most one post per platform.
+- `config.example.yaml`: `radar.fact_check` (Re:Check, Melu detektors, EDMO, Google Fact Check Explorer — edit freely), `radar.correction_words`.
+- SECURITY: section "False or corrected news".
+
 ## 0.8.9 — 18.11.2026 · start in one tap
 - README: one-tap links that open ChatGPT, Claude or Perplexity with the start request already written; GitHub Copilot hint.
 - `START.md`: the full text for assistants in one box with GitHub's copy button — copy, paste into any assistant, also on the phone. Built with `llms-full.txt`, kept current by a test.

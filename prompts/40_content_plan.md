@@ -20,6 +20,9 @@ You prepare posts for the next 7 days in `data/floktron_content.xlsx → Plan`. 
 3. Each row: date, time (local), platform, language, rubric, hook (first line), full text ready to copy
    (with link and hashtags where the platform uses them), first comment (source link), picture/video file,
    alt text, reason/source, figures source, status Ready.
+   For a news reason, "reason/source" carries the check status line from `31_news_check.md`
+   (e.g. `LSM 18.11 · ✅ 2 outlets + primary`). ⚠️ → status "Ask" instead of Ready; ⛔ → no post.
+   On the posting day the status is re-checked (step 7 of `31_news_check.md`).
 4. Pictures: choose a file that is NOT marked in `Media` for that platform. No suitable file → write what to
    shoot or a prompt for an image, never reuse.
 5. Keep 2 posts in `Reserve` (no date) for days when something falls out.
