@@ -1,0 +1,13 @@
+# never commit settings, secrets or company data
+config/config.yaml
+.env
+data/*
+!data/.gitkeep
+*.eml
+*.log
+*_log.txt
+__pycache__/
+*.pyc
+.DS_Store
+~$*
+.pytest_cache/

@@ -1,0 +1,36 @@
+# Ready example for a Gmail test. Copy to config.yaml and change the addresses.
+# Password: app password in the environment variable FLOKTRON_MAIL_PASSWORD (see docs/GMAIL_TEST.md).
+company:
+  name: "Example SIA"
+  timezone: "Europe/Riga"
+  language: "en"
+
+mail:
+  provider: "gmail"
+  user: "example.floktron@gmail.com"        # the Gmail box FLOKTRON sends from and reads replies in
+  from: ""                               # empty = same as user
+  reply_to: ""                           # empty = same as user
+  password_env: "FLOKTRON_MAIL_PASSWORD"
+  manager_address: "manager@example.com"
+
+storage:
+  root: "~/FLOKTRON"
+
+rays:
+  - id: L1
+    name: "Sales"
+    lead: "Anna"
+    email: "anna.sales@example.com"
+    lead_email: "manager@example.com"
+    language: "lv"
+    send_at: "07:40"
+  - id: L2
+    name: "Stock"
+    lead: "Peter"
+    email: "peter.stock@example.com"
+    lead_email: "manager@example.com"
+    language: "en"
+    send_at: "07:40"
+
+escalation:
+  reply_deadline: "09:00"

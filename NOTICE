@@ -1,0 +1,7 @@
+FLOKTRON (working name)
+Copyright 2026 KOAGU ELEMENT SIA (reg. No. 40203395422, Riga, Latvia)
+Licensed under FSL-1.1-ALv2 — see LICENSE.md and LICENSING.md.
+
+This software uses the following third-party components, each under its own licence:
+- openpyxl — MIT License — https://foss.heptapod.net/openpyxl/openpyxl
+- PyYAML — MIT License — https://github.com/yaml/pyyaml

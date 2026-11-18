@@ -1,0 +1,19 @@
+# FLOKTRON
+
+> Small operations system for companies and construction crews: morning tasks by e-mail per department,
+> one-button replies, escalation to whoever decides, and a radar for news, tenders and public consultations.
+> Python scripts + instructions for an AI agent. Private alpha.
+
+AI assistants: start with AGENTS.md (setup steps and safety rules), then prompts/00_setup_wizard.md.
+
+## Start
+- [AGENTS.md](AGENTS.md): instructions for any AI agent, incl. safety rules
+- [README.md](README.md): what FLOKTRON is and how it works
+- [prompts/00_setup_wizard.md](prompts/00_setup_wizard.md): step-by-step setup
+
+## Docs
+- [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md): what is needed
+- [docs/GMAIL_TEST.md](docs/GMAIL_TEST.md): 15-minute test with a free Gmail box
+- [docs/INSTALL.md](docs/INSTALL.md): automatic runs on Mac / Windows / Linux
+- [SECURITY.md](SECURITY.md): what FLOKTRON protects against and how
+- [docs/FEEDBACK.md](docs/FEEDBACK.md): how to send wishes and bug reports

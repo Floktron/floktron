@@ -1,0 +1,71 @@
+# Copy to config.yaml and fill in. Never commit config.yaml.
+company:
+  name: "Example SIA"
+  timezone: "Europe/Riga"
+  language: "en"          # en | lv | ru | lt | et | de
+  country: "LV"           # public holidays: LV | LT | EE (other = weekends only)
+  holidays: []            # extra days off, e.g. ["2026-12-30"]
+
+mail:
+  provider: "gmail"       # proton_bridge | gmail | outlook | smtp
+  user: ""                # login address of the mailbox
+  from: ""                # sender shown to people (may be an alias); empty = user
+  reply_to: ""            # where button replies go; empty = user
+  smtp_host: ""           # only for provider "smtp"
+  smtp_port: ""           # only for provider "smtp"
+  imap_host: ""           # only for provider "smtp" (reading replies)
+  imap_port: ""
+  imap_folders: []        # empty = provider default (Proton: All Mail, Spam; Gmail/Outlook: INBOX, Junk)
+  password_env: "FLOKTRON_MAIL_PASSWORD"   # password comes from this environment variable...
+  keychain_service: ""                  # ...or from macOS Keychain (service name)
+  manager_address: ""
+  support_address: ""     # who sets FLOKTRON up and fixes it — gets the gaps report (empty = manager)
+  retry_minutes: [10, 20] # mail server not answering → try again after 10, then 20 minutes
+  marker: "FLOKTRON#"
+  allow_any_sender: false # true = accept button replies from any address (not recommended)        # subject tag of FLOKTRON messages; change it to run a second FLOKTRON in the same mailbox
+
+colors:                    # message colours (company brand); remove to use the defaults
+  main: "#1A365D"          # header, question button
+  ok: "#4A9928"            # done / accept buttons
+  neutral: "#717171"       # not done / small text
+  background: "#f3f3f3"
+
+storage:
+  root: "~/Cloud/FLOKTRON"   # iCloud / Google Drive / OneDrive folder
+
+rays:                      # departments; add or remove freely
+  - id: L1
+    name: "Sales"
+    lead: ""
+    email: ""
+    lead_email: ""        # team lead — gets escalations of this ray
+    send_at: "07:40"
+  - id: L2
+    name: "Stock"
+    lead: ""
+    send_at: "07:40"
+
+schedule:                  # automatic runs (scripts/install/…); weekends and holidays are skipped
+  morning: "07:40"
+  deadline: "09:00"        # who did not answer at all
+  evening: "18:30"         # reminder for today's open tasks
+  news: "18:56"
+  content: "07:12"         # every day: posts of the day, missed posts, duplicates
+  summary: "Fri 16:00"     # weekly summary to the manager
+  gaps: "Fri 16:10"        # weekly list of what FLOKTRON could not do
+  registry: "Mon 07:00"    # new companies in the registry
+  collect_every_minutes: 30
+
+escalation:
+  reply_deadline: "09:00"   # run collect_replies.py --deadline at this time
+  chain: ["ray", "team_lead", "manager"]
+
+radar:
+  languages: ["en", "lv"]  # one keyword column per language in data/floktron_radar.xlsx
+  countries: ["LV", "LT", "EE"]
+  news_slice_at: "18:56"   # evening news slice (after the main evening news)
+  weekly_at: "Mon 07:15"   # weekly monitoring
+
+site_module:
+  enabled: false
+  bot: "telegram"          # telegram | whatsapp
