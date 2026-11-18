@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.8.3 — 18.11.2026 · testing by invitation
+- Status: early preview, testing by invitation, for companies (B2B); use at own risk, no support guarantee (README, AGENTS).
+- `AGENTS.md`: the assistant first tells the person that everything runs only on their computer and mailbox, the authors see nothing, and how to remove it.
+- `docs/UNINSTALL.md`: switch off automatic runs (Mac / Windows / Linux), delete the app password, remove files, tell the people. Linked from README, AGENTS, SUPPORT.
+
 ## 0.8.2 — 18.11.2026 · public working name
 - Public working name: **FLOKTRON**. README, LICENSING, NOTICE updated.
 

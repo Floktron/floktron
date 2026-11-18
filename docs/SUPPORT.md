@@ -21,7 +21,10 @@ The client does not need a terminal. The support person looks at three things an
 | no messages on a working day | the day is in `company.holidays`, or a public holiday | correct `config.yaml` |
 | news feed "error: 403" | the site blocks robots | use the Google News row for that country (Gaps says so) |
 
-## 3. Change something for the client
+## 3. Switch off / remove
+Follow [UNINSTALL.md](UNINSTALL.md): automatic runs off → app password deleted → files removed → people told.
+
+## 4. Change something for the client
 - Departments, people, addresses, languages → `config.yaml → rays` or the `Rays` sheet.
 - Times → `config.yaml → schedule`, then run the installer once more (Mac: `install_mac.command` → on).
 - Routes → `Routes` sheet. Keywords → radar `Keywords`. Colours → `config.yaml → colors`.

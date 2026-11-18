@@ -1,7 +1,8 @@
 # FLOKTRON (working name)
 
-> **Status: private alpha — internal use by the authors only. Not released, not supported.**
-> Version 0.8.2 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> **Status: early preview — testing by invitation. Use at your own risk; no support guarantee.**
+> **For companies and teams (B2B), not for private/consumer use.**
+> Version 0.8.3 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for small companies and construction crews.
 Every morning each department gets its tasks; people answer with one button; blocked work goes up the chain to whoever decides; the manager sees progress. A radar watches news, public consultations and search demand by the company's own keywords.
@@ -30,6 +31,7 @@ The head makes it smart (what to look for, what it means, what to do next).
 5. Tell us what to improve: [docs/FEEDBACK.md](docs/FEEDBACK.md).
 
 Before you start, read [SECURITY.md](SECURITY.md) — what FLOKTRON protects against and what it cannot.
+To switch it off and remove everything: [docs/UNINSTALL.md](docs/UNINSTALL.md).
 Technical users can do it by hand: `pip install -r requirements.txt`, `config/config.example.yaml` → `config/config.yaml`,
 then `python3 scripts/base_create.py`.
 
