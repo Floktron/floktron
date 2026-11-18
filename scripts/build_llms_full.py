@@ -28,7 +28,22 @@ def build():
     return "".join(parts)
 
 
+START_HEAD = """# Start FLOKTRON with any AI assistant
+
+1. Press the **copy** icon in the top-right corner of the grey box below.
+2. Open your AI assistant (ChatGPT, Claude, Gemini, Copilot, Leo, Perplexity…) — on the computer or the phone.
+3. Paste and send. The assistant explains the two ways to set FLOKTRON up and guides you.
+
+"""
+
+
+def build_start():
+    return START_HEAD + "~~~~text\n" + build() + "~~~~\n"
+
+
 if __name__ == "__main__":
     with open(os.path.join(ROOT, "llms-full.txt"), "w", encoding="utf-8") as f:
         f.write(build())
-    print("llms-full.txt written")
+    with open(os.path.join(ROOT, "START.md"), "w", encoding="utf-8") as f:
+        f.write(build_start())
+    print("llms-full.txt and START.md written")

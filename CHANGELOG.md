@@ -3,6 +3,10 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.8.9 — 18.11.2026 · start in one tap
+- README: one-tap links that open ChatGPT, Claude or Perplexity with the start request already written; GitHub Copilot hint.
+- `START.md`: the full text for assistants in one box with GitHub's copy button — copy, paste into any assistant, also on the phone. Built with `llms-full.txt`, kept current by a test.
+
 ## 0.8.8 — 18.11.2026 · what needs a mailbox
 - Setup wizard: rays and the content plan need a mailbox (posts of the day come by e-mail); the radar alone does not.
 

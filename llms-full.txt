@@ -108,7 +108,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.8.8 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.8.9 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work: freelancers, the self-employed, crews, teams and small companies.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -125,6 +125,14 @@ The hands work without the head (letters, buttons, escalation, reports).
 The head makes it smart (what to look for, what it means, what to do next).
 
 ## Start here — with any AI assistant
+
+**Fastest — one tap:** [Open in ChatGPT](https://chatgpt.com/?q=Help%20me%20test%20FLOKTRON.%20Read%20https%3A//raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt%20and%20follow%20the%20AGENTS.md%20part%20in%20it.%20If%20you%20cannot%20open%20the%20link%2C%20tell%20me%20to%20open%20START.md%20in%20the%20repository%20and%20paste%20its%20text%20here.) · [Open in Claude](https://claude.ai/new?q=Help%20me%20test%20FLOKTRON.%20Read%20https%3A//raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt%20and%20follow%20the%20AGENTS.md%20part%20in%20it.%20If%20you%20cannot%20open%20the%20link%2C%20tell%20me%20to%20open%20START.md%20in%20the%20repository%20and%20paste%20its%20text%20here.) · [Open in Perplexity](https://www.perplexity.ai/search?q=Help%20me%20test%20FLOKTRON.%20Read%20https%3A//raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt%20and%20follow%20the%20AGENTS.md%20part%20in%20it.%20If%20you%20cannot%20open%20the%20link%2C%20tell%20me%20to%20open%20START.md%20in%20the%20repository%20and%20paste%20its%20text%20here.)
+
+**Any other assistant (Gemini, Leo, Copilot…) or on the phone:** open **[START.md](START.md)**, press the copy icon
+in the grey box, paste it into your assistant and send.
+
+**Signed in to GitHub?** Press the **Copilot** button at the top of this page and write *"Help me test FLOKTRON"* —
+it already sees this repository.
 
 > **Your assistant says it cannot open this page?** Some chat assistants cannot read GitHub pages.
 > Give it this link instead: **https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt**
