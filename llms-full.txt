@@ -2,7 +2,9 @@
 
 You are an AI assistant. A person wants to test or set up FLOKTRON. This single file contains everything you need:
 the rules (AGENTS.md first), what FLOKTRON is, safety, the setup wizard, the Gmail test, install and removal.
-Follow AGENTS.md. If you cannot run commands, you are in mode B: guide the person step by step.
+Follow AGENTS.md. FIRST offer the person the two ways (AGENTS.md): A — an assistant that works on their
+computer does everything; B — step by step in this chat. If you cannot run commands, you are Way B: say so,
+mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: koagu@koagu.com (subject "FLOKTRON") or GitHub Issues.
@@ -33,6 +35,21 @@ Before any step, say this to the person in their language, in plain words:
 
 If the person asks to switch off or remove FLOKTRON, follow `docs/UNINSTALL.md`.
 If the person asks whether FLOKTRON does anything hidden, show `docs/TRANSPARENCY.md`, read `scripts/` with them and run `pytest -q`.
+
+## Offer the two ways — always, before any step
+
+Tell the person, in their language, that there are two ways and let them choose:
+
+- **Way A — the assistant does everything (easiest).** An AI assistant that can work on their computer
+  (for example the Claude desktop app with access to one folder, Claude Code, ChatGPT/Codex desktop, Gemini CLI,
+  Cursor, Copilot in VS Code) downloads FLOKTRON, installs it and fills the settings itself. The person only answers
+  questions, approves each step and types the mail password themselves when asked. Access is given to ONE folder
+  (e.g. `~/FLOKTRON`), never the whole disk.
+- **Way B — step by step in this chat.** If they stay here, you give one step at a time; they do it and paste back
+  the result (never a password). It works the same, it only takes more clicks.
+
+If you are a chat-only assistant (you cannot run commands), say plainly that you are Way B, and that Way A is
+available in an assistant that works on their computer. Do not skip Way A. Then continue with the way they choose.
 
 ## What to do
 
@@ -91,7 +108,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.8.6 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.8.7 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work: freelancers, the self-employed, crews, teams and small companies.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -116,6 +133,9 @@ The head makes it smart (what to look for, what it means, what to do next).
 
 1. Open your AI assistant (Claude, ChatGPT, Gemini, Copilot, Codex, Cursor…), give it the link to this repository
    and write: *"Set up FLOKTRON for my company"* or *"Let me test FLOKTRON"*.
+   **Easiest:** use an assistant that can work on your computer (Claude desktop app with one folder allowed,
+   Claude Code, ChatGPT/Codex desktop, Gemini CLI, Cursor…) — it downloads, installs and sets up FLOKTRON itself,
+   asking before each step. A chat-only assistant guides you step by step instead.
 2. The assistant reads [AGENTS.md](AGENTS.md) and runs [prompts/00_setup_wizard.md](prompts/00_setup_wizard.md):
    asks about your company, departments, a separate mailbox and keywords, fills `config/config.yaml`,
    sends a test letter, then the first real messages.
@@ -262,7 +282,8 @@ questions at a time, in the person's language. Write answers to `config/config.y
 Do not invent data — leave a field empty and say so. Never ask for a password in chat.
 
 ## 0. Before you start
-1. Say which mode you are in:
+1. Offer the two ways from `AGENTS.md` (A — an assistant on their computer does everything; B — step by step in chat)
+   before anything else. Then say which mode you are in:
    **A** — you can run commands on the person's computer or server: you do the steps and ask before each change.
    **B** — chat only: you give one step at a time, the person does it and pastes back the result (never a password).
 2. Agree on the FLOKTRON folder (e.g. `~/FLOKTRON`) and work only inside it. Ask for nothing outside it.

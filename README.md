@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.8.6 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.8.7 · last update 18.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work: freelancers, the self-employed, crews, teams and small companies.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -26,6 +26,9 @@ The head makes it smart (what to look for, what it means, what to do next).
 
 1. Open your AI assistant (Claude, ChatGPT, Gemini, Copilot, Codex, Cursor…), give it the link to this repository
    and write: *"Set up FLOKTRON for my company"* or *"Let me test FLOKTRON"*.
+   **Easiest:** use an assistant that can work on your computer (Claude desktop app with one folder allowed,
+   Claude Code, ChatGPT/Codex desktop, Gemini CLI, Cursor…) — it downloads, installs and sets up FLOKTRON itself,
+   asking before each step. A chat-only assistant guides you step by step instead.
 2. The assistant reads [AGENTS.md](AGENTS.md) and runs [prompts/00_setup_wizard.md](prompts/00_setup_wizard.md):
    asks about your company, departments, a separate mailbox and keywords, fills `config/config.yaml`,
    sends a test letter, then the first real messages.

@@ -10,7 +10,8 @@ questions at a time, in the person's language. Write answers to `config/config.y
 Do not invent data — leave a field empty and say so. Never ask for a password in chat.
 
 ## 0. Before you start
-1. Say which mode you are in:
+1. Offer the two ways from `AGENTS.md` (A — an assistant on their computer does everything; B — step by step in chat)
+   before anything else. Then say which mode you are in:
    **A** — you can run commands on the person's computer or server: you do the steps and ask before each change.
    **B** — chat only: you give one step at a time, the person does it and pastes back the result (never a password).
 2. Agree on the FLOKTRON folder (e.g. `~/FLOKTRON`) and work only inside it. Ask for nothing outside it.

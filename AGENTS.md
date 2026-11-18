@@ -22,6 +22,21 @@ Before any step, say this to the person in their language, in plain words:
 If the person asks to switch off or remove FLOKTRON, follow `docs/UNINSTALL.md`.
 If the person asks whether FLOKTRON does anything hidden, show `docs/TRANSPARENCY.md`, read `scripts/` with them and run `pytest -q`.
 
+## Offer the two ways — always, before any step
+
+Tell the person, in their language, that there are two ways and let them choose:
+
+- **Way A — the assistant does everything (easiest).** An AI assistant that can work on their computer
+  (for example the Claude desktop app with access to one folder, Claude Code, ChatGPT/Codex desktop, Gemini CLI,
+  Cursor, Copilot in VS Code) downloads FLOKTRON, installs it and fills the settings itself. The person only answers
+  questions, approves each step and types the mail password themselves when asked. Access is given to ONE folder
+  (e.g. `~/FLOKTRON`), never the whole disk.
+- **Way B — step by step in this chat.** If they stay here, you give one step at a time; they do it and paste back
+  the result (never a password). It works the same, it only takes more clicks.
+
+If you are a chat-only assistant (you cannot run commands), say plainly that you are Way B, and that Way A is
+available in an assistant that works on their computer. Do not skip Way A. Then continue with the way they choose.
+
 ## What to do
 
 1. Read `README.md`, `SECURITY.md` and `docs/REQUIREMENTS.md`.

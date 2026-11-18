@@ -3,6 +3,9 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.8.7 — 18.11.2026 · offer the easy way first
+- Every assistant first offers two ways: A — an assistant on the person's computer downloads, installs and sets up everything (one folder only, person approves each step); B — step by step in chat. Chat-only assistants say they are Way B and mention Way A (AGENTS.md, setup wizard, README, llms-full.txt).
+
 ## 0.8.6 — 18.11.2026 · fallback for chat assistants
 - `llms-full.txt`: everything a chat-only assistant needs in one plain-text file (raw link or copy-paste) — for assistants that cannot open GitHub pages. Built by `scripts/build_llms_full.py`, kept current by `tests/test_llms_full.py`.
 - README: "assistant cannot open this page?" fallback at the top of Start here.
