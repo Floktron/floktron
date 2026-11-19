@@ -3,6 +3,10 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.13.3 — 19.11.2026 · overview PDF
+- `docs/FLOKTRON_overview_RU.pdf`: overview by rays to read before installing — daily cycle, how it is built, the 8 rays with their tools, radars, connectors, what else can be plugged in, data and security, status. Linked from the README. English version next.
+- Cost of the AI engine stated honestly: a basic subscription (about 20 € a month) is enough to set up and run FLOKTRON every day; a higher plan only gives more room for heavy use.
+
 ## 0.13.2 — 19.11.2026 · own contact address
 - Contact for FLOKTRON is now **floktron@koagu.com** (support, licence, security reports) — README, AGENTS, SECURITY, LICENSING, FEEDBACK, TRANSPARENCY, llms-full. The company address is no longer used for the project; commits are signed with the project address too.
 

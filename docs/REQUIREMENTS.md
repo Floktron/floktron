@@ -3,7 +3,7 @@
 | Item | Minimum | Note | Status |
 |---|---|---|---|
 | Always-on machine | Any recent Mac / Windows / Linux, or a small cloud server | Runs scheduled tasks (morning, evening). Must not sleep at run times | Tested on Mac |
-| Claude (Anthropic) | Paid plan | Engine for monitoring, letters, routing. authors' cost: ~100 €/month (actual) | Tested |
+| Claude (Anthropic) | Paid plan | Engine for monitoring, letters, routing. a basic subscription (about 20 €/month) is enough to set up and run it daily; a higher plan only adds room for heavy use | Tested |
 | Mailbox — Proton | Paid plan (Mail Plus / Unlimited / Business) | Needs Proton Mail Bridge (IMAP/SMTP on localhost) | Tested |
 | Mailbox — Gmail | Free or Workspace | Direct IMAP/SMTP with app password, or Gmail API | Not tested yet |
 | Mailbox — Outlook / M365 | Any | IMAP/SMTP or Microsoft Graph API; work accounts may need admin consent | Not tested yet |
