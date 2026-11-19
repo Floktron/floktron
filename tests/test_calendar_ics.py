@@ -112,3 +112,10 @@ def test_morning_letter_survives_broken_calendar_and_attaches_due_dates(tmp_path
     folder = os.path.join(ROOT, "data", "letters", today)
     made = [f for f in os.listdir(folder) if f.endswith("-L1.ics")]
     assert made and "SUMMARY:Send the offer" in open(os.path.join(folder, made[0]), encoding="utf-8").read()
+
+
+def test_masked_link_hides_secrets():
+    m = calendar_read.masked("https://calendar.example/api/v1/url/SECRETSECRETSECRET/calendar.ics?CacheKey=K1&PassphraseKey=K2")
+    assert "SECRETSECRET" not in m and "K1" not in m and "K2" not in m
+    assert m.startswith("https://calendar.example/api/v1/url/SECR…(18)/calendar.ics ?[CacheKey,PassphraseKey]")
+    assert "cut off" in calendar_read.masked("https://x.example/" + "a" * 110)

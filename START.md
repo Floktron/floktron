@@ -116,7 +116,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.13.0 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.13.1 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work: freelancers, the self-employed, crews, teams and small companies.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.

@@ -3,6 +3,10 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.13.1 — 19.11.2026 · long calendar links
+- Mac: `calendar_link.command` read the link through the system password prompt, which cuts input at 128 characters — Proton and Google links are longer and came back as HTTP 404. The link is now read in full, its length is shown, and anything that is not an https/webcal link is refused. Learned in real use.
+- `calendar_read.py --diagnose`: shows the shape of the link with every secret part hidden (host, path, parameter names, length) — safe to send to support; a 404 explains what to do.
+
 ## 0.13.0 — 19.11.2026 · calendar + one setup path
 - `scripts/calendar_read.py`: reads YOUR calendar through its private read-only `.ics` link — Proton, Google, Outlook / Microsoft 365, Apple iCloud, Nextcloud, any other that gives one. The link is kept like a password (environment variable `FLOKTRON_CAL_URL` or the Keychain item `FLOKTRON_CAL`; Mac: `scripts/install/calendar_link.command`). FLOKTRON never writes to the calendar.
 - Morning message: *"Today in your calendar"* above the tasks for the rays in `calendar.rays`; `calendar.busy_only` shows only "busy". Every morning message gets an `.ics` with the due dates of its tasks — one tap adds them. A calendar that does not answer never stops the letters.

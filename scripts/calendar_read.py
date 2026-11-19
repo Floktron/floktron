@@ -39,6 +39,17 @@ def link(cal_cfg):
     return url.strip().replace("webcal://", "https://", 1)
 
 
+def masked(url):
+    """The shape of the link with every secret part hidden — safe to show or send to support."""
+    import urllib.parse as up
+    u = up.urlsplit(url)
+    segs = [x if len(x) <= 12 else x[:4] + "…(" + str(len(x)) + ")" for x in u.path.split("/")]
+    q = ",".join(k for k, _ in up.parse_qsl(u.query, keep_blank_values=True))
+    return (f"{u.scheme}://{u.netloc}{'/'.join(segs)}" + (f" ?[{q}]" if q else "")
+            + (" #[fragment]" if u.fragment else "") + f"  length {len(url)}"
+            + ("  ⚠ exactly 128 characters — probably cut off, save it again" if len(url) == 128 else ""))
+
+
 def fetch(url, timeout=30):
     if not url.startswith("https://"):
         raise ValueError("the calendar link must start with https:// or webcal://")
@@ -66,6 +77,7 @@ def main():
     ap.add_argument("--config", default=os.path.join(ROOT, "config", "config.yaml"))
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--day", default="")
+    ap.add_argument("--diagnose", action="store_true", help="show the shape of the link, secrets hidden")
     a = ap.parse_args()
     cfg = {}
     if os.path.exists(a.config):
@@ -77,10 +89,14 @@ def main():
     if not url:
         sys.exit("No calendar link. Mac: double-click scripts/install/calendar_link.command; "
                  "other systems: environment variable FLOKTRON_CAL_URL (docs/CALENDAR.md).")
+    if a.diagnose:
+        print("Link shape (secrets hidden):", masked(url))
     try:
         text = fetch(url)
     except Exception as e:  # noqa: BLE001
-        sys.exit(f"Calendar link does not answer: {str(e)[:120]} — check the link (docs/CALENDAR.md)")
+        hint = (" — 404 means the address is wrong or cut off: copy the link again with the copy button of your "
+                "calendar (not from the address bar) and save it again" if "404" in str(e) else "")
+        sys.exit(f"Calendar link does not answer: {str(e)[:120]}{hint}. Link shape: {masked(url)} (docs/CALENDAR.md)")
     evs = ics.parse(text, cal.get("timezone") or "")
     if "BEGIN:VCALENDAR" not in text[:2000]:
         sys.exit("The link answered, but it is not a calendar (.ics). Copy the iCal / ICS link, not the web page.")
