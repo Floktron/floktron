@@ -1,9 +1,9 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.13.4 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.13.5 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
-AI-assisted operations system for teams and companies of any size — from a freelancer or a crew of three to a developer running several sites.
+AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
 Every morning each department gets its tasks; people answer with one button; blocked work goes up the chain to whoever decides; the manager sees progress. A radar watches news, public consultations and search demand by the company's own keywords.
 Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) shows your day in the morning message, and due dates come as a calendar file you add with one tap ([CALENDAR](docs/CALENDAR.md)).

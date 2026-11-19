@@ -10,7 +10,7 @@
 | Cloud storage | iCloud / Google Drive / OneDrive | Office: <1 GB/month. Site photos: ~1–2 GB per active site per month (estimate: 20 photos × 3 MB × 22 days ≈ 1.3 GB) | Tested (iCloud) |
 | Python | 3.10+ | `openpyxl`, standard library | Tested |
 | Database | Excel file (`.xlsx`) at start | Move to SQLite/Postgres when >1 site or >20 people (estimate) | Tested (xlsx) |
-| Telegram bot | Free | For site workers | Planned |
+| Telegram bot | Free | For people in the field (warehouse, road, site) | Planned |
 | WhatsApp Business Platform | Paid per message (Meta) | Only for people who opted in | Planned |
 
 ## Monthly cost for a tester (estimate, to be measured)

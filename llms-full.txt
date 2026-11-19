@@ -18,7 +18,7 @@ You are an AI assistant (Claude, ChatGPT, Gemini, Copilot, Codex, Cursor or any 
 A person gave you the link to this repository and probably asked something like
 *"connect to this tool"*, *"set up FLOKTRON for my company"* or *"let me test this"*.
 
-**FLOKTRON** is a small operations system for anyone who runs work — a freelancer, a self-employed person, a crew, a team or a company: every morning each department (a "ray")
+**FLOKTRON** is an operations system for anyone who runs work — one person (a social-media manager, a freelancer, a consultant), a team or a company with departments, in any field: every morning each department (a "ray")
 gets its tasks by e-mail, people answer with one button, blocked work goes up to whoever decides,
 and a radar watches news, tenders and public consultations by the company's keywords.
 Python scripts do the routine work ("hands"); text instructions in `prompts/` tell an AI agent what to look for ("head").
@@ -109,9 +109,9 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.13.4 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.13.5 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
-AI-assisted operations system for teams and companies of any size — from a freelancer or a crew of three to a developer running several sites.
+AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
 Every morning each department gets its tasks; people answer with one button; blocked work goes up the chain to whoever decides; the manager sees progress. A radar watches news, public consultations and search demand by the company's own keywords.
 Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) shows your day in the morning message, and due dates come as a calendar file you add with one tap ([CALENDAR](docs/CALENDAR.md)).
@@ -724,7 +724,7 @@ No GitHub account? Write to **floktron@koagu.com**, subject "FLOKTRON".
 **Before sending** remove passwords, real e-mail addresses, client names and other personal data.
 
 ## Template
-- What kind of company / team (e.g. "earthworks, 40 people", "tiling crew, 5 people"):
+- What kind of company / team (e.g. "online shop, 3 people", "haulage and earthworks, 40 people", "social-media freelancer"):
 - Which AI assistant was used, mode A (it installed) or B (chat only):
 - Mailbox: Gmail / Outlook / Proton / other:
 - What worked well:

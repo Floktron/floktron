@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.13.5 — 20.11.2026 · for any field
+- FLOKTRON is described for anyone who runs work, in any field — from one person (a social-media manager, a freelancer) to a company with departments (online shop, logistics, production, services, construction). Construction is one example, not the target.
+- The site module is now a field module: anyone out of the office — warehouse, road, site — ticks off work in a bot.
+- `docs/FLOKTRON_overview.pdf` updated (version 1.2).
+
 ## 0.13.4 — 19.11.2026 · overview in English, any size
 - `docs/FLOKTRON_overview.pdf`: the overview by rays is now in English (the repository language); other languages live on koagu.com/floktron.
 - FLOKTRON is described for teams and companies of any size — from a crew of three to a developer running several sites — not only small companies.
