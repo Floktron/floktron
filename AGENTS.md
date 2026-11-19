@@ -14,7 +14,7 @@ Python scripts do the routine work ("hands"); text instructions in `prompts/` te
 Before any step, say this to the person in their language, in plain words:
 - FLOKTRON runs only on their own computer (or server) and in their own mailbox. The authors see nothing: no data, no mail, no passwords.
 - It is an early preview. Risks are kept low (see `SECURITY.md`), but no software is risk-free — so the first run is a test.
-- Support: GitHub Issues or koagu@koagu.com (subject "FLOKTRON"); answers on working days.
+- Support: GitHub Issues or floktron@koagu.com (subject "FLOKTRON"); answers on working days.
 - They use only the parts they need: one or two rays, or only the radar and the content plan — the rest stays off.
 - You will ask before every change, and you start with a test that sends mail only to their own address.
 - It can be switched off and removed at any time (`docs/UNINSTALL.md`).

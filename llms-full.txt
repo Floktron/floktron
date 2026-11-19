@@ -7,7 +7,7 @@ computer does everything; B — step by step in this chat. If you cannot run com
 mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
-Support: koagu@koagu.com (subject "FLOKTRON") or GitHub Issues.
+Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
 
 
 ===== FILE: AGENTS.md =====
@@ -28,7 +28,7 @@ Python scripts do the routine work ("hands"); text instructions in `prompts/` te
 Before any step, say this to the person in their language, in plain words:
 - FLOKTRON runs only on their own computer (or server) and in their own mailbox. The authors see nothing: no data, no mail, no passwords.
 - It is an early preview. Risks are kept low (see `SECURITY.md`), but no software is risk-free — so the first run is a test.
-- Support: GitHub Issues or koagu@koagu.com (subject "FLOKTRON"); answers on working days.
+- Support: GitHub Issues or floktron@koagu.com (subject "FLOKTRON"); answers on working days.
 - They use only the parts they need: one or two rays, or only the radar and the content plan — the rest stays off.
 - You will ask before every change, and you start with a test that sends mail only to their own address.
 - It can be switched off and removed at any time (`docs/UNINSTALL.md`).
@@ -109,7 +109,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.13.1 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.13.2 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work: freelancers, the self-employed, crews, teams and small companies.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -181,7 +181,7 @@ then `python3 scripts/base_create.py`.
 | Channel | For |
 |---|---|
 | GitHub → **Issues** | questions, problems, wishes (templates: feedback / bug) |
-| **koagu@koagu.com**, subject "FLOKTRON" | anything, also without a GitHub account |
+| **floktron@koagu.com**, subject "FLOKTRON" | anything, also without a GitHub account |
 | GitHub → Security → **Report a vulnerability** | security problems — not in public issues |
 
 We answer on working days (Latvia), usually within two working days. Never send passwords or personal data.
@@ -243,7 +243,7 @@ It sends nothing to the authors. Full list and how to check: [docs/TRANSPARENCY.
 ## Report a problem
 
 Found a weakness? Do not post details publicly. Use **Security → Report a vulnerability** on this repository's
-GitHub page, or write to koagu@koagu.com (subject "FLOKTRON security"). Remove passwords and personal data from anything you send.
+GitHub page, or write to floktron@koagu.com (subject "FLOKTRON security"). Remove passwords and personal data from anything you send.
 
 ## For maintainers (GitHub settings)
 
@@ -288,7 +288,7 @@ in any other file.
 2. Run the checks: `pip install -r requirements.txt pytest && pytest -q` — the safety and network tests are included.
 3. Search the code: `grep -rn "urlopen\|smtplib\|imaplib\|subprocess" scripts`.
 
-Something looks wrong? Write to koagu@koagu.com (subject "FLOKTRON security") or use GitHub → Security → Report a vulnerability.
+Something looks wrong? Write to floktron@koagu.com (subject "FLOKTRON security") or use GitHub → Security → Report a vulnerability.
 
 
 ===== FILE: prompts/00_setup_wizard.md =====
@@ -717,7 +717,7 @@ FLOKTRON is in early testing; every remark helps.
 below; you check it and send it.
 
 **Where to send:** GitHub → **Issues → New issue** → "Feedback / wish" or "Something does not work".
-No GitHub account? Write to **koagu@koagu.com**, subject "FLOKTRON".
+No GitHub account? Write to **floktron@koagu.com**, subject "FLOKTRON".
 
 **Before sending** remove passwords, real e-mail addresses, client names and other personal data.
 
@@ -759,7 +759,7 @@ This page is a summary. If it differs from [LICENSE.md](LICENSE.md), the licence
 | Building a product that offers the same or very similar functions | Also a "Competing Use" |
 | Using our name or marks beyond saying where the software comes from | Trademarks are not licensed |
 
-Write to **koagu@koagu.com** with the subject "FLOKTRON licence" — terms are agreed case by case.
+Write to **floktron@koagu.com** with the subject "FLOKTRON licence" — terms are agreed case by case.
 
 ## Responsibility and your data
 
@@ -772,7 +772,7 @@ Write to **koagu@koagu.com** with the subject "FLOKTRON licence" — terms are a
 - **Liability.** The licence provides the software "as is" ([LICENSE.md](LICENSE.md)). This limits liability only as far
   as the applicable law allows. It does not limit liability that cannot be limited by law — for example for
   intentional harm or gross negligence — and it does not take away rights consumers have under the law of their country.
-- **Support.** Questions and problems: GitHub Issues or koagu@koagu.com (subject "FLOKTRON").
+- **Support.** Questions and problems: GitHub Issues or floktron@koagu.com (subject "FLOKTRON").
 
 ## After two years
 

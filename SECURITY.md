@@ -44,7 +44,7 @@ It sends nothing to the authors. Full list and how to check: [docs/TRANSPARENCY.
 ## Report a problem
 
 Found a weakness? Do not post details publicly. Use **Security → Report a vulnerability** on this repository's
-GitHub page, or write to koagu@koagu.com (subject "FLOKTRON security"). Remove passwords and personal data from anything you send.
+GitHub page, or write to floktron@koagu.com (subject "FLOKTRON security"). Remove passwords and personal data from anything you send.
 
 ## For maintainers (GitHub settings)
 

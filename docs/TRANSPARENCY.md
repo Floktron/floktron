@@ -31,4 +31,4 @@ in any other file.
 2. Run the checks: `pip install -r requirements.txt pytest && pytest -q` — the safety and network tests are included.
 3. Search the code: `grep -rn "urlopen\|smtplib\|imaplib\|subprocess" scripts`.
 
-Something looks wrong? Write to koagu@koagu.com (subject "FLOKTRON security") or use GitHub → Security → Report a vulnerability.
+Something looks wrong? Write to floktron@koagu.com (subject "FLOKTRON security") or use GitHub → Security → Report a vulnerability.

@@ -16,7 +16,7 @@ computer does everything; B — step by step in this chat. If you cannot run com
 mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
-Support: koagu@koagu.com (subject "FLOKTRON") or GitHub Issues.
+Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
 """
 
 

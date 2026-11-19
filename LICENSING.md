@@ -24,7 +24,7 @@ This page is a summary. If it differs from [LICENSE.md](LICENSE.md), the licence
 | Building a product that offers the same or very similar functions | Also a "Competing Use" |
 | Using our name or marks beyond saying where the software comes from | Trademarks are not licensed |
 
-Write to **koagu@koagu.com** with the subject "FLOKTRON licence" — terms are agreed case by case.
+Write to **floktron@koagu.com** with the subject "FLOKTRON licence" — terms are agreed case by case.
 
 ## Responsibility and your data
 
@@ -37,7 +37,7 @@ Write to **koagu@koagu.com** with the subject "FLOKTRON licence" — terms are a
 - **Liability.** The licence provides the software "as is" ([LICENSE.md](LICENSE.md)). This limits liability only as far
   as the applicable law allows. It does not limit liability that cannot be limited by law — for example for
   intentional harm or gross negligence — and it does not take away rights consumers have under the law of their country.
-- **Support.** Questions and problems: GitHub Issues or koagu@koagu.com (subject "FLOKTRON").
+- **Support.** Questions and problems: GitHub Issues or floktron@koagu.com (subject "FLOKTRON").
 
 ## After two years
 

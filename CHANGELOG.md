@@ -3,6 +3,9 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.13.2 — 19.11.2026 · own contact address
+- Contact for FLOKTRON is now **floktron@koagu.com** (support, licence, security reports) — README, AGENTS, SECURITY, LICENSING, FEEDBACK, TRANSPARENCY, llms-full. The company address is no longer used for the project; commits are signed with the project address too.
+
 ## 0.13.1 — 19.11.2026 · long calendar links
 - Mac: `calendar_link.command` read the link through the system password prompt, which cuts input at 128 characters — Proton and Google links are longer and came back as HTTP 404. The link is now read in full, its length is shown, and anything that is not an https/webcal link is refused. Learned in real use.
 - `calendar_read.py --diagnose`: shows the shape of the link with every secret part hidden (host, path, parameter names, length) — safe to send to support; a 404 explains what to do.
