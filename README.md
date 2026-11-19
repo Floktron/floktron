@@ -1,11 +1,12 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.11.0 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.12.0 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work: freelancers, the self-employed, crews, teams and small companies.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
 Every morning each department gets its tasks; people answer with one button; blocked work goes up the chain to whoever decides; the manager sees progress. A radar watches news, public consultations and search demand by the company's own keywords.
+A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big producers, listed companies, freight routes, reference prices and currencies — it speaks up only when something moves ([SUPPLY_CHAIN](docs/SUPPLY_CHAIN.md)).
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
 
 ## How it works — two layers
@@ -61,7 +62,7 @@ then `python3 scripts/base_create.py`.
 | `prompts/` | The head (instructions for the AI agent) |
 | `templates/` | Empty base (xlsx), letter and report templates |
 | `config/` | `config.example.yaml` — copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
+| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [supply chain watch](docs/SUPPLY_CHAIN.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
 | `tests/` | Automatic checks incl. safety checks — GitHub runs them on every change |
 | `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `llms.txt` | Entry point for AI assistants (one source: `AGENTS.md`) |
 | `SECURITY.md` | What is protected and how; how to report a problem |

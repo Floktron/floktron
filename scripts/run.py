@@ -6,6 +6,8 @@
     python3 scripts/run.py deadline    # who did not answer at all        — at the reply deadline
     python3 scripts/run.py evening     # evening reminder for open tasks
     python3 scripts/run.py news        # evening news slice (1 day)
+    python3 scripts/run.py supply      # supply chain watch, light (prices, currencies, news of your watch list)
+    python3 scripts/run.py supply_week # supply chain watch, weekly (news 7 days + supplier page changes)
     python3 scripts/run.py summary     # weekly summary to the manager
     python3 scripts/run.py gaps        # weekly list of what FLOKTRON could not do
     python3 scripts/run.py registry    # new companies in the registry (LV)
@@ -33,6 +35,8 @@ JOBS = {
     "deadline": ["collect_replies.py", "--deadline"],
     "evening": ["send_morning.py", "--evening"],
     "news": ["news_slice.py", "--days", "1"],
+    "supply": ["supply_watch.py"],
+    "supply_week": ["supply_watch.py", "--full"],
     "summary": ["weekly_summary.py"],
     "gaps": ["gaps_report.py"],
     "registry": ["registry_lv.py"],

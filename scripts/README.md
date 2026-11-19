@@ -22,6 +22,7 @@ Status: **16 parts ready, 1 planned.** Working versions are cleaned
 | `bot/telegram_bot.py` | Telegram bot: YAML dialog → leads (`data/floktron_leads.xlsx`), manager alert, source labels, funnel by step. Site-worker tasks — next | **ready (0.10.0)** |
 | `radar_create.py` | Creates the radar workbook: keywords, sources, news feeds, signals, consultations, players, demand, gaps | **ready (0.5.0)** |
 | `news_slice.py` | News by keywords from portal RSS and Google News → signals; failed feeds → Gaps | **ready (0.5.0)** |
+| `supply_watch.py` | Supply chain watch: prices, currencies, news and page changes of your Watchlist → Watch_log (🟢/🟡/🔴/⚪) | **ready (0.12.0)** |
 
 ## How to run (for now)
 ```
@@ -34,6 +35,7 @@ python3 scripts/collect_replies.py      # read replies, update tasks, escalate
 python3 scripts/collect_replies.py --deadline   # at 09:00: who did not answer at all
 python3 scripts/route.py --dry          # what next tasks the answers would create
 python3 scripts/radar_create.py         # creates data/floktron_radar.xlsx — then fill in the keywords
+python3 scripts/supply_watch.py --dry    # supply chain watch, show only (--full = weekly run)
 python3 scripts/news_slice.py --days 7  # news of the last 7 days by the keywords (RSS, Google News, public Telegram channels)
 export FLOKTRON_TG_TOKEN=...              # bot token from @BotFather
 python3 scripts/bot/telegram_bot.py --flow-check   # check the dialog

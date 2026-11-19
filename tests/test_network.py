@@ -8,7 +8,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 S = os.path.join(ROOT, "scripts")
 NET = re.compile(r"^\s*(import|from)\s+(urllib(?!\.parse)|http|socket|smtplib|imaplib|poplib|ftplib|telnetlib|requests|httpx|aiohttp|websocket|webbrowser)\b", re.M)
 PROC = re.compile(r"^\s*(import|from)\s+subprocess\b", re.M)
-ALLOWED_NET = {"mail/read.py", "mail/send.py", "news_slice.py", "registry_lv.py", "bot/telegram_bot.py", "tg_watch.py"}
+ALLOWED_NET = {"mail/read.py", "mail/send.py", "news_slice.py", "registry_lv.py", "bot/telegram_bot.py", "tg_watch.py", "supply_watch.py"}
 ALLOWED_PROC = {"run.py", "mail/send.py", "bot/telegram_bot.py"}
 
 

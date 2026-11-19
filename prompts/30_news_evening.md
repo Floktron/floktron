@@ -21,5 +21,7 @@ A retry later in the evening does nothing if today's slice is already in `Run_lo
    one news item → at most one post per platform; never build a whole week around one story;
    no judgement or criticism of institutions, companies or people; no causes or links that are not in the article.
 5. One row in `Run_log`: feeds answered, items recorded, post ideas made.
+6. If the person uses the supply chain watch: run the light run of `prompts/32_supply_chain.md` (the full run on the
+   weekly day). Its data is internal — never a reason for a post.
 
 If there is no news worth a post this week, use `prompts/35_reasons_without_news.md`.

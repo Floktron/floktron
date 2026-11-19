@@ -11,6 +11,8 @@ config.yaml → schedule (defaults shown):
     summary:  "Fri 16:00"
     gaps:     "Fri 16:10"
     registry: "Mon 07:00"
+    supply:      "19:10"   # optional, every day — only if you add it (supply chain watch)
+    supply_week: "Mon 19:20" # optional, weekly
     collect_every_minutes: 30
 """
 import os
@@ -18,7 +20,7 @@ import sys
 
 DEFAULTS = {"morning": "07:40", "deadline": "09:00", "evening": "18:30", "news": "18:56", "content": "07:12",
             "summary": "Fri 16:00", "gaps": "Fri 16:10", "registry": "Mon 07:00", "collect_every_minutes": 30}
-DAILY = {"news", "content"}  # every day; the other "HH:MM" jobs — working days only
+DAILY = {"news", "content", "supply"}  # every day; the other "HH:MM" jobs — working days only
 DAYS = {"Mon": 1, "Tue": 2, "Wed": 3, "Thu": 4, "Fri": 5, "Sat": 6, "Sun": 0}
 
 

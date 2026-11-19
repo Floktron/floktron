@@ -8,6 +8,7 @@ keywords at setup; the source catalogue below is a neutral starting list of publ
 Usage:
     python3 scripts/radar_create.py                 # languages from config/config.yaml (radar.languages)
     python3 scripts/radar_create.py --force         # overwrite
+    python3 scripts/radar_create.py --add-watch     # add the supply-chain sheets (Watchlist, Watch_log) to an existing radar
 Options: --config <file>  --out <file>
 """
 import argparse
@@ -71,6 +72,46 @@ FEEDS = [
 ]
 
 
+WATCH_HEAD = ["ID", "Group", "Object", "Country", "Why it matters to us", "News query", "News languages", "Ticker",
+              "Page URL", "Yellow %", "Red %", "Mode", "Active", "Data status", "Comment"]
+# Neutral examples (reference prices, currencies, freight). Replace with what YOU buy and from whom.
+WATCH_EXAMPLE = [
+    ["S01", "Supplier", "Your main supplier (fill in)", "", "what you buy from them", '"Supplier name"', "en", "—",
+     "https://example.com", "", "", "daily", "No", "PUBLIC", "example row — fill in, then Active = Yes"],
+    ["M01", "Producer", "A big listed producer of your raw material (fill in)", "", "sets market prices", "Company name",
+     "en", "TICKER", "", "5", "10", "daily", "No", "PUBLIC", "ticker as on finance.yahoo.com, e.g. HEI.DE"],
+    ["L01", "Logistics", "Asia–Europe container route", "", "cost and time of sea freight",
+     '"Red Sea" shipping OR Suez (closure OR attack OR diversion)', "en", "—", "", "", "", "daily", "Yes", "PUBLIC", ""],
+    ["P01", "Price", "Aluminium (COMEX future)", "", "reference price, not your purchase price", "—", "", "ALI=F", "",
+     "10", "20", "daily", "Yes", "PUBLIC", ""],
+    ["P02", "Price", "Natural gas TTF (EU)", "", "energy cost of EU chemical and building-material plants", "—", "",
+     "TTF=F", "", "10", "20", "daily", "Yes", "PUBLIC", ""],
+    ["P03", "Currency", "EUR/USD", "", "freight and raw materials in USD", "—", "", "EURUSD=X", "", "3", "5", "daily",
+     "Yes", "PUBLIC", ""],
+    ["R01", "Rule", "EU anti-dumping on your inputs (fill in)", "EU", "duties change landed cost",
+     "EU anti-dumping China \"product name\"", "en", "—", "", "", "", "weekly", "No", "PUBLIC", ""],
+]
+WATCH_LOG_HEAD = ["Date", "ID", "Object", "Measure", "Value", "Unit", "Δ day %", "Δ 5 days %", "Status",
+                  "Event / news", "URL", "Data status", "Run"]
+
+
+def add_watch(wb, cfg=None):
+    ws = sheet(wb, "Watchlist", WATCH_HEAD, WATCH_EXAMPLE, [6, 11, 32, 8, 32, 44, 12, 12, 34, 8, 8, 9, 8, 11, 34],
+               note="INTERNAL. Supply chain watch (supply_watch.py): one row per supplier, producer, route, price or rule "
+                    "you depend on. Groups: Supplier · Producer · Logistics · Price · Currency · Rule. Ticker as on "
+                    "finance.yahoo.com. Yellow % / Red % = alarm for a 5-day move (empty → config). Mode: daily / weekly. "
+                    "Never put recipes, quantities or contract prices here.")
+    dv = DataValidation(type="list", formula1='"Supplier,Producer,Logistics,Price,Currency,Rule"')
+    ws.add_data_validation(dv)
+    dv.add("B4:B500")
+    dv2 = DataValidation(type="list", formula1='"Yes,No"')
+    ws.add_data_validation(dv2)
+    dv2.add("M4:M500")
+    sheet(wb, "Watch_log", WATCH_LOG_HEAD, widths=[11, 6, 30, 16, 14, 9, 9, 10, 14, 60, 40, 22, 18],
+          note="INTERNAL. What supply_watch.py measured. 🟢 normal · 🟡 attention · 🔴 urgent · ⚪ no data. "
+               "'candidate' = alarm word in a news title — the AI agent reads it and confirms or lowers the status.")
+
+
 def sheet(wb, name, head, rows=(), widths=None, note=None, first=False):
     ws = wb.active if first else wb.create_sheet(name)
     ws.title = name
@@ -104,6 +145,7 @@ def build(cfg):
         ["Consultations — public consultations and draft regulations, with deadlines. Write opinions only while a consultation is OPEN."],
         ["Players — other companies in the niche. INTERNAL: never copy into external documents or posts."],
         ["Demand / Demand_history — search interest (Google Trends index 0–100, relative to its comparison set, not absolute numbers)."],
+        ["Watchlist / Watch_log — INTERNAL supply chain watch: suppliers, producers, logistics, reference prices, rules (supply_watch.py)."],
         ["Gaps — what FLOKTRON could not get and why (site blocked, needs subscription, function missing, client wish). Weekly report to the client."],
         ["Every figure carries a status: PUBLIC / ESTIMATE / SCENARIO / DEAL, and a source."],
     ], [130], first=True)
@@ -160,6 +202,7 @@ def build(cfg):
                         formula1='"source blocked,needs subscription,function missing,client wish,data quality"')
     ws.add_data_validation(dv)
     dv.add("E4:E2000")
+    add_watch(wb, cfg)
     sheet(wb, "Run_log", ["Date/time", "Run", "What was done", "New signals", "Comment"],
           [[datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), "radar_create", "empty radar created", 0, ""]],
           [17, 18, 60, 12, 50])
@@ -171,7 +214,23 @@ def main():
     ap.add_argument("--config", default=os.path.join(ROOT, "config", "config.yaml"))
     ap.add_argument("--out", default=os.path.join(ROOT, "data", "floktron_radar.xlsx"))
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--add-watch", action="store_true", help="add Watchlist + Watch_log to an existing radar")
     a = ap.parse_args()
+    cfg0 = {}
+    if os.path.exists(a.config):
+        import yaml
+        with open(a.config, encoding="utf-8") as f:
+            cfg0 = yaml.safe_load(f) or {}
+    if a.add_watch:
+        if not os.path.exists(a.out):
+            sys.exit(f"No radar yet: {a.out} — run without --add-watch first")
+        wb = openpyxl.load_workbook(a.out)
+        if "Watchlist" in wb.sheetnames:
+            sys.exit("Watchlist already exists — nothing changed")
+        add_watch(wb, cfg0)
+        wb.save(a.out)
+        print("OK: Watchlist + Watch_log added to", a.out)
+        return
     if os.path.exists(a.out) and not a.force:
         sys.exit(f"Radar already exists: {a.out}  (use --force to overwrite)")
     cfg = {}

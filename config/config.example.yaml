@@ -54,6 +54,8 @@ schedule:                  # automatic runs (scripts/install/…); weekends and 
   summary: "Fri 16:00"     # weekly summary to the manager
   gaps: "Fri 16:10"        # weekly list of what FLOKTRON could not do
   registry: "Mon 07:00"    # new companies in the registry
+  # supply: "19:10"        # optional: supply chain watch every day (docs/SUPPLY_CHAIN.md)
+  # supply_week: "Mon 19:20" # optional: weekly full run (news 7 days + supplier page changes)
   collect_every_minutes: 30
 
 escalation:
@@ -72,6 +74,10 @@ radar:
     - "https://toolbox.google.com/factcheck/explorer"   # world — Google Fact Check Explorer
   correction_words: ["atsaukums", "labojums", "precizējums", "correction", "retraction", "clarification",
                      "Berichtigung", "Richtigstellung", "опровержение", "поправка", "patikslinimas", "parandus"]
+
+supply_chain:              # optional: watch list is the sheet Watchlist in data/floktron_radar.xlsx (docs/SUPPLY_CHAIN.md)
+  yellow_pct: 5            # default alarm for a 5-day move, % (a row's own Yellow % / Red % wins)
+  red_pct: 10
 
 telegram:                  # optional bot: dialog → leads (scripts/bot/telegram_bot.py); off until a token exists
   enabled: false

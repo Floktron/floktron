@@ -3,6 +3,13 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.12.0 — 19.11.2026 · supply chain watch
+- `scripts/supply_watch.py`: your watch list of suppliers, big producers, listed companies, routes, reference prices, currencies and rules (sheet `Watchlist`). Light run: end-of-day prices (Yahoo Finance public chart data — also futures and currencies) with change vs 1 and 5 trading days, news of the last day by your query. `--full` (weekly): news of 7 days, weekly rows, a fingerprint of each supplier page — a change is flagged. Status 🟢 / 🟡 / 🔴 / ⚪ per line into `Watch_log`; sources that do not answer go to `Gaps`.
+- News with alarm words (bankruptcy, fire, strike, force majeure, port closed, price increase…) are only **candidates** — `prompts/32_supply_chain.md` tells the AI agent to read each one and confirm or lower it; freight from the public Drewry World Container Index on the weekly run. Only 🔴 reaches the person the same evening; a quiet week is one line.
+- `docs/SUPPLY_CHAIN.md`: the path from start to end — what you buy → who sets the price → how it travels → reference prices → rules → watch list → test → switch on → tune after 4 weeks; limits said plainly.
+- `radar_create.py`: sheets `Watchlist` + `Watch_log` in every new radar; `--add-watch` adds them to an existing one. `run.py supply` / `supply_week`; optional `schedule.supply`, `schedule.supply_week`; `config.supply_chain` thresholds.
+- Setup wizard step 6a; evening news slice step 6. TRANSPARENCY: Yahoo Finance and supplier pages added. Tests: 8 new (offline), network test updated.
+
 ## 0.11.0 — 19.11.2026 · Telegram block complete
 - `docs/TELEGRAM.md`: what the bot and the channel watch do, setup in 9 steps, security table (token, account, fake BotFather, groups, manager, formulas, ports), what can and cannot be read, macOS + iCloud autostart, funnel source labels.
 - Setup wizard v0.4: section 7a — the assistant writes the dialog with the person, never sees the token, tests every branch, sets the channel watch and autostart.
