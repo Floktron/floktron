@@ -1,6 +1,6 @@
 # FLOKTRON
 
-> Small operations system for anyone who runs work (freelancers, self-employed, crews, teams, small companies): morning tasks by e-mail per department,
+> AI-assisted operations system for teams and companies of any size (from a freelancer or a crew to a developer with several sites): morning tasks by e-mail per department,
 > one-button replies, escalation to whoever decides, and a radar for news, tenders and public consultations.
 > Python scripts + instructions for an AI agent. Early preview, open for testing; use only the parts you need. Removal: docs/UNINSTALL.md.
 

@@ -116,16 +116,16 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.13.3 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.13.4 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
-AI-assisted operations system for anyone who runs work: freelancers, the self-employed, crews, teams and small companies.
+AI-assisted operations system for teams and companies of any size — from a freelancer or a crew of three to a developer running several sites.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
 Every morning each department gets its tasks; people answer with one button; blocked work goes up the chain to whoever decides; the manager sees progress. A radar watches news, public consultations and search demand by the company's own keywords.
 Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) shows your day in the morning message, and due dates come as a calendar file you add with one tap ([CALENDAR](docs/CALENDAR.md)).
 A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big producers, listed companies, freight routes, reference prices and currencies — it speaks up only when something moves ([SUPPLY_CHAIN](docs/SUPPLY_CHAIN.md)).
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
 
-**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview_RU.pdf) — one PDF, 4 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, what else can be plugged in. Russian now, English next.
+**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 4 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, what else can be plugged in. Other languages: [koagu.com/floktron](https://koagu.com/en/floktron/).
 
 ## How it works — two layers
 

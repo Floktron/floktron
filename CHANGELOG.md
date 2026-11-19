@@ -3,6 +3,10 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.13.4 — 19.11.2026 · overview in English, any size
+- `docs/FLOKTRON_overview.pdf`: the overview by rays is now in English (the repository language); other languages live on koagu.com/floktron.
+- FLOKTRON is described for teams and companies of any size — from a crew of three to a developer running several sites — not only small companies.
+
 ## 0.13.3 — 19.11.2026 · overview PDF
 - `docs/FLOKTRON_overview_RU.pdf`: overview by rays to read before installing — daily cycle, how it is built, the 8 rays with their tools, radars, connectors, what else can be plugged in, data and security, status. Linked from the README. English version next.
 - Cost of the AI engine stated honestly: a basic subscription (about 20 € a month) is enough to set up and run FLOKTRON every day; a higher plan only gives more room for heavy use.
