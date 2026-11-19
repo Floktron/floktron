@@ -4,6 +4,8 @@
 Reads the "News_feeds" and "Keywords" sheets of data/floktron_radar.xlsx:
     P rows  portal RSS/Atom feed → items whose title or summary contains a keyword (feed language first)
     N rows  Google News query    → {q} is replaced by the priority-A keywords of that language
+    T rows  public Telegram channel, URL https://t.me/s/<channel> (public web preview: no account,
+            no phone, no API key) → posts that contain a keyword. Private channels and groups cannot be read.
     X rows  never opened
 New items go to "Signal_feed" (type News, work status "To score") — the AI agent then scores relevance
 1–5 and proposes a post or an action (prompts/30_news_evening.md). No duplicates by URL or title.
@@ -114,6 +116,34 @@ def parse_feed(data):
     return items
 
 
+TG_POST = re.compile(r'data-post="([A-Za-z0-9_]{3,64}/\d{1,9})"')
+TG_TIME = re.compile(r'<time[^>]*datetime="([^"]+)"')
+TG_TEXT = re.compile(r'<div class="tgme_widget_message_text[^"]*"[^>]*>(.*?)</div>', re.S)
+
+
+def parse_tg_preview(data):
+    """Return [(date, title, link, summary)] from a public channel page t.me/s/<channel> (newest 20 posts)."""
+    page = data.decode("utf-8", "replace") if isinstance(data, bytes) else data
+    items = []
+    for block in page.split('class="tgme_widget_message_wrap')[1:]:
+        post = TG_POST.search(block)
+        if not post:
+            continue
+        t, body = TG_TIME.search(block), TG_TEXT.search(block)
+        d = None
+        if t:
+            try:
+                d = datetime.datetime.fromisoformat(t.group(1).replace("Z", "+00:00"))
+            except ValueError:
+                d = None
+        text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<br\s*/?>", " ", re.sub(r"<(?!br)[^>]+>", "", body.group(1))))).strip() if body else ""
+        if not text:
+            continue                     # photo/video without caption — nothing to match
+        title = text if len(text) <= 120 else text[:117].rsplit(" ", 1)[0] + "…"
+        items.append((d, title, "https://t.me/" + post.group(1), text[:300]))
+    return items
+
+
 def plain(text):
     """Lower case without diacritics: 'Flīžu' → 'flizu' (Baltic and German letters change inside a word)."""
     t = unicodedata.normalize("NFKD", str(text).lower())
@@ -168,7 +198,8 @@ def main():
                 continue
             url = url.replace("{q}", google_query(words)).replace("when:7d", f"when:{max(a.days, 1)}d")
         try:
-            items = parse_feed(fetch(url))
+            raw = fetch(url)
+            items = parse_tg_preview(raw) if ftype == "T" else parse_feed(raw)
             answered += 1
             result = f"{len(items)} items"
         except Exception as e:  # noqa: BLE001 — any network/parse problem is a gap, not a crash
@@ -187,7 +218,7 @@ def main():
                 continue
             text = f"{title} {summ}".lower()
             hits = [w for w in words if matches(w, text)]
-            if ftype == "P" and not hits:
+            if ftype in ("P", "T") and not hits:
                 continue
             if not link or link in seen_urls or title.lower() in seen_titles:
                 continue

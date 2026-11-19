@@ -7,6 +7,7 @@
 | F3 Mail hub | Q1 2027 | Mail adapters: Proton (Bridge), Gmail, Outlook/M365, generic IMAP |
 | F4 Operations core | Q1–Q2 2027 | Stock, orders, purchase thresholds, rentals, supplier invoice intake |
 | F5 Test package | from Dec 2026 (closed) | Private repository, config wizard, install guide (EN), invited testers |
+| F3.5 Telegram | **done 19.11.2026 (0.11.0)** | Lead bot (YAML dialog, sources, funnel), channel watch, autostart — docs/TELEGRAM.md |
 | F6 Site module | Q1–Q2 2027 | Telegram/WhatsApp bot for workers, storage layout, hash log |
 
 ## Blockchain — decision 18.11.2026

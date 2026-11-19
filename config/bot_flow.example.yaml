@@ -1,0 +1,53 @@
+# FLOKTRON · Telegram bot dialog — example. Copy to config/bot_flow.yaml and change the texts.
+# Check it without network:  python3 scripts/bot/telegram_bot.py --flow-check
+#
+# A step has a text and exactly ONE of:
+#   buttons:  [{label, next, set: {field: value}}]   or a link button {label, url: https://...}
+#   input:    text | phone | email | number   + save: <field> + next: <step>   (optional: true → "-" skips)
+#   final:    true   → the lead is saved to data/floktron_leads.xlsx and the manager gets a Telegram message
+# Texts: one string, or one per language {en: ..., lv: ...}. {name} etc. insert the person's answers.
+# Fields name / company / phone / email get their own columns; all others go to "Answers".
+# Source tracking: share t.me/<your_bot>?start=<label> (letters, digits, _ and -) — the label is saved with the lead.
+
+languages: [en]
+start: interest
+next_step: "Contact within 1 hour"
+share_phone_label: "📱 Share my number"
+privacy: "We keep only what you type here, to answer your request. Delete: /forget"
+
+steps:
+  interest:
+    text: "Hello! What do you need?"
+    buttons:
+      - {label: "Get a quote", set: {interest: quote}, next: who}
+      - {label: "Ask a question", set: {interest: question}, next: name}
+      - {label: "Our website", url: "https://example.com"}
+  who:
+    text: "Who are you?"
+    buttons:
+      - {label: "Company", set: {who: company}, next: company}
+      - {label: "Private person", set: {who: private}, next: name}
+  company:
+    text: "Company name?"
+    input: text
+    save: company
+    next: name
+  name:
+    text: "Your name?"
+    input: text
+    save: name
+    next: phone
+  phone:
+    text: "Phone — tap the button or type it:"
+    input: phone
+    save: phone
+    next: email
+  email:
+    text: "E-mail (or - to skip):"
+    input: email
+    optional: true
+    save: email
+    next: done
+  done:
+    text: "Thank you, {name}! We will contact you soon."
+    final: true

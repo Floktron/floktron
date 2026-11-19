@@ -3,6 +3,26 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.11.0 — 19.11.2026 · Telegram block complete
+- `docs/TELEGRAM.md`: what the bot and the channel watch do, setup in 9 steps, security table (token, account, fake BotFather, groups, manager, formulas, ports), what can and cannot be read, macOS + iCloud autostart, funnel source labels.
+- Setup wizard v0.4: section 7a — the assistant writes the dialog with the person, never sees the token, tests every branch, sets the channel watch and autostart.
+- `scripts/install/telegram/`: 1_token · 2_check · 3_bot_start · 4_autostart_on · 5_autostart_off (Mac, double-click).
+- Bot runs the channel watch itself at `telegram.watch_times` (catches up after sleep) — one process, no extra scheduler. Second copy of the bot does not start.
+- macOS: background services cannot read iCloud folders → autostart through Login Items. Learned in real use.
+- AGENTS: a bot token is a password — never in chat; if shown, `/revoke`.
+
+## 0.10.1 — 19.11.2026 · channel watch
+- `scripts/tg_watch.py`: public Telegram channels from your list, checked by your keywords (text file or a column of your keyword workbook); new matches → `tg_signals.xlsx` and a Telegram message to the managers.
+- Bot: a manager forwards any post from a public channel → the channel is added to the watch list; `/channels` shows the list. Private channels are refused with a note.
+- Bot data folder and dialog file can live next to the config (`telegram.data_dir`, relative paths).
+
+## 0.10.0 — 19.11.2026 · Telegram: bot and public channels
+- `scripts/bot/telegram_bot.py`: Telegram bot with a dialog you write in YAML (`config/bot_flow.example.yaml`) — buttons, typed answers (text / phone with a share button / e-mail / number), several languages. The last step saves the lead to `data/floktron_leads.xlsx` (sheets Leads, Events, Stages) and tells the manager in Telegram. Source tracking with `t.me/<bot>?start=<label>` (QR code, website, letter signature…), so you see which channel brought the lead. Events show where people stop.
+- Privacy: private chats only; `/privacy`, `/forget` (personal fields blanked, row kept as "Deleted"); typed text never becomes a formula; flood guard; old buttons ignored.
+- Manager commands `/leads`, `/funnel`; `/id` shows a chat id for setup. Runs with `--loop` (always on) or `--once` (scheduler). `--flow-check` validates the dialog without network.
+- `news_slice.py`: new feed type **T** — public Telegram channels through the public page `t.me/s/<channel>` (no account, phone or API key); posts with your keywords go to Signal_feed like news.
+- `config.example.yaml`: `telegram:` section. TRANSPARENCY: api.telegram.org and t.me added. Tests: 9 new.
+
 ## 0.9.0 — 19.11.2026 · light news check
 - `prompts/31_news_check.md`: before a news item becomes a post — scale (local / national / international), echo in other outlets, primary source, fact-checkers; status ✅ confirmed · ℹ️ one source · ⚠️ check · ⛔ do not use. Information, not a filter: one source is normal for local news; sites that could not be opened are "not checked", never "unconfirmed".
 - Corrections watched for 14 days for news used in posts (`radar.correction_words`); the manager gets an e-mail to update or remove the post.

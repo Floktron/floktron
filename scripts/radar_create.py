@@ -52,7 +52,7 @@ SOURCES = [
 ]
 
 FEEDS = [
-    # id, type (P = portal RSS, N = Google News query, X = do not open), country, language, portal / query, url, filter, priority, access
+    # id, type (P = portal RSS, N = Google News query, T = public Telegram channel t.me/s/<name>, X = do not open), country, language, portal / query, url, filter, priority, access
     ["P01", "P", "LV", "lv", "LSM", "https://www.lsm.lv/rss/", "keywords", "A", "OK"],
     ["P02", "P", "LV", "lv", "TVNET", "https://www.tvnet.lv/rss", "keywords", "A", "OK"],
     ["P03", "P", "LV", "lv", "LV portāls", "https://lvportals.lv/rss", "keywords", "B", "sometimes refuses"],
@@ -62,6 +62,7 @@ FEEDS = [
     ["P07", "P", "LV/EN", "en", "BNN", "https://bnn-news.com/feed", "keywords", "B", "OK"],
     ["X01", "X", "LV", "lv", "Delfi", "—", "—", "—", "do not open (high risk) — comes via Google News"],
     ["X02", "X", "LT", "lt", "15min", "—", "—", "—", "do not open (Cloudflare) — comes via Google News"],
+    ["T01", "T", "LV", "lv", "Public Telegram channel (fill in)", "—", "keywords", "B", "replace — with https://t.me/s/<channel>; only public channels"],
     ["N01", "N", "LV", "lv", "Google News LV · keywords A (LV)", "https://news.google.com/rss/search?q={q}+when:7d&hl=lv&gl=LV&ceid=LV:lv", "query", "A", "OK"],
     ["N02", "N", "LT", "lt", "Google News LT · keywords A (LT)", "https://news.google.com/rss/search?q={q}+when:7d&hl=lt&gl=LT&ceid=LT:lt", "query", "A", "OK"],
     ["N03", "N", "EE", "et", "Google News EE · keywords A (ET)", "https://news.google.com/rss/search?q={q}+when:7d&hl=et&gl=EE&ceid=EE:et", "query", "A", "OK"],
