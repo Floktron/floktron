@@ -10,6 +10,7 @@ can read every file and check every point below.
 | News feeds (RSS) and public Telegram channel pages (`t.me/s/<channel>`) listed in your own radar base | the news slice by your keywords — no Telegram account or login is used | `scripts/news_slice.py` |
 | Public Telegram channel pages `t.me/s/<channel>` from your own channel list (only if you use the channel watch) | posts with your keywords | `scripts/tg_watch.py` |
 | api.telegram.org — only if you switch the Telegram bot on, with the bot token you created | receive messages people send to YOUR bot, answer them, tell the manager about a new lead | `scripts/bot/telegram_bot.py` |
+| The private read-only link of YOUR calendar (.ics), only if you switch the calendar on | today's events for the morning message; FLOKTRON never writes to your calendar | `scripts/calendar_read.py` |
 | Yahoo Finance public chart data (query1.finance.yahoo.com), Google News RSS and the supplier pages you put into your own Watchlist (only if you use the supply chain watch) | end-of-day prices of the tickers you listed; news about your suppliers, routes and rules; a fingerprint of the supplier page text | `scripts/supply_watch.py` |
 | Latvian open data portal data.gov.lv (only if you switch the registry on) | new companies by words in the name | `scripts/registry_lv.py` |
 
@@ -21,7 +22,7 @@ in any other file.
 - reads files outside its own folder and the storage folder you named in `config.yaml`;
 - stores passwords in files — only the environment variable or the system keychain;
 - runs hidden commands. The only programs it starts are its own scripts (`scripts/run.py`) and, on a Mac,
-  the system keychain tool `security` to read the mail password (`scripts/mail/send.py`) and the bot token
+  the system keychain tool `security` to read the mail password and the calendar link (`scripts/mail/send.py`) and the bot token
   (`scripts/bot/telegram_bot.py`).
 
 ## Check it yourself

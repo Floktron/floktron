@@ -73,7 +73,7 @@ def button(label, color, to, subject, body, small=False):
 
 
 def build_message(company, ray_name, owner, lang, lid, rows, reply_to, today, test=False, marker="FLOKTRON#", colors=None,
-                  evening=False):
+                  evening=False, agenda=None, due_file=False):
     L = dict(texts(lang))
     if evening:  # same buttons, evening words
         L["hello"], L["subject"] = L["e_hello"], L["e_subject"]
@@ -98,14 +98,20 @@ def build_message(company, ray_name, owner, lang, lid, rows, reply_to, today, te
                + button(L["no"], C_GREY, reply_to, f"{M}{lid}{tag} NO", ctx_all + L["no_body"]))
     confirm_block = "" if evening else "<p style='margin-top:14px'><b>%s</b><br>%s</p>" % (L["confirm"], confirm)
     evening_title = "" if evening else L["evening"]
+    cal_block = ""
+    if agenda:
+        cal_block = ("<p style='margin:0 0 10px 0'><b>%s</b><br>%s</p>"
+                     % (html.escape(L["cal_title"]), "<br>".join(html.escape(x) for x in agenda)))
+    due_note = f"<p style='font-size:13px'>📅 {html.escape(L['cal_file'])}</p>" if due_file else ""
     body = f"""<div style="font-family:Arial;max-width:640px;color:{C_BLUE}">
 <div style="background:{C_BLUE};color:#fff;padding:12px 16px;border-radius:8px 8px 0 0"><b>{html.escape(company)} · {html.escape(ray_name)}</b><br><small>{today:%d.%m.%Y} · {L['letter']} {lid}</small></div>
 <div style="background:{C_LIGHT};padding:12px 16px"><p>{html.escape(L['hello'].format(o=owner or ''))}</p>
-<table style="border-collapse:collapse;width:100%;background:#fff">{items}</table>
-{confirm_block}
+{cal_block}<table style="border-collapse:collapse;width:100%;background:#fff">{items}</table>
+{confirm_block}{due_note}
 <p><b>{evening_title}</b><br><span style="font-size:13px">{html.escape(L['task_note'])}</span></p>
 <p style="color:{C_GREY};font-size:12px">{html.escape(L['note'])}</p></div></div>"""
-    plain = f"{company} · {ray_name} · {today:%d.%m.%Y}\n" + "\n".join(
+    cal_plain = f"{L['cal_title']} " + "; ".join(agenda) + "\n" if agenda else ""
+    plain = f"{company} · {ray_name} · {today:%d.%m.%Y}\n" + cal_plain + "\n".join(
         f"{i+1}. {r['task']}" for i, r in enumerate(rows))
     subject = (("[TEST] " if test else "") + L["subject"].format(c=company, n=ray_name, d=f"{today:%d.%m}", k=len(rows))
                + f" · {M}{lid}{tag}")
@@ -153,6 +159,18 @@ def main():
         elif as_date(dt, today) <= today and st not in DONE:
             tasks.setdefault(ray, []).append(row)
 
+    cal = cfg.get("calendar") or {}
+    cal_rays = {str(x) for x in (cal.get("rays") or [])}
+    agenda_lines = []
+    if cal.get("enabled") and cal_rays and not a.evening:
+        try:
+            from calendar_read import agenda
+            agenda_lines = agenda(cfg, today)
+            print(f"calendar: {len(agenda_lines)} events today")
+        except Exception as e:  # noqa: BLE001 — a calendar problem never stops the letters
+            print(f"calendar: not read — {str(e)[:120]} (letters go without it)")
+    attach_due = bool(cal.get("enabled") and cal.get("attach_due", True)) and not a.evening
+
     outdir = os.path.join(ROOT, "data", "letters", today.isoformat())
     os.makedirs(outdir, exist_ok=True)
     jobs = []
@@ -165,12 +183,22 @@ def main():
             continue
         lid = f"{today:%Y%m%d}-{rid}"
         data = [{"id": r[0].value, "task": r[3].value, "due": as_date(r[5].value, today)} for r in rows]
+        due_ics = ""
+        if attach_due:
+            import ics
+            due_ics = ics.make_calendar([ics.event(f"{short(d['task'], 80)} · {name}", d["due"],
+                                                   uid=f"{d['id']}-{d['due']:%Y%m%d}@floktron")
+                                         for d in data], name=f"{company} · {name}")
         subject, body, plain = build_message(company, name, owner, lang, lid, data, reply_to, today, bool(a.test),
-                                             mail.get("marker") or "FLOKTRON#", cfg.get("colors"), a.evening)
+                                             mail.get("marker") or "FLOKTRON#", cfg.get("colors"), a.evening,
+                                             agenda_lines if rid in cal_rays else None, bool(due_ics))
         fname = f"{lid}{'-evening' if a.evening else ''}{'-TEST' if a.test else ''}.html"
         with open(os.path.join(outdir, fname), "w", encoding="utf-8") as f:
             f.write(body)
-        jobs.append((rid, a.test or email, subject, body, plain, rows, lid))
+        if due_ics:
+            with open(os.path.join(outdir, fname[:-5] + ".ics"), "w", encoding="utf-8", newline="") as f:
+                f.write(due_ics)
+        jobs.append((rid, a.test or email, subject, body, plain, rows, lid, due_ics))
         print(f"{rid}: built → data/letters/{today}/{fname} ({len(rows)} tasks)")
 
     sent = 0
@@ -183,7 +211,7 @@ def main():
             try:
                 with Sender(mail) as s:
                     for job in pending:
-                        rid, to, subject, body, plain, rows, lid = job
+                        rid, to, subject, body, plain, rows, lid, due_ics = job
                         if not to:
                             print(f"{rid}: no address in Rays — skipped")
                             done.append(job)
@@ -194,6 +222,9 @@ def main():
                         msg["Message-ID"] = make_msgid(domain="floktron")
                         msg.set_content(plain)
                         msg.add_alternative(body, subtype="html")
+                        if due_ics:
+                            msg.add_attachment(due_ics.encode("utf-8"), maintype="text", subtype="calendar",
+                                               filename="floktron-due-dates.ics")
                         s.send(msg)
                         done.append(job)
                         sent += 1

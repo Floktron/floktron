@@ -75,6 +75,15 @@ radar:
   correction_words: ["atsaukums", "labojums", "precizējums", "correction", "retraction", "clarification",
                      "Berichtigung", "Richtigstellung", "опровержение", "поправка", "patikslinimas", "parandus"]
 
+calendar:                  # optional: your calendar in the morning message + due dates as .ics (docs/CALENDAR.md)
+  enabled: false
+  url_env: "FLOKTRON_CAL_URL"      # the private read-only .ics link comes from this environment variable...
+  keychain_service: "FLOKTRON_CAL" # ...or from macOS Keychain (scripts/install/calendar_link.command saves it here)
+  timezone: "Europe/Riga"
+  rays: []                         # whose morning message shows "Today in your calendar", e.g. ["L1"]
+  busy_only: false                 # true → only "10:00–11:00 busy", no titles or places
+  attach_due: true                 # every morning message gets an .ics with the due dates of its tasks
+
 supply_chain:              # optional: watch list is the sheet Watchlist in data/floktron_radar.xlsx (docs/SUPPLY_CHAIN.md)
   yellow_pct: 5            # default alarm for a 5-day move, % (a row's own Yellow % / Red % wins)
   red_pct: 10

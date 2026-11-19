@@ -9,6 +9,7 @@
 | F5 Test package | from Dec 2026 (closed) | Private repository, config wizard, install guide (EN), invited testers |
 | F3.5 Telegram | **done 19.11.2026 (0.11.0)** | Lead bot (YAML dialog, sources, funnel), channel watch, autostart — docs/TELEGRAM.md |
 | F3.6 Supply chain watch | **done 19.11.2026 (0.12.0)** | Watchlist of suppliers, producers, routes, prices, currencies, rules; light daily + full weekly; page fingerprints — docs/SUPPLY_CHAIN.md. Next: 🔴 straight to the manager's Telegram |
+| F3.7 Calendar | **done 19.11.2026 (0.13.0)** | Read any .ics calendar (Proton, Google, Outlook, iCloud) into the morning message; due dates as .ics attachment; meeting files — docs/CALENDAR.md. Two-way sync (writing into calendars) deliberately later |
 | F6 Site module | Q1–Q2 2027 | Telegram/WhatsApp bot for workers, storage layout, hash log |
 
 ## Blockchain — decision 18.11.2026

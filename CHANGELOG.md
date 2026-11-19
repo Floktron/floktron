@@ -3,6 +3,14 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.13.0 — 19.11.2026 · calendar + one setup path
+- `scripts/calendar_read.py`: reads YOUR calendar through its private read-only `.ics` link — Proton, Google, Outlook / Microsoft 365, Apple iCloud, Nextcloud, any other that gives one. The link is kept like a password (environment variable `FLOKTRON_CAL_URL` or the Keychain item `FLOKTRON_CAL`; Mac: `scripts/install/calendar_link.command`). FLOKTRON never writes to the calendar.
+- Morning message: *"Today in your calendar"* above the tasks for the rays in `calendar.rays`; `calendar.busy_only` shows only "busy". Every morning message gets an `.ics` with the due dates of its tasks — one tap adds them. A calendar that does not answer never stops the letters.
+- `scripts/ics.py`: reads `.ics` (UTC and local times with TZID, all-day, folded lines, repeating events DAILY / WEEKLY with BYDAY / MONTHLY / YEARLY with INTERVAL, COUNT, UNTIL, EXDATE, cancelled events) and writes `.ics` files for due dates, meetings and schedules (`python3 scripts/ics.py --title … --start …`).
+- `docs/CALENDAR.md`: where the private link is in each calendar, privacy (busy-only), switching on, troubleshooting, removal.
+- Setup wizard v0.5 — **one path, closest things first**: I you → II your channels (mailbox, calendar) → III your work (departments, first messages) → IV around you (radar, supply chain) → V your voice (content, Telegram) → VI autopilot. Every step starts with "do you need this?", at most one secret per step, one visible result after each part.
+- AGENTS rule 3 and TRANSPARENCY: the calendar link is a password. `read_secret()` in `mail/send.py` serves the mail password and the calendar link. Tests: 7 new.
+
 ## 0.12.0 — 19.11.2026 · supply chain watch
 - `scripts/supply_watch.py`: your watch list of suppliers, big producers, listed companies, routes, reference prices, currencies and rules (sheet `Watchlist`). Light run: end-of-day prices (Yahoo Finance public chart data — also futures and currencies) with change vs 1 and 5 trading days, news of the last day by your query. `--full` (weekly): news of 7 days, weekly rows, a fingerprint of each supplier page — a change is flagged. Status 🟢 / 🟡 / 🔴 / ⚪ per line into `Watch_log`; sources that do not answer go to `Gaps`.
 - News with alarm words (bankruptcy, fire, strike, force majeure, port closed, price increase…) are only **candidates** — `prompts/32_supply_chain.md` tells the AI agent to read each one and confirm or lower it; freight from the public Drewry World Container Index on the weekly run. Only 🔴 reaches the person the same evening; a quiet week is one line.

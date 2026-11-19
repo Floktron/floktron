@@ -29,16 +29,24 @@ class MailError(Exception):
     pass
 
 
-def _password(mail_cfg):
-    env = mail_cfg.get("password_env") or "FLOKTRON_MAIL_PASSWORD"
-    if os.environ.get(env):
+def read_secret(env, service):
+    """A secret (password, private calendar link) from an environment variable or the macOS Keychain — never from files."""
+    if env and os.environ.get(env):
         return os.environ[env]
-    service = mail_cfg.get("keychain_service")
     if service and sys.platform == "darwin":
         r = subprocess.run(["security", "find-generic-password", "-s", service, "-w"],
                            capture_output=True, text=True)
         if r.stdout.strip():
             return r.stdout.strip()
+    return ""
+
+
+def _password(mail_cfg):
+    env = mail_cfg.get("password_env") or "FLOKTRON_MAIL_PASSWORD"
+    service = mail_cfg.get("keychain_service")
+    pwd = read_secret(env, service)
+    if pwd:
+        return pwd
     raise MailError(f"No mail password: set environment variable {env}"
                     + (f" or Keychain item '{service}'" if service else ""))
 

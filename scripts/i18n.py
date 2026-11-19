@@ -18,6 +18,8 @@ TEXTS = {
         subject="[{c} · {n}] {d} — tasks: {k}",
         e_hello="Good evening, {o}! How did today go? One button per task is enough:",
         e_subject="[{c} · {n}] {d} — evening",
+        cal_title="Today in your calendar:",
+        cal_file="The due dates of these tasks are attached as a calendar file (.ics) — one tap adds them to your calendar.",
     ),
     "lv": dict(
         hello="Labrīt, {o}! Šodienai sagatavoti šādi uzdevumi:",
@@ -34,6 +36,8 @@ TEXTS = {
         subject="[{c} · {n}] {d} — uzdevumi: {k}",
         e_hello="Labvakar, {o}! Kā šodien gāja? Pietiek ar vienu pogu katram uzdevumam:",
         e_subject="[{c} · {n}] {d} — vakars",
+        cal_title="Šodien kalendārā:",
+        cal_file="Šo uzdevumu termiņi pievienoti kā kalendāra fails (.ics) — ar vienu pieskārienu tos var ielikt savā kalendārā.",
     ),
     "ru": dict(
         hello="Доброе утро, {o}! На сегодня подготовлены такие задачи:",
@@ -50,6 +54,8 @@ TEXTS = {
         subject="[{c} · {n}] {d} — задач: {k}",
         e_hello="Добрый вечер, {o}! Как прошёл день? Достаточно одной кнопки на задачу:",
         e_subject="[{c} · {n}] {d} — вечер",
+        cal_title="Сегодня в календаре:",
+        cal_file="Сроки этих задач приложены файлом календаря (.ics) — одно касание, и они в вашем календаре.",
     ),
 }
 

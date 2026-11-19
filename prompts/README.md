@@ -5,7 +5,7 @@ Codex, Cursor…); tested with Claude. Every prompt starts with the safety rule 
 
 | File | When it runs | Status |
 |---|---|---|
-| `00_setup_wizard.md` | Once — sets FLOKTRON up for a new company (steps 0–10: mode A/B, separate mailbox, dry → test → real, radar, content, switch-on, hand-over, feedback) | **v0.3** |
+| `00_setup_wizard.md` | Once — sets FLOKTRON up along one path: I you → II mailbox, calendar → III departments, first messages → IV radar, supply chain → V content, Telegram → VI switch-on, hand-over, feedback (steps 0–13) | **v0.5** |
 | `20_monitoring_weekly.md` | Monday — web, tenders, consultations, registries, news, search demand, gaps | **draft (0.5.0)** |
 | `30_news_evening.md` | Every evening — news slice, scoring, post with a reason | **draft (0.5.0)** |
 | `31_news_check.md` | Before a news item becomes a post — scale, echo, primary source, fact-checkers, corrections | **draft (0.9.0)** |

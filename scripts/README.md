@@ -22,6 +22,7 @@ Status: **16 parts ready, 1 planned.** Working versions are cleaned
 | `bot/telegram_bot.py` | Telegram bot: YAML dialog → leads (`data/floktron_leads.xlsx`), manager alert, source labels, funnel by step. Site-worker tasks — next | **ready (0.10.0)** |
 | `radar_create.py` | Creates the radar workbook: keywords, sources, news feeds, signals, consultations, players, demand, gaps | **ready (0.5.0)** |
 | `news_slice.py` | News by keywords from portal RSS and Google News → signals; failed feeds → Gaps | **ready (0.5.0)** |
+| `calendar_read.py` · `ics.py` | Your calendar (.ics link, read only) in the morning message; .ics files for due dates and meetings | **ready (0.13.0)** |
 | `supply_watch.py` | Supply chain watch: prices, currencies, news and page changes of your Watchlist → Watch_log (🟢/🟡/🔴/⚪) | **ready (0.12.0)** |
 
 ## How to run (for now)
