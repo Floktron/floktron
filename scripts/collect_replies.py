@@ -5,6 +5,10 @@ Reply subjects (made by send_morning.py buttons):
     FLOKTRON#<YYYYMMDD-ray> T:<task-id> +   → task Done, answer saved in the task
     FLOKTRON#<YYYYMMDD-ray> T:<task-id> -   → task Not done → escalation to the team lead
     FLOKTRON#<YYYYMMDD-ray> OK | Q | NO     → whole message Accepted | Question | Cannot (Q and NO escalate)
+    FLOKTRON#<YYYYMMDD-ray> R  or plain «Reply» with a written report → each line / table row
+        «<N> + | - | * <comment>» closes task N of that message (N = its number in the letter, or the task ID).
+        A table pasted from a spreadsheet works too (number, sign and comment in different cells).
+        + ✅ * → Done · - − ❌ → Not done. A report that matches no task is flagged «report not recognised».
     ... TEST ...                         → only recorded, tasks are not touched
 Every reply is also saved as a file: data/replies/<date>/<message>_<code>_<HHMM>.eml
 Running twice is safe: replies are recognised by their Message-ID.
@@ -39,7 +43,8 @@ try:
 except ImportError:
     sys.exit("Missing package: run  pip install openpyxl")
 
-CODES = {"OK": "Accepted", "Q": "Question", "NO": "Cannot"}
+CODES = {"OK": "Accepted", "Q": "Question", "NO": "Cannot", "R": "Report"}
+SIGNS = {"+": "+", "✅": "+", "*": "+", "-": "-", "−": "-", "–": "-", "❌": "-"}
 OPEN = ("New", "Sent", "Accepted", "Question", "Cannot")
 
 
@@ -64,6 +69,40 @@ def text_of(msg):
             h = part.get_payload(decode=True).decode(part.get_content_charset() or "utf-8", "replace")
             return re.sub(r"<[^>]+>", " ", h)
     return ""
+
+
+def html_of(msg):
+    for part in msg.walk():
+        if part.get_content_type() == "text/html":
+            return part.get_payload(decode=True).decode(part.get_content_charset() or "utf-8", "replace")
+    return ""
+
+
+def report_lines(msg):
+    """Written report → [(number or task ID, '+'/'-', comment)].
+    Reads a table pasted from a spreadsheet (cells in <tr>) and plain lines «2 + done» / «T005 - busy»."""
+    import html as _h
+    out = []
+    h = re.split(r"(?i)<blockquote|class=\"?gmail_quote", html_of(msg))[0]
+    for tr in re.findall(r"(?is)<tr[^>]*>(.*?)</tr>", h):
+        cells = [re.sub(r"\s+", " ", _h.unescape(re.sub(r"<[^>]+>", " ", c))).strip()
+                 for c in re.findall(r"(?is)<t[dh][^>]*>(.*?)</t[dh]>", tr)]
+        cells = [c for c in cells if c]
+        if not cells or not re.fullmatch(r"[A-Za-z]{0,3}\d{1,4}(-\d+)?", cells[0]):
+            continue
+        for i, c in enumerate(cells[1:], 1):
+            mm = re.fullmatch(r"([+\-−–*✅❌])\s*(.*)", c)
+            if mm:
+                com = " ".join(x for x in [mm.group(2)] + cells[i + 1:i + 2] if x)
+                out.append((cells[0], SIGNS[mm.group(1)], com.strip()))
+                break
+    if out:
+        return out
+    for ln in strip_quote(text_of(msg)).splitlines():
+        mm = re.match(r"\s*([A-Za-z]{0,3}\d{1,4}(?:-\d+)?)[.)]?\s*([+\-−–*✅❌])\s*[—:\-]?\s*(.*)", ln)
+        if mm:
+            out.append((mm.group(1), SIGNS[mm.group(2)], mm.group(3).strip()))
+    return out
 
 
 def strip_quote(t):
@@ -107,9 +146,18 @@ def parse(raw, own_addresses, marker="FLOKTRON#"):
         return None
     sender = hdr(msg["From"])
     mt = re.search(r"\bT:(\S+)\s*([+\-−])", subject)
-    mc = re.search(mk + r"\d{8}-L\d+(?:\s+TEST)?\s+(OK|Q|NO)\b", subject)
+    mc = re.search(mk + r"\d{8}-L\d+(?:\s+TEST)?\s+(OK|Q|NO|R)\b", subject)
+    addr = email.utils.parseaddr(sender)[1].lower()
+    lines = []
     if not (mt or mc):
-        return None  # e.g. our own outgoing morning message
+        if addr in {str(x).lower() for x in own_addresses if x}:
+            return None  # our own outgoing morning message
+        lines = report_lines(msg)          # plain «Reply»: a written report, or else simply «Accepted»
+        code = "R" if lines else "OK"
+    else:
+        code = mc.group(1) if mc else None
+        if code == "R":
+            lines = report_lines(msg)
     try:
         when = email.utils.parsedate_to_datetime(msg["Date"]).astimezone()
     except (TypeError, ValueError):
@@ -122,7 +170,8 @@ def parse(raw, own_addresses, marker="FLOKTRON#"):
         "test": bool(re.search(mk + r"\d{8}-L\d+\s+TEST\b", subject)),
         "task": mt.group(1) if mt else None,
         "sign": ("+" if mt.group(2) == "+" else "-") if mt else None,
-        "code": mc.group(1) if mc else None,
+        "code": code,
+        "lines": lines,
         "from": sender,
         "when": when,
         "answer": answer_only(strip_quote(text_of(msg)))[:500],
@@ -216,6 +265,32 @@ def main():
             print(f"{r['ray']}: task {r['task']} {r['sign']} «{r['answer'][:60]}»")
             if r["sign"] == "-":
                 events.append((r["ray"], f"Task {r['task']} not done", r["answer"], r["lid"]))
+        elif r["code"] == "R":
+            wr.append([got, r["lid"] + tag, r["ray"], r["answer"] or "; ".join(f"{n} {s} {c}" for n, s, c in r["lines"]),
+                       r["from"], r["mid"]])
+            if r["test"]:
+                print(f"TEST: report, {len(r['lines'])} lines — tasks not touched")
+                continue
+            letter = [row for row in wt.iter_rows(min_row=2, max_col=10)
+                      if row[2].value == r["ray"] and row[9].value == r["lid"]]
+            hit = 0
+            for n, sign, com in r["lines"]:
+                row = next((x for x in wt.iter_rows(min_row=2, max_col=10) if str(x[0].value) == n
+                            and x[2].value == r["ray"]), None)
+                if row is None and n.isdigit() and 0 < int(n) <= len(letter):
+                    row = letter[int(n) - 1]
+                if row is None:
+                    continue
+                row[6].value = "Done" if sign == "+" else "Not done"
+                row[7].value = f"{sign} {com}".strip()
+                row[8].value = got
+                hit += 1
+                print(f"{r['ray']}: report line {n} {sign} → {row[0].value}")
+                if sign == "-":
+                    events.append((r["ray"], f"Task {row[0].value} not done", com, r["lid"]))
+            if r["lines"] and not hit:
+                print(f"{r['ray']}: ⚠ report not recognised ({len(r['lines'])} lines, no task matched) — check by hand")
+                wk.append([got, r["lid"] + tag, r["ray"], "Report not recognised", r["answer"], r["from"], r["mid"]])
         else:
             status = CODES[r["code"]]
             wk.append([got, r["lid"] + tag, r["ray"], status + (" (TEST)" if r["test"] else ""),

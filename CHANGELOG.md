@@ -3,6 +3,13 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.13.6 — 20.11.2026 · written reports count
+- `collect_replies.py`: a written report sent with a plain «Reply» (or the 📝 evening button) now closes tasks. Before, only the per-task buttons did — a report typed into the reply was saved but the tasks stayed open, and the same tasks came again the next morning. Learned in real use.
+- The report can be lines (`2 + meeting on Tuesday`, `T005 - nobody answered`) or a table pasted from a spreadsheet (number, sign and comment in different cells). N = the task's number in that message, or its task ID.
+- `+` `✅` `*` → Done · `-` `−` `❌` → Not done (goes to the team lead and the route, as with buttons). A plain reply without lines counts as «Accepted».
+- A report that matches no task is flagged «Report not recognised» in Receipts — nothing is lost silently.
+- Tests: table report, plain lines, own outgoing message ignored.
+
 ## 0.13.5 — 20.11.2026 · for any field
 - FLOKTRON is described for anyone who runs work, in any field — from one person (a social-media manager, a freelancer) to a company with departments (online shop, logistics, production, services, construction). Construction is one example, not the target.
 - The site module is now a field module: anyone out of the office — warehouse, road, site — ticks off work in a bot.
@@ -96,6 +103,7 @@ Every change in this repository is also a git commit with date and description �
 - `docs/UNINSTALL.md`: switch off automatic runs (Mac / Windows / Linux), delete the app password, remove files, tell the people. Linked from README, AGENTS, SUPPORT.
 
 ## 0.8.2 — 18.11.2026 · public working name
+- Public working name: **FLOKTRON**. README, LICENSING, NOTICE updated.
 - Public working name: **FLOKTRON**. README, LICENSING, NOTICE updated.
 
 ## 0.8.1 — 18.11.2026 · licence

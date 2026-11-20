@@ -196,3 +196,40 @@ def test_gaps_report_dry(tmp_path):
     wb.save(radar)
     out = run(os.path.join(S, "gaps_report.py"), "--config", str(tmp_path / "none.yaml"), "--radar", str(radar), "--dry")
     assert "[source blocked] News feed P04" in out
+
+
+# ---------- written report by plain «Reply» (learned in real use: a table pasted from a spreadsheet) ----------
+def test_report_table_and_lines(base, tmp_path):
+    cfg, out = base
+    wb = openpyxl.load_workbook(out)
+    for tid, txt in (("T003", "Call client Beta"), ("T004", "Call client Gamma")):
+        wb["Tasks"].append([tid, TODAY.isoformat(), "L1", txt, "test", TODAY.isoformat(), "Sent", "", "", f"{D}-L1", ""])
+    wb.save(out)
+    rep = tmp_path / "rep"
+    rep.mkdir()
+    m = EmailMessage()
+    m["From"], m["Subject"], m["Date"], m["Message-ID"] = "sales@t.lv", f"Re: FLOKTRON#{D}-L1 · Calls", formatdate(), make_msgid()
+    m.set_content("see table")
+    m.add_alternative("<table><tr><td>1</td><td>Mon</td><td>Client Alfa</td><td>+</td><td>meeting on Tuesday</td></tr>"
+                      "<tr><td>2</td><td>Mon</td><td>Client Beta</td><td>-</td><td>left a voice message</td></tr>"
+                      "<tr><td>3</td><td>Mon</td><td>Client Gamma</td><td>*</td><td>already answered by e-mail</td></tr>"
+                      "</table>", subtype="html")
+    (rep / "t.eml").write_bytes(bytes(m))
+    outp = run(os.path.join(S, "collect_replies.py"), "--config", str(cfg), "--base", str(out),
+               "--from-dir", str(rep), "--no-escalation", "--no-route")
+    t = {r[0]: r for r in openpyxl.load_workbook(out)["Tasks"].iter_rows(min_row=2, values_only=True)}
+    assert t["T002"][6] == "Done" and "Tuesday" in t["T002"][7], outp
+    assert t["T003"][6] == "Not done" and "voice" in t["T003"][7]
+    assert t["T004"][6] == "Done"
+
+
+def test_report_plain_lines_and_own_message():
+    m = EmailMessage()
+    m["From"], m["Subject"], m["Date"] = "a@b.lv", f"Re: FLOKTRON#{D}-L2", formatdate()
+    m.set_content("1 + delivered\n2 − nobody home\n\nOn Mon someone wrote:\n> 3 + quoted")
+    r = parse(bytes(m), ["me@t.lv"], "FLOKTRON#")
+    assert r["code"] == "R" and r["lines"] == [("1", "+", "delivered"), ("2", "-", "nobody home")]
+    m.replace_header("From", "me@t.lv")
+    assert parse(bytes(m), ["me@t.lv"], "FLOKTRON#") is None          # our own morning message
+    m.replace_header("From", "a@b.lv"); m.set_content("Thanks, got it")
+    assert parse(bytes(m), [], "FLOKTRON#")["code"] == "OK"           # plain reply without lines = accepted
