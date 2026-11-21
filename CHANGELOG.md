@@ -3,6 +3,25 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.14.0 — 21.11.2026 · "published" is checked, not guessed
+Learned in real use: a post on a *personal* LinkedIn profile went out on time, but only the company page was checked
+and nobody pasted the link — FLOKTRON called it missed for two days and kept moving it.
+- **Links file** `data/published_links.txt` (created by `content_create.py`): published a post → paste its link,
+  one line, from the phone is fine. Every morning `content_check.py` matches each line to the plan (platform from the
+  link, date from the link or the note, ±1 day), sets Published + link, marks the picture in `Media` and moves the
+  line under `## DONE`. A line it cannot match stays with "← no matching post" and is reported.
+- **Status `Scheduled`** — set in the platform's scheduler. After its date it is **not** moved: "waiting for a link".
+- **Missed twice** → no silent moving from day to day: the post is flagged and the person decides (publish by hand or cancel).
+- The morning letter has a **"Needs you"** block (waiting for a link, missed twice, links not matched) and is sent
+  even on a day without posts when something needs a person.
+- `scripts/post_link.py`: platform and exact publishing time from a link — LinkedIn and X keep the time in the post
+  ID (feeds only say "1d").
+- `prompts/41_published_check.md`: the AI agent checks in three places — links file → plan → live profile
+  (read only), including the person's own profile for posts and reposts made as a person, and X's scheduled list.
+  A page that asks to sign in never makes a post "missed". Run in the evening slice (step 0) and before moving posts.
+- `config.yaml → content`: `notify`, `links_file`, `profiles` (pages the agent may read). Setup wizard step 9 asks for them.
+- Tests: link time/platform, links file, Scheduled, missed twice (54 in total).
+
 ## 0.13.6 — 20.11.2026 · written reports count
 - `collect_replies.py`: a written report sent with a plain «Reply» (or the 📝 evening button) now closes tasks. Before, only the per-task buttons did — a report typed into the reply was saved but the tasks stayed open, and the same tasks came again the next morning. Learned in real use.
 - The report can be lines (`2 + meeting on Tuesday`, `T005 - nobody answered`) or a table pasted from a spreadsheet (number, sign and comment in different cells). N = the task's number in that message, or its task ID.

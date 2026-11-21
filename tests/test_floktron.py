@@ -188,6 +188,47 @@ def test_content_check(tmp_path):
     assert str(wb["Media"].cell(2, 3).value).endswith("https://fb/1")
 
 
+def test_post_link_time_and_platform():
+    from post_link import platform_of, time_of
+    assert platform_of("https://www.linkedin.com/feed/update/urn:li:activity:7417505828044800000/") == "LinkedIn"
+    assert platform_of("https://x.com/someone/status/2011740138501046272") == "X"
+    assert platform_of("21.11 instagram carousel") == "Instagram"
+    assert time_of("https://www.linkedin.com/feed/update/urn:li:activity:7417505828044800000/") == \
+        datetime.datetime(2026, 1, 15, 10, 0)
+    assert time_of("https://x.com/someone/status/2011740138501046272").strftime("%Y-%m-%d %H:%M") == "2026-01-15 10:00"
+    assert time_of("https://www.facebook.com/photo/?fbid=1") is None
+
+
+def test_content_links_file_scheduled_and_twice(tmp_path):
+    c = tmp_path / "content.xlsx"
+    out = run(os.path.join(S, "content_create.py"), "--out", str(c))
+    links = tmp_path / "published_links.txt"
+    assert links.exists() and "## NEW" in links.read_text(encoding="utf-8")
+    y = (TODAY - datetime.timedelta(days=1)).isoformat()
+    wb = openpyxl.load_workbook(c)
+    p = wb["Plan"]
+    p.append([y, "09:00", "LinkedIn", "en", "Inside", "Personal post", "text P", "", "pic-p.png", "", "", "", "Ready", "", ""])
+    p.append([y, "10:00", "X", "en", "Inside", "Podcast", "text X", "", "", "", "", "", "Scheduled", "", ""])
+    p.append([y, "11:00", "Facebook", "lv", "Tip", "Bucket", "text F", "", "", "", "", "", "Ready", "", "moved from 18.11"])
+    p.append([y, "12:00", "TikTok", "lv", "Tip", "Video", "text T", "", "", "", "", "", "Ready", "", ""])
+    wb.save(c)
+    links.write_text(links.read_text(encoding="utf-8").replace(
+        "## NEW\n", f"## NEW\nhttps://www.linkedin.com/feed/update/urn:li:share:1/ personal {TODAY - datetime.timedelta(days=1):%d.%m}\n"
+        "https://vimeo.com/42\n"), encoding="utf-8")
+    out = run(os.path.join(S, "content_check.py"), "--config", str(tmp_path / "none.yaml"), "--content", str(c),
+              "--links", str(links))
+    assert "links from file: 1" in out and "waiting for a link: 1" in out and "missed twice: 1" in out
+    assert "missed → today: 2" in out and "link not matched" in out
+    rows = list(openpyxl.load_workbook(c)["Plan"].iter_rows(min_row=2, values_only=True))
+    assert rows[0][12] == "Published" and "linkedin" in rows[0][13]            # pasted link → Published
+    assert rows[1][0] == y and "waiting for a link" in rows[1][14]             # Scheduled is not moved
+    assert rows[2][0] == TODAY.isoformat() and rows[2][14].startswith("MISSED TWICE (first 18.11")
+    assert rows[3][0] == TODAY.isoformat() and rows[3][14].startswith("moved from")
+    txt = links.read_text(encoding="utf-8")
+    new, done = txt.split("\n## DONE")
+    assert "urn:li:share:1" in done and "urn:li:share:1" not in new and "vimeo.com/42" in new and "no matching post" in new
+
+
 def test_gaps_report_dry(tmp_path):
     radar = tmp_path / "radar.xlsx"
     run(os.path.join(S, "radar_create.py"), "--config", str(tmp_path / "none.yaml"), "--out", str(radar))

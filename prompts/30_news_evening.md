@@ -5,6 +5,8 @@
 Time it after the main evening news of the client's country (for LV ≈ 19:00 most news is out).
 A retry later in the evening does nothing if today's slice is already in `Run_log`.
 
+0. If the person keeps a content plan: run `prompts/41_published_check.md` first (links file → plan → live
+   profile) — so tomorrow morning no published post is called missed.
 1. Run `python3 scripts/news_slice.py --days 1`. It fills `Signal_feed` with new items (status "To score")
    and writes non-answering feeds to `Gaps`.
 2. For each new item: relevance 1–5 for the client (their topic, their market, their region).

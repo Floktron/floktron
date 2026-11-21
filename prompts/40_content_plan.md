@@ -9,7 +9,8 @@ You prepare posts for the next 7 days in `data/floktron_content.xlsx → Plan`. 
 2. Radar: `Signal_feed` rows with relevance ≥ 3 and Internal ≠ Yes (news, consultations, events, demand alerts).
 3. The company's own facts file (if the client has one) — the only source for figures.
 4. `Media` sheet — which picture or video was already published on which platform.
-5. Last week's plan: unpublished posts.
+5. Last week's plan: unpublished posts — after `prompts/41_published_check.md` (links file → plan → live profile);
+   status `Scheduled` is not "unpublished", it waits for a link.
 
 ## Steps
 1. Unpublished posts of last week → keep (content_check.py already moved missed ones to today; re-plan them
@@ -26,6 +27,8 @@ You prepare posts for the next 7 days in `data/floktron_content.xlsx → Plan`. 
 4. Pictures: choose a file that is NOT marked in `Media` for that platform. No suitable file → write what to
    shoot or a prompt for an image, never reuse.
 5. Keep 2 posts in `Reserve` (no date) for days when something falls out.
+6. A post the person sets in the platform's scheduler → status `Scheduled`. Remind: after publishing, paste the
+   link into `data/published_links.txt` (one line, from the phone is fine).
 
 ## Rules
 - Every figure with status (PUBLIC / ESTIMATE / SCENARIO / DEAL) and its source; no forecasts as facts.

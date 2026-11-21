@@ -12,6 +12,7 @@ Codex, Cursor…); tested with Claude. Every prompt starts with the safety rule 
 | `32_supply_chain.md` | Every evening (light) and once a week (full) — suppliers, producers, routes, prices, rules; candidates read and confirmed | **draft (0.12.0)** |
 | `25_registries_and_public_sites.md` | Weekly — new companies by country, tenders (TED + national), consultations | **draft (0.7.0)** |
 | `40_content_plan.md` | Weekly — posts for 7 days from signals and reasons, no duplicate pictures | **draft (0.7.0)** |
+| `41_published_check.md` | Evening and morning — did the post really go out: links file → plan → live profile (personal pages too, exact time from the post ID); never "missed" without checking | **ready (0.14.0)** |
 | `35_reasons_without_news.md` | When there is no news — reasons from the company's own life | **draft (0.5.0)** |
 
 Rules for every prompt: no company data inside (it comes from `config.yaml`), figures carry a status

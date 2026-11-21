@@ -10,7 +10,8 @@ Status: **16 parts ready, 1 planned.** Working versions are cleaned
 | `collect_replies.py` | Reads replies from the mailbox, files them, writes receipts | **ready (0.3.0)** — button replies, OK/Q/NO, escalation, deadline |
 | `route.py` | Turns replies into next tasks; repeat and escalation rules | **ready (0.4.0)** — runs automatically after collect_replies |
 | `content_create.py` | Content workbook: Plan, Reserve, Media (what was published where), Run_log | **ready (0.7.0)** |
-| `content_check.py` | Every morning: posts of the day to copy, missed posts → today, the same picture never twice on one platform | **ready (0.7.0)** |
+| `content_check.py` | Every morning: links pasted into `data/published_links.txt` → Published; posts of the day to copy; missed posts → today (status Scheduled waits for a link; missed twice → asks a person); the same picture never twice on one platform | **ready (0.14.0)** |
+| `post_link.py` | Platform and exact publishing time from a post link (LinkedIn and X keep the time in the post ID) | **ready (0.14.0)** |
 | `registry_lv.py` | New Latvian companies from open data (stream) by words in the name → Companies / Players | **ready (0.7.0)** |
 | `gaps_report.py` | Weekly: what FLOKTRON could not do (by kind, with the fix) + runs that ended with an error → support | **ready (0.7.0)** |
 | `mail/` | Adapters: `proton_bridge.py`, `gmail.py`, `outlook.py`, `imap.py` | **ready (0.3.0)**: `mail/send.py` + `mail/read.py` — Proton Bridge, Gmail, Outlook, any server |

@@ -101,6 +101,10 @@ which rules (duties, restrictions). Fill the sheet `Watchlist` with them (`radar
 ## 9. Content plan (if wanted)
 Platforms, language per platform, rhythm and times, rubrics, tone, consent of people who appear in pictures.
 Where pictures and videos are kept. FLOKTRON never publishes by itself: posts come by e-mail, a person copies them.
+How the person will say "it went out": paste the link into `data/published_links.txt` (show where it is on the phone —
+the data folder in iCloud / Google Drive / OneDrive) or put status Published in the plan. Posts set in a platform's
+scheduler → status `Scheduled`. Ask which public pages FLOKTRON may *read* to confirm posts — company page AND the
+person's own profile if they post or repost as a person — and write them into `content.profiles`.
 
 ## 10. Telegram bot and channel watch (if wanted) — follow `docs/TELEGRAM.md`
 1. Goal: requests, orders, support, reports to the person, or only the channel watch.

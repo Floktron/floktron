@@ -3,6 +3,8 @@
 
 Sheets: Plan (posts with date, time, platform, text, picture, reason) · Reserve · Media (which picture or video
 was already published on which platform — protection against duplicates) · Run_log.
+Next to it: data/published_links.txt — paste the link of a published post there (one line, from the phone is fine);
+content_check.py marks the post Published every morning.
 The AI agent fills the plan (prompts/40_content_plan.md); content_check.py checks it every morning.
 FLOKTRON never publishes by itself — a person copies the text and publishes.
 """
@@ -24,7 +26,22 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLATFORMS = ["Facebook", "Instagram", "LinkedIn", "TikTok", "YouTube", "X", "Telegram", "WhatsApp"]
 PLAN = ["Date", "Time", "Platform", "Language", "Rubric", "Hook", "Text to copy", "First comment", "Picture / video file",
         "Alt text", "Reason / source", "Figures source", "Status", "Link after publishing", "Check"]
-STATUSES = "Draft,Ready,Published,Moved,Duplicate,Cancelled"
+STATUSES = "Draft,Ready,Scheduled,Published,Moved,Duplicate,Cancelled"
+
+
+LINKS_TEMPLATE = """# FLOKTRON · links of published posts
+# Published a post? Paste its link below "## NEW" — one link per line. A note is optional:
+#   https://www.linkedin.com/feed/update/urn:li:activity:...   personal profile
+#   https://x.com/yourname/status/...
+#   21.11 Instagram carousel        (no link? date + platform + a few words)
+# Every morning content_check.py matches each line to the plan (platform from the link, date from the link
+# or the note, ±1 day), sets status Published and moves the line under "## DONE".
+# A line it cannot match stays here with "← no matching post".
+
+## NEW
+
+## DONE
+"""
 
 
 def sheet(wb, name, head, widths, first=False, rows=()):
@@ -69,6 +86,11 @@ def main():
     os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
     build().save(a.out)
     print("OK:", a.out)
+    links = os.path.join(os.path.dirname(os.path.abspath(a.out)), "published_links.txt")
+    if not os.path.exists(links):
+        with open(links, "w", encoding="utf-8") as f:
+            f.write(LINKS_TEMPLATE)
+        print("OK:", links)
 
 
 if __name__ == "__main__":

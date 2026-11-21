@@ -116,7 +116,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.13.5 · last update 19.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.14.0 · last update 21.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -405,6 +405,10 @@ which rules (duties, restrictions). Fill the sheet `Watchlist` with them (`radar
 ## 9. Content plan (if wanted)
 Platforms, language per platform, rhythm and times, rubrics, tone, consent of people who appear in pictures.
 Where pictures and videos are kept. FLOKTRON never publishes by itself: posts come by e-mail, a person copies them.
+How the person will say "it went out": paste the link into `data/published_links.txt` (show where it is on the phone —
+the data folder in iCloud / Google Drive / OneDrive) or put status Published in the plan. Posts set in a platform's
+scheduler → status `Scheduled`. Ask which public pages FLOKTRON may *read* to confirm posts — company page AND the
+person's own profile if they post or repost as a person — and write them into `content.profiles`.
 
 ## 10. Telegram bot and channel watch (if wanted) — follow `docs/TELEGRAM.md`
 1. Goal: requests, orders, support, reports to the person, or only the channel watch.

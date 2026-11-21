@@ -84,6 +84,19 @@ calendar:                  # optional: your calendar in the morning message + du
   busy_only: false                 # true → only "10:00–11:00 busy", no titles or places
   attach_due: true                 # every morning message gets an .ics with the due dates of its tasks
 
+content:                   # optional content plan (data/floktron_content.xlsx, prompts/40_content_plan.md)
+  notify: ""               # who gets the posts of the day; empty → mail.manager_address
+  links_file: "data/published_links.txt"   # paste links of published posts here (one per line)
+  profiles:                # public pages the AI agent may READ to confirm a post went out (prompts/41_published_check.md)
+    # Facebook: "https://www.facebook.com/yourpage"
+    # LinkedIn: "https://www.linkedin.com/company/yourcompany/posts/"
+    # LinkedIn personal: "https://www.linkedin.com/in/yourname/recent-activity/all/"   # posts and reposts made as a person
+    # X: "https://x.com/yourname"
+    # X scheduled: "https://x.com/compose/post/unsent/scheduled"                     # only if you are signed in
+    # TikTok: "https://www.tiktok.com/@yourname"
+    # YouTube: "https://www.youtube.com/@yourname/videos"
+    # Instagram: "https://www.instagram.com/yourname/"
+
 supply_chain:              # optional: watch list is the sheet Watchlist in data/floktron_radar.xlsx (docs/SUPPLY_CHAIN.md)
   yellow_pct: 5            # default alarm for a 5-day move, % (a row's own Yellow % / Red % wins)
   red_pct: 10
