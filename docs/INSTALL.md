@@ -30,6 +30,10 @@ python3 scripts/run.py status      # last lines of data/run.log
 Every run writes `=== <date> <job>` and `--- exit 0` (0 = OK). Two runs never write at the same time;
 if the base is open in Excel, the run waits up to 10 minutes.
 
+## Last step — security checkup
+`python3 scripts/security_check.py --manual` — read-only check of this computer with plain explanations
+([SECURITY_CHECKUP](SECURITY_CHECKUP.md)). Fix ❌ first, then ⚠️; you make every change yourself.
+
 ## Without a computer that is always on
 | Option | For whom | Cost (estimate) |
 |---|---|---|

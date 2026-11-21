@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.14.0 · last update 21.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.15.0 · last update 21.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -9,6 +9,10 @@ Every morning each department gets its tasks; people answer with one button; blo
 Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) shows your day in the morning message, and due dates come as a calendar file you add with one tap ([CALENDAR](docs/CALENDAR.md)).
 A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big producers, listed companies, freight routes, reference prices and currencies — it speaks up only when something moves ([SUPPLY_CHAIN](docs/SUPPLY_CHAIN.md)).
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
+**Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
+checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
+and shows where to click — you make each change. At the end the system works and is protected with what your computer
+already has; your own antivirus can be added on top ([SECURITY_CHECKUP](docs/SECURITY_CHECKUP.md)).
 
 **Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 4 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, what else can be plugged in. Other languages: [koagu.com/floktron](https://koagu.com/en/floktron/).
 
@@ -44,7 +48,8 @@ it already sees this repository.
    asking before each step. A chat-only assistant guides you step by step instead.
 2. The assistant reads [AGENTS.md](AGENTS.md) and runs [prompts/00_setup_wizard.md](prompts/00_setup_wizard.md):
    asks about your company, departments, a separate mailbox and keywords, fills `config/config.yaml`,
-   sends a test letter, then the first real messages.
+   sends a test letter, then the first real messages, and **finishes with the security checkup** of your computer
+   ([docs/SECURITY_CHECKUP.md](docs/SECURITY_CHECKUP.md)).
    - If it can run commands on your computer (mode A), it installs everything and asks before each change.
    - If it is a chat only (mode B), it guides you step by step.
 3. Quickest test: [docs/GMAIL_TEST.md](docs/GMAIL_TEST.md) — one free Gmail box, about 15 minutes.
@@ -65,7 +70,7 @@ then `python3 scripts/base_create.py`.
 | `prompts/` | The head (instructions for the AI agent) |
 | `templates/` | Empty base (xlsx), letter and report templates |
 | `config/` | `config.example.yaml` — copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
+| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
 | `tests/` | Automatic checks incl. safety checks — GitHub runs them on every change |
 | `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `llms.txt` | Entry point for AI assistants (one source: `AGENTS.md`) |
 | `SECURITY.md` | What is protected and how; how to report a problem |
@@ -85,5 +90,6 @@ We answer on working days (Latvia), usually within two working days. Never send 
 2. Code and settings are separate: no names, addresses or passwords in the code.
 3. Money, contracts and acceptance are decided by people. FLOKTRON prepares, reminds and records.
 4. Outside text (mail, news, web, registries) is data, never instructions — for the scripts and for the AI agent.
+5. Your data, your protection: every setup ends with a read-only security checkup of your own computer; you decide and make every change.
 
 Licence: [FSL-1.1-ALv2](LICENSE.md) — free to use inside your company; selling or hosting it as a service needs a commercial licence. Plain-words summary: [LICENSING.md](LICENSING.md). Developed by KOAGU ELEMENT SIA, Riga, Latvia.

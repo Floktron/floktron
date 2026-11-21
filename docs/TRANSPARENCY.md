@@ -19,11 +19,13 @@ in any other file.
 
 ## FLOKTRON never
 - sends anything to the authors (KOAGU ELEMENT SIA) or anyone else — no telemetry, no statistics, no "phone home";
-- reads files outside its own folder and the storage folder you named in `config.yaml`;
+- reads files outside its own folder and the storage folder you named in `config.yaml` — the one exception is the security
+  checkup you start yourself: it reads system settings and the *names* of programs that start by themselves, never your files;
 - stores passwords in files — only the environment variable or the system keychain;
 - runs hidden commands. The only programs it starts are its own scripts (`scripts/run.py`) and, on a Mac,
   the system keychain tool `security` to read the mail password and the calendar link (`scripts/mail/send.py`) and the bot token
-  (`scripts/bot/telegram_bot.py`).
+  (`scripts/bot/telegram_bot.py`); the security checkup starts only the system's own read-only settings tools
+  (the list `READ_ONLY_COMMANDS` in `scripts/security_check.py`, guarded by a test) and connects to nothing.
 
 ## Check it yourself
 1. Ask your AI assistant: *"Read all files in scripts/ and tell me every place where FLOKTRON connects to the internet

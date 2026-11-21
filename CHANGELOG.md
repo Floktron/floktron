@@ -3,6 +3,21 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.15.0 — 21.11.2026 · setup ends with a security checkup
+Your data stays with you — so you protect it, not luck. Every setup now ends with a check of your own computer.
+- `scripts/security_check.py` — read-only checkup for macOS (Apple silicon and Intel), Windows 10/11 and Linux: FLOKTRON
+  folder (no passwords in files, permissions, cloud version history), user account, disk encryption, firewall, updates,
+  screen lock, backups, programs that start by themselves, ports open to the network. Marks ✅ ⚠️ ❌ ❔ ℹ️, each with
+  "how to fix" — the person makes every change. Changes nothing, needs no admin password, sends nothing; the report
+  stays in `data/`. `--manual` adds the list no script can see: 2-step login, cloud encryption, 3-2-1 backups, router,
+  app permissions, sandbox for unknown files, free extra tools.
+- `docs/SECURITY_CHECKUP.md` — where your data lives and what protects it, mode A / mode B (paste the text or a screenshot).
+- Setup wizard v0.6: new step 12 *Security checkup* — never skipped; hand-over includes its result. Announced at step 0.
+- AGENTS.md: the person hears about the checkup before any step; safety rule 11 — the checkup only reads, the agent
+  never changes security settings or asks for an admin password.
+- README, SECURITY, TRANSPARENCY, INSTALL updated. Tests: read-only commands only, port parsing for all three systems,
+  password detection, report saved locally.
+
 ## 0.14.0 — 21.11.2026 · "published" is checked, not guessed
 Learned in real use: a post on a *personal* LinkedIn profile went out on time, but only the company page was checked
 and nobody pasted the link — FLOKTRON called it missed for two days and kept moving it.

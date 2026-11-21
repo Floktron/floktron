@@ -18,6 +18,7 @@ against, how, and what it cannot protect against.
 | Outside packages | Only `openpyxl` and `PyYAML` from pypi.org, versions pinned | `requirements.txt` |
 | A mistake goes out to people | Order of every new setup: `--dry` → `--test` own address → real; posts are never published automatically, a person copies them | `AGENTS.md` rule 8, `content_check.py` |
 | The agent reaches too far | Works only in the FLOKTRON folder and its storage folder; never whole-disk, browser or other accounts | `AGENTS.md` rule 2 |
+| Your own computer is weak (disk not encrypted, firewall off, sharing open, no backup) | A security checkup ends every setup: read-only, plain explanations, the person makes each change; repeat monthly | `scripts/security_check.py`, `docs/SECURITY_CHECKUP.md`, test |
 
 ## False or corrected news
 News can be wrong or deliberately false, even on official sites. FLOKTRON never publishes by itself, and every news item
@@ -31,7 +32,8 @@ It sends nothing to the authors. Full list and how to check: [docs/TRANSPARENCY.
 
 ## What FLOKTRON cannot protect against
 
-- A computer or server that is already infected, or a mailbox whose password is stolen.
+- A computer or server that is already infected, or a mailbox whose password is stolen. The checkup at the end of setup
+  lowers this risk (updates, encryption, firewall, 2-step login) but cannot remove it.
 - A person with access to the computer editing the bases or `config.yaml` by hand.
 - An AI agent that does not follow `AGENTS.md`. Use a well-known assistant and read what it asks before you allow it.
 
@@ -39,6 +41,7 @@ It sends nothing to the authors. Full list and how to check: [docs/TRANSPARENCY.
 
 - Make a separate mailbox for FLOKTRON with an app password; give it no access to other systems.
 - Run FLOKTRON under an ordinary user account, not an administrator.
+- Run the security checkup once a month and after big updates: `python3 scripts/security_check.py --manual`.
 - Keep the storage folder in a cloud with version history (iCloud / Google Drive / OneDrive) — a damaged base can be restored.
 
 ## Report a problem

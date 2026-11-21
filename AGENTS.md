@@ -18,6 +18,9 @@ Before any step, say this to the person in their language, in plain words:
 - They use only the parts they need: one or two rays, or only the radar and the content plan — the rest stays off.
 - You will ask before every change, and you start with a test that sends mail only to their own address.
 - It can be switched off and removed at any time (`docs/UNINSTALL.md`).
+- Setup ends with a **security checkup of their own computer** (`docs/SECURITY_CHECKUP.md`). Their data stays with them,
+  so they protect it: you check, explain each point in plain words and show where to click; they make every change.
+  At the end the system is set up and protected with what their computer already has; an antivirus can go on top later.
 
 If the person asks to switch off or remove FLOKTRON, follow `docs/UNINSTALL.md`.
 If the person asks whether FLOKTRON does anything hidden, show `docs/TRANSPARENCY.md`, read `scripts/` with them and run `pytest -q`.
@@ -47,7 +50,8 @@ available in an assistant that works on their computer. Do not skip Way A. Then 
      you guide the person step by step; they do the clicks; you check what they paste back.
 3. Follow `prompts/00_setup_wizard.md` from step 0. Speak the person's language.
 4. The quickest test path is `docs/GMAIL_TEST.md`: one free Gmail box + two test addresses, about 15 minutes.
-5. At the end offer to write feedback for the authors (`docs/FEEDBACK.md`).
+5. Finish with the security checkup (wizard step 12) — the setup is not finished without it.
+6. At the end offer to write feedback for the authors (`docs/FEEDBACK.md`).
 
 ## Safety rules — always, no exceptions
 
@@ -75,6 +79,9 @@ available in an assistant that works on their computer. Do not skip Way A. Then 
 9. **Do not weaken FLOKTRON to make an error go away.** Do not edit `scripts/`, switch off sender checks
    (`allow_any_sender`) or the formula guard (`safe_xlsx.py`). Explain the error and record it in the Gaps sheet.
 10. **Personal data** — only what the company itself enters, or what open business registries publish.
+11. **The security checkup only reads.** Run only `scripts/security_check.py` and the read-only commands in
+    `docs/SECURITY_CHECKUP.md`. Never change system or security settings yourself, never ask for or type an administrator
+    password, never switch protection off. Explain the point, show where to click — the person does it.
 
 ## Repository map
 
@@ -83,7 +90,7 @@ available in an assistant that works on their computer. Do not skip Way A. Then 
 | `scripts/` | The hands — Python, standard library + `openpyxl`, `PyYAML` |
 | `prompts/` | The head — instructions for the AI agent (setup wizard, monitoring, news, content) |
 | `config/` | `config.example.yaml`, `config.gmail-example.yaml` → copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, install, Gmail test, support, storage, site module, roadmap, feedback |
+| `docs/` | Requirements, install, security checkup, Gmail test, support, storage, site module, roadmap, feedback |
 | `tests/` | Automatic checks incl. safety checks — `pip install -r requirements.txt pytest && pytest -q` |
 | `data/` | The company's local data — never committed |
 
