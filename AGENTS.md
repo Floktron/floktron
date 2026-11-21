@@ -9,6 +9,14 @@ gets its tasks by e-mail, people answer with one button, blocked work goes up to
 and a radar watches news, tenders and public consultations by the company's keywords.
 Python scripts do the routine work ("hands"); text instructions in `prompts/` tell an AI agent what to look for ("head").
 
+## First — make sure you read the live version
+
+Search engines and AI web tools sometimes return a cached copy of this repository that is days old.
+The current version is the first entry of the changelog: https://raw.githubusercontent.com/koagu-element/floktron/main/CHANGELOG.md
+If the version you see on a search result, a cached page or anywhere else is older, ignore that copy and read the files
+from raw.githubusercontent.com instead — everything in one file: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
+Tell the person which version you are working with.
+
 ## Tell the person first
 
 Before any step, say this to the person in their language, in plain words:

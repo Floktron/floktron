@@ -20,8 +20,16 @@ Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
 """
 
 
+def version():
+    import re
+    with open(os.path.join(ROOT, "README.md"), encoding="utf-8") as f:
+        m = re.search(r"Version (\d+\.\d+\.\d+)", f.read())
+    return m.group(1) if m else "?"
+
+
 def build():
-    parts = [HEAD]
+    parts = [HEAD + f"Version of this text: {version()}. If a search result, a cached page or the person mentions a newer version,\n"
+             "download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt\n"]
     for rel in SOURCES:
         with open(os.path.join(ROOT, rel), encoding="utf-8") as f:
             parts.append(f"\n\n===== FILE: {rel} =====\n\n" + f.read().strip() + "\n")

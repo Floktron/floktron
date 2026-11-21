@@ -1,7 +1,8 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.15.1 · last update 21.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.15.2 · last update 21.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.

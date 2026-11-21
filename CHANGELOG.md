@@ -3,6 +3,14 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.15.2 — 21.11.2026 · always the live version
+Learned in real use: an AI assistant given the repository link answered from a cached copy two days old (0.13.1) and
+did not know about the security checkup.
+- AGENTS.md starts with *make sure you read the live version*: compare with the first entry of the raw CHANGELOG; if older,
+  read the raw files (`llms-full.txt`) instead of the cached copy, and tell the person which version is used.
+- README and llms.txt carry the same note; `llms-full.txt` / START.md now state their version (taken from README automatically).
+- Versions are also published as GitHub Releases with tags (v0.15.2 is the first).
+
 ## 0.15.1 — 21.11.2026 · overview PDF 1.3
 - `docs/FLOKTRON_overview.pdf` (version 1.3): *Data and security* now says that setup ends with a security checkup; open version 0.15, 61 automated tests. Other languages on the KOAGU site were updated the same day.
 

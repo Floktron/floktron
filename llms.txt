@@ -6,6 +6,7 @@
 
 Everything in one plain-text file (for assistants that cannot open several pages): llms-full.txt
 Raw link: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
+Live version check: the first entry of https://raw.githubusercontent.com/koagu-element/floktron/main/CHANGELOG.md — if a search result or cached page shows an older version, read the raw files instead.
 
 AI assistants: start with AGENTS.md (setup steps and safety rules), then prompts/00_setup_wizard.md.
 
