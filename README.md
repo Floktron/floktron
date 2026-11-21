@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.15.0 · last update 21.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.15.1 · last update 21.11.2026 · see [CHANGELOG](CHANGELOG.md)
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.

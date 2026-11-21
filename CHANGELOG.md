@@ -3,6 +3,9 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.15.1 — 21.11.2026 · overview PDF 1.3
+- `docs/FLOKTRON_overview.pdf` (version 1.3): *Data and security* now says that setup ends with a security checkup; open version 0.15, 61 automated tests. Other languages on the KOAGU site were updated the same day.
+
 ## 0.15.0 — 21.11.2026 · setup ends with a security checkup
 Your data stays with you — so you protect it, not luck. Every setup now ends with a check of your own computer.
 - `scripts/security_check.py` — read-only checkup for macOS (Apple silicon and Intel), Windows 10/11 and Linux: FLOKTRON
