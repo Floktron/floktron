@@ -1,0 +1,7 @@
+{"type":"offer","lang":"en","test":true,"date":"2026-11-23","valid_until":"2026-12-31",
+ "buyer": {"name": "SIA “Paraugs Būve” (FICTIONAL)", "reg_no": "40000000002", "vat_no": "LV40000000002", "address": "Testa iela 2, Rīga, LV-1001", "email": "buyer@example.com"},
+ "lines":[{"desc":"Website care, monthly (updates, backups, uptime check)","qty":12,"unit":"month","price":45.00},
+          {"desc":"Set-up and hand-over","qty":1,"unit":"once","price":0}],
+ "notes":"Start within 5 working days after acceptance.",
+ "signed_by":"Anna Paraudziņa, board member (FICTIONAL)",
+ "vat_rate":21}

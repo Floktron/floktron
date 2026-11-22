@@ -1,0 +1,5 @@
+{"type":"invoice","lang":"lv+en","test":true,"date":"2026-11-23","due_days":14,
+ "buyer":{"name":"Muster GmbH (FICTIONAL)","reg_no":"HRB 000000","vat_no":"DE000000000","address":"Musterstraße 1, 10115 Berlin, Germany","email":"buyer@example.com"},
+ "lines":[{"desc":"Office chair, black","qty":10,"unit":"pcs","price":89.90}],
+ "notes":"Preču piegāde Kopienas iekšienē, PVN 0 % / Intra-Community supply of goods, VAT 0 % (Directive 2006/112/EC, Art. 138).",
+ "vat_rate":0}

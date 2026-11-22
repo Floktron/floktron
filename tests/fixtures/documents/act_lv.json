@@ -1,0 +1,5 @@
+{"type":"act","lang":"lv","test":true,"date":"2026-11-25","supply_date":"2026-11-25","place":"Rīga",
+ "buyer": {"name": "SIA “Paraugs Būve” (FICTIONAL)", "reg_no": "40000000002", "vat_no": "LV40000000002", "address": "Testa iela 2, Rīga, LV-1001", "email": "buyer@example.com"}, "basis":"Rēķins Nr. DEMO-R-2026-001",
+ "lines":[{"desc":"Biroja krēsls, melns","qty":4,"unit":"gab.","price":89.90},
+          {"desc":"Piegāde Rīgā","qty":1,"unit":"reize","price":15.00}],
+ "vat_rate":21}

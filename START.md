@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.19.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.20.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 
@@ -133,7 +133,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.19.1 · last update 22.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.20.0 · last update 22.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
@@ -146,6 +146,7 @@ Your team can **report by voice** — the bot turns a voice message into text on
 **Your own website before marketing**: the assistant leads you through a safe site on Cloudflare (free certificates, protection, one-click undo) — or on the hosting you already like, such as Namecheap or GoDaddy ([WEBSITE](docs/WEBSITE.md)).
 **Supplier invoices → accounting**: your assistant reads invoices in any language (PDF, scan, photo), FLOKTRON checks each one against your bank statement and gives the finance ray short tasks — what to pay, what to check, which final invoice to ask for; duplicates and delivery notes are caught ([INVOICES](docs/INVOICES.md)).
 **Company snapshot**: the state of your company on one date — a branded PDF to read and a JSON file for machines, every figure with its status and source; you choose the profile (partner after an NDA, without bank details, tax office, public) and what is secret never leaves ([SNAPSHOT](docs/SNAPSHOT.md)).
+**Your own invoices, acts and offers in your brand**: say *"invoice to …, 4 chairs, due in 10 days"* — the assistant fills it in, FLOKTRON draws a branded PDF (invoice, advance invoice, acceptance act, offer; LV, EN or both), numbers it and records it in the base; you send it yourself ([DOCUMENTS](docs/DOCUMENTS.md)).
 **One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
 checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
@@ -208,7 +209,7 @@ then `python3 scripts/base_create.py`.
 | `prompts/` | The head (instructions for the AI agent) |
 | `templates/` | Empty base (xlsx), letter and report templates |
 | `config/` | `config.example.yaml` — copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
+| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
 | `tests/` | Automatic checks incl. safety checks — GitHub runs them on every change |
 | `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `llms.txt` | Entry point for AI assistants (one source: `AGENTS.md`) |
 | `SECURITY.md` | What is protected and how; how to report a problem |
@@ -358,7 +359,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot | What happens in your market, your supply chain and your payments — and where does the company stand? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -458,6 +459,14 @@ Ask: who asks you for "where is the company now?" — partners, investors, the b
    (`snapshot.locked_words`).
 3. Make the first own snapshot (`public` is a safe start), show it, and say: nothing is sent — the person decides where
    each file goes.
+
+## 8d. Documents — your invoices, acts, offers (if wanted) — follow `docs/DOCUMENTS.md`
+Ask: how are invoices made today, from which number to continue, which languages buyers need, is the company VAT registered.
+1. Fill the `documents` section of `config.yaml` with the person (register name, reg. and VAT number, address, bank,
+   IBAN, prefix, logo file). Bank details are typed or pasted by the person — check them twice together.
+2. **First a test on fictional data**: the one-line example from `docs/DOCUMENTS.md` — open the PDF together.
+3. Then one real document as a dry run (`prompts/52_documents.md`); `--apply` only after "yes".
+4. Remind: FLOKTRON never sends a document to a customer; numbers are never reused.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.
@@ -1151,6 +1160,91 @@ return is always checked and filed by you or your accountant.
 - Read only: the facts file and the base are never changed.
 - Make one snapshot per recipient and date; the JSON keeps only the number of rows left out, not what they were.
 - PDF needs `pip install reportlab`; without it the JSON is written and the script says so.
+
+
+===== FILE: docs/DOCUMENTS.md =====
+
+# Documents — invoices, advance invoices, acts and offers in your own brand
+
+Most small companies write invoices in an online form or a word processor: a different look every time, numbers
+kept by hand, nothing in the books until someone types it in. FLOKTRON makes the four documents a small company
+sends most often, on one branded sheet, with the number and the register row done for you:
+
+| Type | LV name | What is on it |
+|---|---|---|
+| `invoice` | Rēķins | all fields of an EU VAT invoice: seller and buyer with reg. and VAT numbers, number, date, delivery date, lines, net / VAT / total, amount in words, bank details, due date, "valid without signature" |
+| `advance` | Avansa rēķins | the same, for a prepayment; says that a final invoice follows delivery |
+| `act` | Pieņemšanas-nodošanas akts | goods or services handed over and accepted, two signature fields |
+| `offer` | Komercpiedāvājums | lines and prices, valid-until date, notes, who offers |
+
+Languages: `lv`, `en` or `lv+en` (both on one sheet, for buyers abroad). Colours come from the `colors` section of
+`config.yaml` (the same as your messages), plus your logo.
+
+**Tested before release on fictional data** (Demo SIA and its buyers do not exist; every page carries
+*TEST · FICTIONAL*). Try it in one line — writes one PDF, touches nothing else:
+
+```
+python3 scripts/documents.py --seller tests/fixtures/documents/seller_demo.json \
+  --doc tests/fixtures/documents/invoice_lv.json --out data/documents/test
+```
+
+## How it works
+
+| Step | Who | What |
+|---|---|---|
+| 1. Ask | you, in words: *"invoice to Paraugs Būve, 4 chairs, due in 10 days"* | |
+| 2. Fill | your AI assistant (`prompts/52_documents.md`) | writes `data/documents/in/<date>_<type>_<buyer>.json`: buyer from your own records or the public business register, lines and prices **only from your price list or from you**. Never invents a price, a VAT number or a bank account |
+| 3. Make | `scripts/documents.py` (no AI, no network) | draws the PDF, takes the next number, adds the amount in words. Dry run first: nothing is recorded |
+| 4. Record | you say *"yes"* → the same line with `--apply` | the number is fixed and one row goes to the sheet **Issued** in your base |
+| 5. Send | **you** | FLOKTRON never sends a document to a customer by itself |
+
+Payments: the invoices you issued can be checked against the bank statement the same way as supplier invoices
+([INVOICES](INVOICES.md)).
+
+## Setting up — the `documents` section of `config.yaml`
+
+```yaml
+documents:                 # optional: branded invoices, acts, offers (docs/DOCUMENTS.md)
+  legal_name: ""           # as in the register, e.g. SIA "Example"; empty = company.name
+  reg_no: ""
+  vat_no: ""               # empty if you are not VAT registered (then use "vat_rate": 0 and say why in "notes")
+  address: ""
+  email: ""                # the public company address
+  phone: ""
+  web: ""
+  bank: ""
+  swift: ""
+  iban: ""
+  prefix: "INV"            # numbers look like INV-R-2026-001 (R invoice, AR advance, A act, P offer)
+  logo: ""                 # PNG with a transparent background, next to config.yaml or a full path
+```
+
+Needs `reportlab` (`pip install reportlab`) and a font with Latvian letters — Liberation Sans, Arial or DejaVu Sans
+(on macOS Arial is already there).
+
+## The document file
+
+```json
+{"type": "invoice", "lang": "lv", "date": "2026-11-23", "due_days": 10, "supply_date": "2026-11-23",
+ "buyer": {"name": "SIA \"Buyer\"", "reg_no": "…", "vat_no": "…", "address": "…", "email": "…"},
+ "basis": "Contract No. 1",
+ "lines": [{"desc": "Product", "note": "small grey line under it", "qty": 4, "unit": "pcs", "price": 89.90}],
+ "vat_rate": 21, "notes": "optional"}
+```
+
+`act` may add `"place"`; `offer` adds `"valid_until"`, `"intro"`, `"signed_by"`; `"show_prices": false` hides prices
+on an act; `"number"` fixes a number by hand (it is refused if it is already in the register); `"test": true`
+prints the *TEST · FICTIONAL* mark.
+
+## Rules that keep it safe
+
+- **Numbers are never reused.** A wrong document gets a new number and a note in the base — the old row stays.
+- **Dry run first**; `--apply` only after the person has seen the PDF.
+- **No invented figures.** Prices, VAT numbers and bank accounts come from the person, the price list or a public
+  register — never from memory.
+- **EU buyers with a VAT number:** `"vat_rate": 0` and a note (e.g. *Intra-Community supply of goods, Directive
+  2006/112/EC Art. 138*) — check the buyer's number in VIES first; when in doubt, ask your accountant.
+- Your data stays on your computer: documents are in `data/documents/`, never in git.
 
 
 ===== FILE: docs/VOICE.md =====

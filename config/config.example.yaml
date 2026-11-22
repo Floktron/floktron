@@ -111,6 +111,20 @@ snapshot:                  # optional: company snapshot → PDF + JSON (docs/SNA
   out: data/snapshot/out
   locked_words: []         # words that must never leave the company, e.g. ["our secret ingredient"]
 
+documents:                 # optional: branded invoices, advance invoices, acts, offers (docs/DOCUMENTS.md, prompts/52_documents.md)
+  legal_name: ""           # as in the register; empty = company.name
+  reg_no: ""
+  vat_no: ""
+  address: ""
+  email: ""                # public company address
+  phone: ""
+  web: ""
+  bank: ""
+  swift: ""
+  iban: ""
+  prefix: "INV"            # numbers: INV-R-2026-001 (R invoice, AR advance, A act, P offer)
+  logo: ""                 # PNG, transparent background; next to config.yaml or a full path
+
 telegram:                  # optional bot: dialog → leads (scripts/bot/telegram_bot.py); off until a token exists
   enabled: false
   token_env: "FLOKTRON_TG_TOKEN"   # bot token from @BotFather comes from this environment variable...

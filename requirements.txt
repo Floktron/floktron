@@ -2,4 +2,4 @@
 openpyxl>=3.1,<3.2
 PyYAML>=6.0,<7
 # optional: pypdf (PDF bank statements in docs/INVOICES.md; CSV statements need nothing extra)
-# optional: reportlab (company snapshot PDF in docs/SNAPSHOT.md; without it only the JSON is written)
+# optional: reportlab (company snapshot PDF in docs/SNAPSHOT.md; branded documents in docs/DOCUMENTS.md)

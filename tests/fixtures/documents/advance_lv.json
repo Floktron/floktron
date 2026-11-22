@@ -1,0 +1,4 @@
+{"type":"advance","lang":"lv","test":true,"date":"2026-11-23","due_days":5,
+ "buyer": {"name": "SIA “Paraugs Būve” (FICTIONAL)", "reg_no": "40000000002", "vat_no": "LV40000000002", "address": "Testa iela 2, Rīga, LV-1001", "email": "buyer@example.com"}, "basis":"Līgums Nr. DEMO-1",
+ "lines":[{"desc":"Avanss 50 %: biroja mēbeļu komplekts","qty":1,"unit":"kompl.","price":1250.00}],
+ "vat_rate":21}

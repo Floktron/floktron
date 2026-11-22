@@ -3,6 +3,21 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.20.0 — 22.11.2026 · your own invoices, acts and offers in your brand
+Learned in real use: a small company writes its invoices in an online form — a different look each time, numbers kept
+by hand, nothing in the books until someone types it in.
+- **[DOCUMENTS](docs/DOCUMENTS.md)** — `scripts/documents.py` (no AI, no network) draws four documents on one branded
+  A4 sheet: invoice, advance invoice, delivery and acceptance act (two signature fields), commercial offer. All fields of
+  an EU VAT invoice, amount in words, bank details, "valid without signature"; long documents flow over pages.
+- Languages `lv`, `en` or `lv+en`; colours from the `colors` section of `config.yaml`, logo and bank details from the
+  new optional section `documents`.
+- Numbers `<prefix>-R|AR|A|P-<year>-NNN` from the new sheet **Issued**; dry run first, `--apply` records; a number is
+  never reused.
+- `prompts/52_documents.md`: the assistant fills the document file from your words — buyer from your records or the
+  public register, prices only from you or your price list; never sends anything to a customer.
+- Setup wizard: new step **8d Documents**. `tests/fixtures/documents/`: fictional Demo SIA, five documents;
+  11 new automated tests (98 in total). Optional package: `reportlab` (already used by the snapshot).
+
 ## 0.19.1 — 22.11.2026 · overview PDF 1.7
 - `docs/FLOKTRON_overview.pdf` (version 1.7, 8 pages): new page *New in version 0.19 — company snapshot*
   (profiles, three steps, what stays safe); open version 0.19.0, 87 automated tests in the figures.

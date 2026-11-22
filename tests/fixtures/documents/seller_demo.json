@@ -1,0 +1,15 @@
+{
+  "_comment": "TEST · FICTIONAL - Demo SIA does not exist. Same fields as the 'documents' section of config.yaml.",
+  "name": "Demo SIA (FICTIONAL)",
+  "reg_no": "40000000001",
+  "vat_no": "LV40000000001",
+  "address": "Parauga iela 1, Rīga, LV-1000",
+  "email": "info@example.com",
+  "phone": "+000 0000 0000",
+  "web": "www.example.com",
+  "bank": "Demo Bank",
+  "swift": "DEMOLV22",
+  "iban": "LV00DEMO0000000000001",
+  "prefix": "DEMO",
+  "logo": "demo_logo.png"
+}

@@ -18,7 +18,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot | What happens in your market, your supply chain and your payments — and where does the company stand? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -118,6 +118,14 @@ Ask: who asks you for "where is the company now?" — partners, investors, the b
    (`snapshot.locked_words`).
 3. Make the first own snapshot (`public` is a safe start), show it, and say: nothing is sent — the person decides where
    each file goes.
+
+## 8d. Documents — your invoices, acts, offers (if wanted) — follow `docs/DOCUMENTS.md`
+Ask: how are invoices made today, from which number to continue, which languages buyers need, is the company VAT registered.
+1. Fill the `documents` section of `config.yaml` with the person (register name, reg. and VAT number, address, bank,
+   IBAN, prefix, logo file). Bank details are typed or pasted by the person — check them twice together.
+2. **First a test on fictional data**: the one-line example from `docs/DOCUMENTS.md` — open the PDF together.
+3. Then one real document as a dry run (`prompts/52_documents.md`); `--apply` only after "yes".
+4. Remind: FLOKTRON never sends a document to a customer; numbers are never reused.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.
