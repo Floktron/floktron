@@ -15,6 +15,8 @@ Learned in real use: people on site do not type reports, and a manager in the ca
   answers for 14 days, voice reports, posts, radar, supply chain, audio player. Offline, escaped, strict CSP; rebuilt after every run (`run.py dashboard`). EN / RU / LV.
 - Docs: [VOICE](docs/VOICE.md), [DASHBOARD](docs/DASHBOARD.md); TRANSPARENCY lists the optional ElevenLabs connection and the
   local speech tools; config example has the `voice` block. Tests: `test_voice.py`, `test_dashboard.py` (no network) — 72 checks.
+- From this version on every version is also a **GitHub Release** with a tag (v0.16.0 is the first): a tag starts
+  `.github/workflows/release.yml`, which runs all tests and publishes the CHANGELOG section as the release text.
 
 ## 0.15.2 — 21.11.2026 · always the live version
 Learned in real use: an AI assistant given the repository link answered from a cached copy two days old (0.13.1) and
@@ -22,7 +24,6 @@ did not know about the security checkup.
 - AGENTS.md starts with *make sure you read the live version*: compare with the first entry of the raw CHANGELOG; if older,
   read the raw files (`llms-full.txt`) instead of the cached copy, and tell the person which version is used.
 - README and llms.txt carry the same note; `llms-full.txt` / START.md now state their version (taken from README automatically).
-- Versions are also published as GitHub Releases with tags (v0.15.2 is the first).
 
 ## 0.15.1 — 21.11.2026 · overview PDF 1.3
 - `docs/FLOKTRON_overview.pdf` (version 1.3): *Data and security* now says that setup ends with a security checkup; open version 0.15, 61 automated tests. Other languages on the KOAGU site were updated the same day.
