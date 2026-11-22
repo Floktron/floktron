@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.20.1 — 22.11.2026 · overview PDF 1.8
+- `docs/FLOKTRON_overview.pdf` (version 1.8, 9 pages): new page *New in version 0.20 — your own invoices, acts and
+  offers* (four documents, three steps, what stays safe); open version 0.20.0, 98 automated tests in the figures.
+  Other languages on koagu.com/floktron were updated the same day.
+
 ## 0.20.0 — 22.11.2026 · your own invoices, acts and offers in your brand
 Learned in real use: a small company writes its invoices in an online form — a different look each time, numbers kept
 by hand, nothing in the books until someone types it in.
