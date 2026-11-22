@@ -18,7 +18,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents | What happens in your market, your supply chain and your payments — and where does the company stand? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -126,6 +126,13 @@ Ask: how are invoices made today, from which number to continue, which languages
 2. **First a test on fictional data**: the one-line example from `docs/DOCUMENTS.md` — open the PDF together.
 3. Then one real document as a dry run (`prompts/52_documents.md`); `--apply` only after "yes".
 4. Remind: FLOKTRON never sends a document to a customer; numbers are never reused.
+
+## 8e. Follow-ups — reminders after an offer (if wanted) — follow `docs/FOLLOWUPS.md`
+Ask: are offers sent from this mailbox, and who approves reminders.
+1. Fill the `followups` section of `config.yaml` (days, working hours, approver, signature). Check that the mail
+   folders hold both sent and received mail.
+2. **First a test on fictional data**: `python3 -m pytest tests/test_followups.py`, then a trial run with `--dry-run`.
+3. Say clearly: nothing goes to a buyer without the person's ✅; an answer from the buyer stops the reminders.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.

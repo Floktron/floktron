@@ -74,6 +74,44 @@ def from_imap(mail_cfg, days=2, marker="FLOKTRON#"):
             pass
 
 
+def all_messages(mail_cfg, folders, days=60):
+    """Yield every raw message (sent and received) of the last `days` days from the given folders — read-only
+    (BODY.PEEK: messages do not become "read"). Used by followups.py to see sent offers and the answers to them."""
+    p = PRESETS.get(mail_cfg.get("provider", "smtp"), PRESETS["smtp"])
+    host = mail_cfg.get("imap_host") or p["host"]
+    port = int(mail_cfg.get("imap_port") or p["port"])
+    ctx = ssl.create_default_context()
+    if p["self_signed"]:
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+    try:
+        if p["ssl"]:
+            M = imaplib.IMAP4_SSL(host, port, ssl_context=ctx)
+        else:
+            M = imaplib.IMAP4(host, port)
+            M.starttls(ssl_context=ctx)
+        M.login(mail_cfg.get("user") or "", _password(mail_cfg))
+    except Exception as e:
+        raise MailError(f"Cannot open mailbox {host}:{port} — {e}") from e
+    since = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%d-%b-%Y")
+    try:
+        for box in folders:
+            try:
+                if M.select(box, readonly=True)[0] != "OK":
+                    continue
+                _, data = M.search(None, f"(SINCE {since})")
+            except imaplib.IMAP4.error:
+                continue
+            for num in data[0].split():
+                _, md = M.fetch(num, "(BODY.PEEK[])")
+                yield md[0][1]
+    finally:
+        try:
+            M.logout()
+        except Exception:
+            pass
+
+
 def from_folder(path):
     """Yield raw messages from .eml files in a folder (for tests, or mail exported by another tool)."""
     for name in sorted(os.listdir(path)):

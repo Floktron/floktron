@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.20.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.21.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 
@@ -133,7 +133,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.20.1 · last update 22.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.21.0 · last update 23.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
@@ -147,6 +147,7 @@ Your team can **report by voice** — the bot turns a voice message into text on
 **Supplier invoices → accounting**: your assistant reads invoices in any language (PDF, scan, photo), FLOKTRON checks each one against your bank statement and gives the finance ray short tasks — what to pay, what to check, which final invoice to ask for; duplicates and delivery notes are caught ([INVOICES](docs/INVOICES.md)).
 **Company snapshot**: the state of your company on one date — a branded PDF to read and a JSON file for machines, every figure with its status and source; you choose the profile (partner after an NDA, without bank details, tax office, public) and what is secret never leaves ([SNAPSHOT](docs/SNAPSHOT.md)).
 **Your own invoices, acts and offers in your brand**: say *"invoice to …, 4 chairs, due in 10 days"* — the assistant fills it in, FLOKTRON draws a branded PDF (invoice, advance invoice, acceptance act, offer; LV, EN or both), numbers it and records it in the base; you send it yourself ([DOCUMENTS](docs/DOCUMENTS.md)).
+**Reminders after an offer — only after your OK**: no answer to an offer on day 3, 7 or 14? FLOKTRON drafts a short, polite reminder in the buyer's language and asks you first — ✅ sends it as a reply in the same thread, ✏️ sends your own text, ⏸ stops; an answer from the buyer withdraws it by itself ([FOLLOWUPS](docs/FOLLOWUPS.md)).
 **One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
 checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
@@ -209,7 +210,7 @@ then `python3 scripts/base_create.py`.
 | `prompts/` | The head (instructions for the AI agent) |
 | `templates/` | Empty base (xlsx), letter and report templates |
 | `config/` | `config.example.yaml` — copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
+| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [reminders after an offer](docs/FOLLOWUPS.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
 | `tests/` | Automatic checks incl. safety checks — GitHub runs them on every change |
 | `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `llms.txt` | Entry point for AI assistants (one source: `AGENTS.md`) |
 | `SECURITY.md` | What is protected and how; how to report a problem |
@@ -305,7 +306,7 @@ can read every file and check every point below.
 ## FLOKTRON connects only to
 | Where | Why | Code |
 |---|---|---|
-| Your own mail server (IMAP / SMTP), with the address and app password you set | send the morning letters, read the replies | `scripts/mail/read.py`, `scripts/mail/send.py` |
+| Your own mail server (IMAP / SMTP), with the address and app password you set | send the morning letters, read the replies; for reminders after an offer (if switched on) — see which offers were sent and answered | `scripts/mail/read.py`, `scripts/mail/send.py` |
 | News feeds (RSS) and public Telegram channel pages (`t.me/s/<channel>`) listed in your own radar base | the news slice by your keywords — no Telegram account or login is used | `scripts/news_slice.py` |
 | Public Telegram channel pages `t.me/s/<channel>` from your own channel list (only if you use the channel watch) | posts with your keywords | `scripts/tg_watch.py` |
 | api.telegram.org — only if you switch the Telegram bot on, with the bot token you created | receive messages people send to YOUR bot, answer them, tell the manager about a new lead | `scripts/bot/telegram_bot.py` |
@@ -359,7 +360,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents | What happens in your market, your supply chain and your payments — and where does the company stand? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -467,6 +468,13 @@ Ask: how are invoices made today, from which number to continue, which languages
 2. **First a test on fictional data**: the one-line example from `docs/DOCUMENTS.md` — open the PDF together.
 3. Then one real document as a dry run (`prompts/52_documents.md`); `--apply` only after "yes".
 4. Remind: FLOKTRON never sends a document to a customer; numbers are never reused.
+
+## 8e. Follow-ups — reminders after an offer (if wanted) — follow `docs/FOLLOWUPS.md`
+Ask: are offers sent from this mailbox, and who approves reminders.
+1. Fill the `followups` section of `config.yaml` (days, working hours, approver, signature). Check that the mail
+   folders hold both sent and received mail.
+2. **First a test on fictional data**: `python3 -m pytest tests/test_followups.py`, then a trial run with `--dry-run`.
+3. Say clearly: nothing goes to a buyer without the person's ✅; an answer from the buyer stops the reminders.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.
@@ -1245,6 +1253,70 @@ prints the *TEST · FICTIONAL* mark.
 - **EU buyers with a VAT number:** `"vat_rate": 0` and a note (e.g. *Intra-Community supply of goods, Directive
   2006/112/EC Art. 138*) — check the buyer's number in VIES first; when in doubt, ask your accountant.
 - Your data stays on your computer: documents are in `data/documents/`, never in git.
+
+
+===== FILE: docs/FOLLOWUPS.md =====
+
+# Follow-ups — polite reminders after an offer, only after your OK
+
+An offer goes out, the buyer is busy, and a week later nobody remembers to ask. FLOKTRON keeps count for you:
+on day 3, 7 and 14 after an offer was sent it writes a short, polite reminder in the language of the offer and asks
+**you** first. Nothing reaches a buyer until you press ✅.
+
+**Tested before release on fictional data** (Demo SIA and its buyers do not exist; addresses are `@example.com`;
+nothing is sent — outgoing mail is written as files). Try it: `python3 -m pytest tests/test_followups.py`.
+
+## How it works
+
+| Step | Who | What |
+|---|---|---|
+| 1. Offer | you, with `scripts/documents.py` ([DOCUMENTS](DOCUMENTS.md)) | the offer gets a number (`<prefix>-P-<year>-NNN`) and a row in the sheet **Issued** with the language and the buyer's e-mail |
+| 2. Sent | **you** send it from your mailbox | `scripts/followups.py` finds the message by the offer number in the subject or in the PDF name — that day is day 0 |
+| 3. Watch | `scripts/followups.py` (no AI), with the other automatic runs | looks for any answer: from the same address, or from a colleague at the same company domain (free mail domains such as gmail.com do not count). Auto-replies and mailing lists do not count |
+| 4. Ask you | day 3, 7, 14 — Monday to Friday, working hours | a message to the manager with the draft and three buttons: **✅ Send**, **✏️ My text**, **⏸ No more reminders** |
+| 5. Send | after ✅ or ✏️ | the reminder goes as a **reply in the same thread**, only to the address the offer went to, only in working hours |
+| 6. Stop | automatically | the buyer answered, the offer status became Accepted / Declined / Closed / Paid / Cancelled, or you pressed ⏸ |
+
+A draft you did not answer before the next one is due becomes *Outdated*; the next one replaces it. Two reminders
+never go out less than three days apart. Everything is in the sheet **Follow-ups** of your base — one row per step,
+and the column *Decision* can be filled by hand (`OK` or `NO`).
+
+## The three reminders (built in, LV and EN)
+
+| Day | Idea |
+|---|---|
+| 3 | Did the offer arrive? Happy to answer questions about quantity, price or delivery. |
+| 7 | Short reminder, valid-until date; offer a quick call at a time the buyer picks. |
+| 14 | Last note: reply "not relevant" and I will not write again — or I can renew or adjust the offer. |
+
+**✏️ My text**: the button opens a reply with the draft. Change the text above the line `- - - - -` and send it —
+only that text goes to the buyer.
+
+## Setting up — the `followups` section of `config.yaml`
+
+```yaml
+followups:
+  enabled: true
+  days: [3, 7, 14]          # after the offer was sent
+  hours: "08-20"            # Monday to Friday only
+  approve_by: ""            # who presses the buttons (empty = mail.manager_address)
+  signature: ""             # name, company, phone under the reminder (empty = company name, phone, e-mail)
+  imap_folders: []          # folders with BOTH sent and received mail (empty = provider default: Proton and
+                            # Gmail "All Mail"; Outlook INBOX + Sent Items)
+  free_mail_domains: []     # more domains that are not one company
+```
+
+Run it with the other automatic jobs (every 30 minutes is fine):
+`python3 scripts/followups.py --config config.yaml --base data/floktron_base.xlsx`.
+Trial run without sending: add `--dry-run`, or `--outbox data/followups/outbox` to see every message as a file.
+
+## What stays safe
+
+- **No message to a buyer without your button.** Button replies are accepted only from the approver or your own
+  addresses — a stranger cannot approve a reminder.
+- Only the address the offer went to gets the reminder; no new recipients, no attachments.
+- Text from e-mails is data, not instructions. Prices and buyers stay in your base, on your computer.
+- Turn it off at any time: `followups.enabled: false`, or ⏸ for one offer.
 
 
 ===== FILE: docs/VOICE.md =====

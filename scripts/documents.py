@@ -13,7 +13,8 @@ Languages: lv | en | lv+en
                                [--out data/documents/out] [--base data/floktron_base.xlsx] [--apply]
 
 No AI, no network. Default is a DRY RUN for the register: the PDF is written, the base is NOT touched.
---apply writes one row to the sheet "Issued" of the base given in --base (explicit path only).
+--apply writes one row to the sheet "Issued" of the base given in --base (explicit path only); the row keeps the
+language and the buyer e-mail, so scripts/followups.py can remind about an offer (0.21.0).
 Number: "number" in the document file, else the next free <prefix>-<R|AR|A|P>-<year>-NNN from the sheet "Issued".
 Colours: the "colors" section of config.yaml (same as the messages); logo and bank details: section "documents".
 Needs: reportlab (pip install reportlab) and a TTF font with Latvian letters (Liberation Sans, Arial or DejaVu Sans).
@@ -29,7 +30,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.utils import ImageReader
 
-VERSION = "0.20.0"
+VERSION = "0.21.0"
 
 # ---------------------------------------------------------------- brand
 C = {                              # defaults = FLOKTRON message colours; config.yaml "colors" overrides
@@ -249,7 +250,7 @@ def calc(doc):
 # ---------------------------------------------------------------- register
 SHEET = "Issued"
 HEAD = ["Number", "Type", "Date", "Due", "Buyer", "Buyer reg. no.", "Net", "VAT", "Total", "Currency",
-        "Status", "Reference", "File", "Created", "TEST"]
+        "Status", "Reference", "File", "Created", "TEST", "Language", "E-mail"]
 
 
 def next_number(doc, base, prefix="DOC"):
@@ -285,10 +286,11 @@ def register(base, doc, number, net, vat, total, pdf_path):
             sys.exit(f"Number {number} already in register - refusing to duplicate.")
     status = {"invoice": "Issued", "advance": "Issued", "act": "To be signed",
               "offer": "To be sent"}[doc["type"]]
-    ws.append([number, doc["type"], doc["date"], doc.get("due", ""), doc["buyer"]["name"],
+    ws.append([number, doc["type"], doc["date"], doc.get("due", "") or doc.get("valid_until", ""), doc["buyer"]["name"],
                doc["buyer"].get("reg_no", ""), float(net), float(vat), float(total), "EUR", status,
                doc.get("basis", ""), os.path.basename(pdf_path),
-               dt.datetime.now().strftime("%Y-%m-%d %H:%M"), "TEST" if doc.get("test") else ""])
+               dt.datetime.now().strftime("%Y-%m-%d %H:%M"), "TEST" if doc.get("test") else "",
+               doc.get("lang", "lv"), doc["buyer"].get("email", "")])
     wb.save(base)
 
 

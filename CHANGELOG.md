@@ -3,6 +3,22 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.21.0 — 23.11.2026 · reminders after an offer, only after your OK
+Learned in real use: an offer goes out, the buyer is busy, and nobody remembers to ask a week later.
+- **[FOLLOWUPS](docs/FOLLOWUPS.md)** — `scripts/followups.py` (no AI): finds a sent offer in the mailbox by its number
+  (subject or PDF name), watches for any answer from the buyer or a colleague at the same company domain
+  (auto-replies and mailing lists do not count), and on day 3, 7 and 14 — Monday to Friday, working hours — drafts a
+  short, polite reminder in the language of the offer (LV / EN).
+- The manager gets the draft with three buttons: **✅ Send**, **✏️ My text**, **⏸ No more reminders**. Nothing goes to a
+  buyer without OK; button replies count only from the approver or your own addresses. The reminder goes as a reply
+  in the same thread, only to the address the offer went to.
+- An answer, a closed status in **Issued** (Accepted, Declined, Closed, Paid, Cancelled) or ⏸ stops the reminders;
+  an unanswered draft becomes *Outdated* when the next one is due. New sheet **Follow-ups**.
+- `scripts/documents.py`: the sheet **Issued** also keeps the language and the buyer e-mail; for an offer the column
+  *Due* is the valid-until date.
+- `prompts/53_followups.md`, setup wizard step **8e Follow-ups**, config section `followups`; 9 new automated tests
+  (107 in total) on fictional data.
+
 ## 0.20.1 — 22.11.2026 · overview PDF 1.8
 - `docs/FLOKTRON_overview.pdf` (version 1.8, 9 pages): new page *New in version 0.20 — your own invoices, acts and
   offers* (four documents, three steps, what stays safe); open version 0.20.0, 98 automated tests in the figures.
