@@ -3,6 +3,19 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.17.0 — 22.11.2026 · your own website before marketing
+Learned in real use: posts, profiles and QR codes need one address to point to, and a lost mail record costs more than any site.
+- **[WEBSITE](docs/WEBSITE.md)** — a step-by-step guide to a safe company website, written from a site that runs this way
+  every day: plain files in a private GitHub repository, Cloudflare Pages, automatic certificates, security headers,
+  redirects that never break a printed QR code, forms without a server (EU database, spam guard, hashed IP, 2-year
+  deletion), analytics without cookies, a final check table.
+- Cloudflare is the recommendation, not a condition: four paths — all on Cloudflare; DNS stays at the registrar;
+  your favourite hosting (Namecheap, GoDaddy, Hostinger, IONOS, Netlify, Vercel, GitHub Pages) with an `.htaccess`
+  example; Cloudflare in front of existing hosting.
+- Setup wizard: new step **8a Website** (before the content plan). Mail and verification DNS records are listed first and
+  never touched; every password is typed by the person.
+- `llms-full.txt` and `START.md` include the guide.
+
 ## 0.16.2 — 22.11.2026 · overview PDF 1.4
 - `docs/FLOKTRON_overview.pdf` (version 1.4, 5 pages): new page *New in version 0.16 — already working* (voice reports,
   audio summary, dashboard on demo data); in *What else can be plugged in* these three are marked as running; open version 0.16.1, 72 automated tests.

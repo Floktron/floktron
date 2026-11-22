@@ -19,7 +19,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
 | IV. Around you | 7 Radar · 8 Supply chain watch | What happens in your market and your supply chain? |
-| V. Your voice | 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
+| V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
 Rules of the path:
@@ -99,6 +99,16 @@ which rules (duties, restrictions). Fill the sheet `Watchlist` with them (`radar
 `Active = Yes` only for what they approved; no recipes, quantities or contract prices. Test: `supply_watch.py --dry` and
 `--full --dry`. Switch on with `schedule.supply` / `schedule.supply_week`. Every evening read the candidates
 (`prompts/32_supply_chain.md`).
+
+## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
+Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.
+1. Ask: is there a site already? Where is the domain registered, and is there hosting the person wants to keep?
+2. Choose the path with the person: **A** all on Cloudflare (recommended — certificates, protection and undo come free),
+   **B** DNS stays at the registrar, **C** their favourite hosting (Namecheap, GoDaddy, Hostinger, IONOS, Netlify…),
+   **D** Cloudflare in front of the existing hosting. Say why A is recommended, then respect the choice.
+3. Before any DNS change: list the current records and keep mail and verification records untouched.
+4. You write the files and checks; the person creates accounts, clicks and types every password — never in chat.
+5. Finish with the check table of `docs/WEBSITE.md` step 12, including a test e-mail to and from the domain.
 
 ## 9. Content plan (if wanted)
 Platforms, language per platform, rhythm and times, rubrics, tone, consent of people who appear in pictures.
