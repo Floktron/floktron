@@ -3,6 +3,10 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.16.1 — 22.11.2026 · dashboard speaks your language
+- Dashboard: system names, statuses (Accepted, Question, Sent …) and hints are shown in the page language (EN / RU / LV), not only the headings.
+- koagu.com/floktron shows the dashboard on demo data in all six languages.
+
 ## 0.16.0 — 22.11.2026 · voice and a dashboard
 Learned in real use: people on site do not type reports, and a manager in the car cannot read a table.
 - **Voice reports** (`scripts/voice.py`, Telegram bot): a team member sends a voice message → text on your own computer

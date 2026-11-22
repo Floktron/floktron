@@ -42,7 +42,7 @@ T = {
                none_posts="No posts planned today", none_sig="No new signals", none_chain="No notable changes",
                test="test", foot="the page refreshes itself · your data stays on your computer", days="in {d} d.",
                today="today", tomorrow="tomorrow", late="overdue", due="due", waiting="waiting", nolet="no message yet",
-               hidden="+ test tasks hidden: {n}"),
+               hidden="+ test tasks hidden: {n}", jobs=("Replies", "Morning message", "News slice", "Supply chain", "Content plan"), open="open", fixlog="see data/run.log", fixbot="is the bot running?", fixmail="is the mail server reachable? see data/run.log", tasks_act="Tasks"),
     "ru": dict(title="пульт управления", upd="обновлено", all_ok="Всё работает", notes="Работает, есть заметки",
                check="Есть что проверить", sub="{ok} из {n} систем в порядке · {a} пункт(ов) требуют внимания",
                calm="Ничего не требует вашего внимания", att="Требует внимания", next="Ближайшее",
@@ -56,7 +56,7 @@ T = {
                none_posts="Сегодня по плану постов нет", none_sig="Новых сигналов нет", none_chain="Без заметных изменений",
                test="тест", foot="страница обновляется сама · данные только на вашем компьютере", days="через {d} дн.",
                today="сегодня", tomorrow="завтра", late="просрочено", due="срок", waiting="ждём ответ", nolet="писем нет",
-               hidden="+ тестовых задач скрыто: {n}"),
+               hidden="+ тестовых задач скрыто: {n}", jobs=("Сбор ответов", "Утренние письма", "Срез новостей", "Цепочка поставок", "Контент-план"), open="открыто", fixlog="см. data/run.log", fixbot="бот запущен?", fixmail="почтовый сервер доступен? см. data/run.log", tasks_act="Задачи"),
     "lv": dict(title="vadības panelis", upd="atjaunots", all_ok="Viss strādā", notes="Strādā, ir piezīmes",
                check="Ir ko pārbaudīt", sub="{ok} no {n} sistēmām kārtībā · {a} punkti prasa uzmanību",
                calm="Nekas neprasa jūsu uzmanību", att="Prasa uzmanību", next="Tuvākais", rays="Virzieni — kas apstiprināja",
@@ -68,8 +68,20 @@ T = {
                none_voice="Vēl nav. Darbinieks sūta balss ziņu botam — šeit parādīsies teksts.", none_posts="Šodien ierakstu nav",
                none_sig="Jaunu signālu nav", none_chain="Būtisku izmaiņu nav", test="tests",
                foot="lapa atjaunojas pati · dati paliek jūsu datorā", days="pēc {d} d.", today="šodien", tomorrow="rīt",
-               late="nokavēts", due="termiņš", waiting="gaidām", nolet="vēstuļu nav", hidden="+ testa uzdevumi paslēpti: {n}"),
+               late="nokavēts", due="termiņš", waiting="gaidām", nolet="vēstuļu nav", hidden="+ testa uzdevumi paslēpti: {n}", jobs=("Atbilžu vākšana", "Rīta vēstules", "Ziņu apskats", "Piegādes ķēde", "Satura plāns"), open="atvērti", fixlog="skat. data/run.log", fixbot="vai bots strādā?", fixmail="vai pasta serveris pieejams? skat. data/run.log", tasks_act="Uzdevumi"),
 }
+
+
+STATUS = {  # how stored English statuses are shown
+    "ru": {"Accepted": "Принято", "Question": "Вопрос", "Cannot": "Не могу", "No answer": "Нет ответа", "Report": "Отчёт",
+           "Done": "Готово", "Sent": "Отправлено", "New": "Новая", "Moved": "Перенесено", "Not done": "Не сделано"},
+    "lv": {"Accepted": "Pieņemts", "Question": "Jautājums", "Cannot": "Nevaru", "No answer": "Nav atbildes", "Report": "Atskaite",
+           "Done": "Gatavs", "Sent": "Nosūtīts", "New": "Jauns", "Moved": "Pārcelts", "Not done": "Nav izdarīts"},
+}
+
+
+def tr(lang, word):
+    return STATUS.get(lang, {}).get(str(word), str(word))
 
 
 def d_of(v):
@@ -154,17 +166,18 @@ def collect(cfg, data=DATA, now=None):
         st = "bad" if code else ("ok" if age_h(when) <= max_h else "warn")
         D["pulse"].append(dict(name=label, st=st, note=when[5:], fix=fix if st != "ok" else ""))
 
-    job("collect", "Replies", 2, "is the mail server reachable? see data/run.log")
-    job("morning", "Morning message", 80, "see data/run.log")
-    job("news", "News slice", 30, "see data/run.log")
-    job("supply", "Supply chain", 30, "see data/run.log")
-    job("content", "Content plan", 30, "see data/run.log")
+    J = L["jobs"]
+    job("collect", J[0], 2, L["fixmail"])
+    job("morning", J[1], 80, L["fixlog"])
+    job("news", J[2], 30, L["fixlog"])
+    job("supply", J[3], 30, L["fixlog"])
+    job("content", J[4], 30, L["fixlog"])
     tg = sheet(os.path.join(data, "tg_signals.xlsx"), "Runs")
     if tg:
         r = tg[-1]
         ok = d_of(g(r, "Run")) == today and not g(r, "Failed")
         D["pulse"].append(dict(name="Telegram", st="ok" if ok else "warn", note=str(g(r, "Run"))[5:16],
-                               fix="" if ok else "is the bot running?"))
+                               fix="" if ok else L["fixbot"]))
     for p in D["pulse"]:
         if p["st"] != "ok":
             D["attention"].append(dict(lvl=p["st"], text=f"{p['name']}: {p['note']}", act=p["fix"]))
@@ -186,16 +199,16 @@ def collect(cfg, data=DATA, now=None):
         st = "idle" if not last else "ok" if a and a[0] in OKANS else "warn" if a and a[0] in BADANS else "wait"
         test = "test" in str(g(r, "Responsible", "Comment")).lower()
         D["rays"].append(dict(id=rid, name=str(g(r, "Ray")), who=str(g(r, "Responsible")), st=st, test=test,
-                              answer=a[0] if a else (L["waiting"] if last else L["nolet"]), when=(a[1][5:16] if a else ""),
+                              answer=tr(lang, a[0]) if a else (L["waiting"] if last else L["nolet"]), when=(a[1][5:16] if a else ""),
                               open=len(open_), over=len(over)))
         if over and not test:
-            D["attention"].append(dict(lvl="warn", text=f"{rid} {g(r, 'Ray')}: {L['late']} {len(over)}", act="Tasks"))
+            D["attention"].append(dict(lvl="warn", text=f"{rid} {g(r, 'Ray')}: {L['late']} {len(over)}", act=L["tasks_act"]))
         if st == "warn" and not test:
-            D["attention"].append(dict(lvl="warn", text=f"{rid} {g(r, 'Responsible')}: «{a[0]}»", act=""))
+            D["attention"].append(dict(lvl="warn", text=f"{rid} {g(r, 'Responsible')}: «{tr(lang, a[0])}»", act=""))
     openall = [t for t in tasks if str(g(t, "Status")) not in DONE]
     D["kpi"] = dict(open=len(openall), done=sum(1 for t in tasks if str(g(t, "Status")) in ("Done", "Accepted")))
     real = [t for t in openall if not str(g(t, "Task")).upper().startswith("TEST")]
-    D["tasks"] = [dict(id=str(g(t, "Task ID")), ray=str(g(t, "Ray")), text=str(g(t, "Task"))[:110], st=str(g(t, "Status")),
+    D["tasks"] = [dict(id=str(g(t, "Task ID")), ray=str(g(t, "Ray")), text=str(g(t, "Task"))[:110], st=tr(lang, g(t, "Status")),
                        due=(d_of(g(t, "Due")).strftime("%d.%m") if d_of(g(t, "Due")) else ""),
                        over=bool(d_of(g(t, "Due")) and d_of(g(t, "Due")) < today))
                   for t in sorted(real, key=lambda t: str(g(t, "Due") or "9"))[:8]]
@@ -319,7 +332,7 @@ def render(D, colors=None):
         f'<div class="play"><span class="t"><b>{L["audio"]}</b><span class="sub">{L["audio_none"]}</span></span></div>'
     rays = ""
     for r in D["rays"]:
-        extra = (f' · {r["open"]} open' if r["open"] else "") + (f' · {L["late"]} {r["over"]}' if r["over"] else "")
+        extra = (f' · {L["open"]} {r["open"]}' if r["open"] else "") + (f' · {L["late"]} {r["over"]}' if r["over"] else "")
         tst = f'<span class="tst">{L["test"]}</span>' if r["test"] else ""
         rays += (f'<div class="ray">{tst}<div class="id">{esc(r["id"])}</div>'
                  f'<div class="nm">{esc(r["name"])}</div><span class="tag {r["st"]}">{esc(r["answer"])}</span> '
