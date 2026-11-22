@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.17.1 — 22.11.2026 · overview PDF 1.5
+- `docs/FLOKTRON_overview.pdf` (version 1.5, 6 pages): new page *New in version 0.17 — your own website before marketing*
+  (four paths, why Cloudflare is recommended, what stays safe); open version 0.17.0 in the figures.
+  Other languages on koagu.com/floktron were updated the same day.
+
 ## 0.17.0 — 22.11.2026 · your own website before marketing
 Learned in real use: posts, profiles and QR codes need one address to point to, and a lost mail record costs more than any site.
 - **[WEBSITE](docs/WEBSITE.md)** — a step-by-step guide to a safe company website, written from a site that runs this way
