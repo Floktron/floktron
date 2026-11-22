@@ -15,8 +15,8 @@ Learned in real use: people on site do not type reports, and a manager in the ca
   answers for 14 days, voice reports, posts, radar, supply chain, audio player. Offline, escaped, strict CSP; rebuilt after every run (`run.py dashboard`). EN / RU / LV.
 - Docs: [VOICE](docs/VOICE.md), [DASHBOARD](docs/DASHBOARD.md); TRANSPARENCY lists the optional ElevenLabs connection and the
   local speech tools; config example has the `voice` block. Tests: `test_voice.py`, `test_dashboard.py` (no network) — 72 checks.
-- From this version on every version is also a **GitHub Release** with a tag (v0.16.0 is the first): a tag starts
-  `.github/workflows/release.yml`, which runs all tests and publishes the CHANGELOG section as the release text.
+- From this version on every version is also a **GitHub Release** with a tag (v0.16.0 is the first): after each push,
+  `.github/workflows/release.yml` sees a new version in README, runs all tests and publishes the CHANGELOG section as the release text.
 
 ## 0.15.2 — 21.11.2026 · always the live version
 Learned in real use: an AI assistant given the repository link answered from a cached copy two days old (0.13.1) and

@@ -1,8 +1,9 @@
 name: release
-# A version tag (v1.2.3) makes a GitHub Release whose text is that version's section of CHANGELOG.md.
+# When the version in README.md ("Version X.Y.Z") is new, this makes the tag vX.Y.Z and a GitHub Release
+# whose text is that version's section of CHANGELOG.md. Runs after every push to main; does nothing if the release exists.
 on:
   push:
-    tags: ["v*.*.*"]
+    branches: [main]
 permissions:
   contents: write
 jobs:
@@ -13,15 +14,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r requirements.txt pytest && pytest -q
-      - name: Release notes from CHANGELOG.md
+      - name: Version from README
+        id: v
+        run: echo "v=$(grep -oE 'Version [0-9]+\.[0-9]+\.[0-9]+' README.md | head -1 | cut -d' ' -f2)" >> "$GITHUB_OUTPUT"
+      - name: Already released?
+        id: has
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          v="${GITHUB_REF_NAME#v}"
-          awk -v v="$v" '$0 ~ "^## "v" " {f=1; print; next} /^## / {f=0} f' CHANGELOG.md > notes.md
+          if gh release view "v${{ steps.v.outputs.v }}" >/dev/null 2>&1; then echo "yes=1" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.has.outputs.yes != '1'
+        run: pip install -r requirements.txt pytest && pytest -q
+      - if: steps.has.outputs.yes != '1'
+        name: Release notes from CHANGELOG.md
+        run: |
+          awk -v v="${{ steps.v.outputs.v }}" '$0 ~ "^## "v" " {f=1; print; next} /^## / {f=0} f' CHANGELOG.md > notes.md
           test -s notes.md
-      - name: Create the release
+      - if: steps.has.outputs.yes != '1'
+        name: Create the tag and the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           title="FLOKTRON $(head -1 notes.md | sed 's/^## //')"
-          gh release create "$GITHUB_REF_NAME" --title "$title" --notes-file notes.md --verify-tag
+          gh release create "v${{ steps.v.outputs.v }}" --target "$GITHUB_SHA" --title "$title" --notes-file notes.md
