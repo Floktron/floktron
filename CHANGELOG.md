@@ -3,6 +3,12 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.21.1 — 23.11.2026 · overview PDF 1.9
+- `docs/FLOKTRON_overview.pdf` (version 1.9, 10 pages): new page *New in version 0.21 — follow-ups after an offer, only
+  after your "yes"* (days 3 / 7 / 14, three buttons, what stays safe); "Follow-ups after an offer" marked as running in
+  *What else can be plugged in*; open version 0.21.0, 107 automated tests in the figures.
+  Other languages on koagu.com/floktron were updated the same day.
+
 ## 0.21.0 — 23.11.2026 · reminders after an offer, only after your OK
 Learned in real use: an offer goes out, the buyer is busy, and nobody remembers to ask a week later.
 - **[FOLLOWUPS](docs/FOLLOWUPS.md)** — `scripts/followups.py` (no AI): finds a sent offer in the mailbox by its number
