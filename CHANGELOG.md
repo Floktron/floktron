@@ -3,6 +3,21 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.19.0 — 22.11.2026 · company snapshot
+Learned in real use: a partner, an investor and the tax office each asked "where is the company now?", and each time
+the same facts were gathered again by hand.
+- **[SNAPSHOT](docs/SNAPSHOT.md)** — `scripts/snapshot.py` (no AI, no network) builds the state of the company on one
+  date: a branded PDF (EN / LV / RU, colours from `config.yaml`) and a JSON file with every figure, its status
+  (PUBLIC / DEAL / ESTIMATE / SCENARIO) and source, plus the SHA-256 of the PDF.
+- Four profiles: `partner` (after an NDA), `no_bank`, `tax` (only PUBLIC and DEAL figures), `public`;
+  `--plus` / `--minus` add or remove sections; the valuation is off unless asked for.
+- **Lock**: facts marked `secret` never leave; locked words (built in + `snapshot.locked_words`) stop the run before
+  anything is written. From the base only counts and totals are taken — client and site names are never read.
+- `prompts/51_snapshot.md`: the assistant fills `data/snapshot/facts.json` with the person — public facts from the
+  register with source and date, the rest only from the person.
+- Setup wizard: new step **8c Company snapshot**. 8 new automated tests on the fictional Demo SIA (87 in total).
+  Optional package: `reportlab` (without it only the JSON is written).
+
 ## 0.18.1 — 22.11.2026 · overview PDF 1.6
 - `docs/FLOKTRON_overview.pdf` (version 1.6, 7 pages): new page *New in version 0.18 — supplier invoices → accounting*
   (what it catches, two steps, what stays safe, results on the fictional test set); "Invoices from e-mail to ledger"

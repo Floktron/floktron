@@ -8,7 +8,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.18.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.19.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 
@@ -126,7 +126,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.18.1 · last update 22.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.19.0 · last update 22.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
@@ -138,6 +138,7 @@ A Telegram bot asks your customers a few questions and hands you ready leads; a 
 Your team can **report by voice** — the bot turns a voice message into text on your own computer; the manager gets a **morning audio summary** to listen to in the car ([VOICE](docs/VOICE.md)).
 **Your own website before marketing**: the assistant leads you through a safe site on Cloudflare (free certificates, protection, one-click undo) — or on the hosting you already like, such as Namecheap or GoDaddy ([WEBSITE](docs/WEBSITE.md)).
 **Supplier invoices → accounting**: your assistant reads invoices in any language (PDF, scan, photo), FLOKTRON checks each one against your bank statement and gives the finance ray short tasks — what to pay, what to check, which final invoice to ask for; duplicates and delivery notes are caught ([INVOICES](docs/INVOICES.md)).
+**Company snapshot**: the state of your company on one date — a branded PDF to read and a JSON file for machines, every figure with its status and source; you choose the profile (partner after an NDA, without bank details, tax office, public) and what is secret never leaves ([SNAPSHOT](docs/SNAPSHOT.md)).
 **One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
 checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
@@ -200,7 +201,7 @@ then `python3 scripts/base_create.py`.
 | `prompts/` | The head (instructions for the AI agent) |
 | `templates/` | Empty base (xlsx), letter and report templates |
 | `config/` | `config.example.yaml` — copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
+| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
 | `tests/` | Automatic checks incl. safety checks — GitHub runs them on every change |
 | `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `llms.txt` | Entry point for AI assistants (one source: `AGENTS.md`) |
 | `SECURITY.md` | What is protected and how; how to report a problem |
@@ -350,7 +351,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting | What happens in your market, your supply chain and your payments? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -440,6 +441,16 @@ number (`invoices.our_vat`), and where supplier documents arrive today (mail, pa
 3. Then 3–5 of their own past invoices + a statement they download themselves (CSV is best). Read them
    (`prompts/50_invoices.md`), dry run, show, and only then `--apply`. Never log in to their bank.
 4. Remind: VAT remarks are an ESTIMATE for their accountant; nothing is paid or sent by FLOKTRON.
+
+## 8c. Company snapshot (if wanted) — follow `docs/SNAPSHOT.md`
+Ask: who asks you for "where is the company now?" — partners, investors, the bank, the tax office?
+1. **First the fictional test**: `python3 scripts/snapshot.py --test --all --out /tmp/snapshot` — show the person one
+   `partner` and one `tax` PDF and what the `tax` profile leaves out.
+2. Fill `data/snapshot/facts.json` with the person (`prompts/51_snapshot.md`): public facts from the register with source
+   and date, the rest only from the person, each with who may see it. Ask for words that must never leave
+   (`snapshot.locked_words`).
+3. Make the first own snapshot (`public` is a safe start), show it, and say: nothing is sent — the person decides where
+   each file goes.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.
@@ -1035,6 +1046,104 @@ invoices:
 - Every VAT remark is an ESTIMATE for your accountant to confirm, never advice.
 - Supplier names and numbers come from outside: they are written as plain text, never as spreadsheet formulas.
 - Test with fictional data first (`--test`: rows and tasks are marked TEST, the dashboard shows them with a *test* tag).
+
+
+===== FILE: docs/SNAPSHOT.md =====
+
+# Company snapshot — the state of your company on one date, in one file
+
+A partner asks "where are you now?", an investor wants a one-pager before a call, the tax office asks for a summary.
+Each time someone gathers the same facts again by hand. FLOKTRON builds them in one command:
+
+- a **PDF** to read — branded with your colours, in English, Latvian or Russian;
+- a **JSON** file for machines — the same rows, each with its **status** and **source**, plus the SHA-256 of the PDF,
+  so anyone can check that the two files belong to one snapshot.
+
+**You decide what goes out.** Pick a profile, then add or remove whole sections. What is marked *secret* never leaves.
+
+Try it on the fictional company first (writes into `/tmp/snapshot`, touches nothing of yours):
+
+```
+python3 scripts/snapshot.py --test --all --out /tmp/snapshot
+```
+
+## Profiles
+
+| Profile | For whom | What is in it |
+|---|---|---|
+| `partner` | a partner or investor, **after an NDA** | company, people, product and IP, stock / orders / purchases, invoices, finance, contracts, bank. Valuation only with `--plus valuation` |
+| `no_bank` | the same, when bank details should stay home | as `partner`, without bank account and balances |
+| `tax` | the tax office | company, people, operations, invoices, finance, contracts, bank — **only PUBLIC and DEAL figures**: no estimates, no plans |
+| `public` | anyone | company, people, product — only PUBLIC facts marked `public` |
+
+Add or remove sections: `--plus valuation`, `--minus bank,contracts`.
+Sections: `company, people, product_ip, operations, invoices, finance, contracts, bank, valuation`.
+
+## Every figure has a status
+
+| Status | Means |
+|---|---|
+| PUBLIC | from an open source — a register, an annual report, your website |
+| DEAL | a signed document or a completed transaction — a contract, an invoice, a bank statement |
+| ESTIMATE | your own calculation |
+| SCENARIO | a plan, not a fact |
+
+A fact with an unknown status is treated as ESTIMATE — never shown as a fact.
+
+## Your facts — `data/snapshot/facts.json`
+
+Your AI assistant fills it with you (`prompts/51_snapshot.md`): public facts from the business register, the rest only
+from you or your own files. One record per fact:
+
+```json
+{"company": {"name": "Example SIA", "reg_no": "40000000000", "vat_no": "LV40000000000", "address": "…"},
+ "facts": [
+  {"section": "finance", "id": "turnover_2025", "label": {"en": "Turnover 2025", "lv": "Apgrozījums 2025. g."},
+   "value": "18 400,00 EUR", "status": "PUBLIC", "source": "annual report 2025", "as_of": "2026-05-31",
+   "sensitivity": "public"}
+ ]}
+```
+
+`sensitivity` decides who may see it:
+
+| sensitivity | Goes into |
+|---|---|
+| `public` | every profile |
+| `nda` | `partner`, `no_bank`, `tax` |
+| `bank` | `partner`, `tax` (never `no_bank`, never `public`) |
+| `valuation` | only when you add `--plus valuation` |
+| `internal` | nowhere — notes for yourself |
+| `secret` | **nowhere, ever** — and an unknown value counts as secret |
+
+From the base (`data/floktron_base.xlsx`) the snapshot adds **counts and totals only**: stock lines, orders by status,
+open purchases, rental items out, supplier invoices and what is still open. Names of clients and sites are never read.
+
+## The lock
+
+Not a switch. Before anything is written, the whole snapshot is checked for locked words — built in: passwords, keys,
+tokens, PIN codes, recipes, formulations. Add your own in `config.yaml`:
+
+```yaml
+snapshot:
+  facts: data/snapshot/facts.json
+  out: data/snapshot/out
+  locked_words: ["our secret ingredient", "prototype X"]
+```
+
+One hit stops the run, says which word was found, and **nothing is written**.
+
+## For the tax office
+
+The snapshot is **not a tax return**. Tax e-services take returns only in their own forms. The PDF can be attached to a
+free-form application — in Latvia, an *Iesniegums* in the VID EDS. XML drafts of specific tax forms may come later; a
+return is always checked and filed by you or your accountant.
+
+## Rules
+
+- Nothing is sent. You decide where each file goes.
+- Read only: the facts file and the base are never changed.
+- Make one snapshot per recipient and date; the JSON keeps only the number of rows left out, not what they were.
+- PDF needs `pip install reportlab`; without it the JSON is written and the script says so.
 
 
 ===== FILE: docs/VOICE.md =====

@@ -18,7 +18,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting | What happens in your market, your supply chain and your payments? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -108,6 +108,16 @@ number (`invoices.our_vat`), and where supplier documents arrive today (mail, pa
 3. Then 3–5 of their own past invoices + a statement they download themselves (CSV is best). Read them
    (`prompts/50_invoices.md`), dry run, show, and only then `--apply`. Never log in to their bank.
 4. Remind: VAT remarks are an ESTIMATE for their accountant; nothing is paid or sent by FLOKTRON.
+
+## 8c. Company snapshot (if wanted) — follow `docs/SNAPSHOT.md`
+Ask: who asks you for "where is the company now?" — partners, investors, the bank, the tax office?
+1. **First the fictional test**: `python3 scripts/snapshot.py --test --all --out /tmp/snapshot` — show the person one
+   `partner` and one `tax` PDF and what the `tax` profile leaves out.
+2. Fill `data/snapshot/facts.json` with the person (`prompts/51_snapshot.md`): public facts from the register with source
+   and date, the rest only from the person, each with who may see it. Ask for words that must never leave
+   (`snapshot.locked_words`).
+3. Make the first own snapshot (`public` is a safe start), show it, and say: nothing is sent — the person decides where
+   each file goes.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.

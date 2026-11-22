@@ -1,6 +1,6 @@
 # scripts/ — the hands
 
-Status: **17 parts ready, 1 planned.** Working versions are cleaned
+Status: **18 parts ready, 1 planned.** Working versions are cleaned
 (company names, addresses, paths and passwords moved to `config.yaml`) before they are added here.
 
 | Planned file | What it does | Status |
@@ -25,6 +25,7 @@ Status: **17 parts ready, 1 planned.** Working versions are cleaned
 | `news_slice.py` | News by keywords from portal RSS and Google News → signals; failed feeds → Gaps | **ready (0.5.0)** |
 | `calendar_read.py` · `ics.py` | Your calendar (.ics link, read only) in the morning message; .ics files for due dates and meetings | **ready (0.13.0)** |
 | `invoices.py` | Invoices → accounting: AI-read supplier documents checked against the bank statement (CSV, or PDF with pypdf); duplicates, statuses, tasks for the finance ray, sheet Invoices | **ready (0.18.0)** |
+| `snapshot.py` | Company snapshot: facts + base counts → branded PDF (EN / LV / RU) + JSON with status and source per figure; profiles partner / no_bank / tax / public; lock for secrets | **ready (0.19.0)** |
 | `supply_watch.py` | Supply chain watch: prices, currencies, news and page changes of your Watchlist → Watch_log (🟢/🟡/🔴/⚪) | **ready (0.12.0)** |
 
 ## How to run (for now)

@@ -106,6 +106,11 @@ invoices:                  # optional: supplier invoices → accounting (docs/IN
   our_vat: ""              # your VAT number; its country is "home" for the VAT check
   ray: L7                  # who gets the tasks (finance)
 
+snapshot:                  # optional: company snapshot → PDF + JSON (docs/SNAPSHOT.md, prompts/51_snapshot.md)
+  facts: data/snapshot/facts.json
+  out: data/snapshot/out
+  locked_words: []         # words that must never leave the company, e.g. ["our secret ingredient"]
+
 telegram:                  # optional bot: dialog → leads (scripts/bot/telegram_bot.py); off until a token exists
   enabled: false
   token_env: "FLOKTRON_TG_TOKEN"   # bot token from @BotFather comes from this environment variable...
