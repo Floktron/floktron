@@ -112,6 +112,17 @@ telegram:                  # optional bot: dialog → leads (scripts/bot/telegra
   channels_file: "channels.txt" # channel watch: one public channel per line; forward a post to the bot to add one
   keywords_file: ""             # one keyword per line — or keywords_xlsx + keywords_sheet + keywords_columns + keywords_priority
   watch_times: []               # e.g. ["07:05", "18:40"] — the bot checks the channels at these times
+  voice:                        # optional: voice reports + audio summary (docs/VOICE.md); local by default
+    enabled: false
+    users: {}                   # chat id: "L5 Logistics" — who may send voice reports
+    accept_unknown: false
+    max_seconds: 300
+    stt_engine: auto            # auto = local faster-whisper; or elevenlabs (your key)
+    stt_model: small
+    stt_lang:                   # empty = detect
+    pulse_dir: "../data/audio"  # the morning run writes pulse_<date>.txt here; the bot reads it aloud
+    tts_engine: auto            # auto = system voice; or elevenlabs
+    tts_lang: en
 
 site_module:
   enabled: false

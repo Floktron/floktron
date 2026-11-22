@@ -3,6 +3,19 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.16.0 — 22.11.2026 · voice and a dashboard
+Learned in real use: people on site do not type reports, and a manager in the car cannot read a table.
+- **Voice reports** (`scripts/voice.py`, Telegram bot): a team member sends a voice message → text on your own computer
+  (local Whisper model; ElevenLabs only if you choose it) → `data/voice_reports.xlsx`, a reply with what was understood,
+  the text to the manager. Only people listed in `telegram.voice.users`; strangers are asked to write. Audio is kept if
+  the text cannot be made.
+- **Audio summary**: the morning AI run writes `pulse_<date>.txt`, the bot reads it aloud with the system voice and sends it
+  to the manager once a day; `/pulse` — again.
+- **Dashboard** (`scripts/dashboard.py` → `data/dashboard.html`): health ring, needs-your-attention, rays, open tasks,
+  answers for 14 days, voice reports, posts, radar, supply chain, audio player. Offline, escaped, strict CSP; rebuilt after every run (`run.py dashboard`). EN / RU / LV.
+- Docs: [VOICE](docs/VOICE.md), [DASHBOARD](docs/DASHBOARD.md); TRANSPARENCY lists the optional ElevenLabs connection and the
+  local speech tools; config example has the `voice` block. Tests: `test_voice.py`, `test_dashboard.py` (no network) — 72 checks.
+
 ## 0.15.2 — 21.11.2026 · always the live version
 Learned in real use: an AI assistant given the repository link answered from a cached copy two days old (0.13.1) and
 did not know about the security checkup.

@@ -12,6 +12,7 @@
     python3 scripts/run.py gaps        # weekly list of what FLOKTRON could not do
     python3 scripts/run.py registry    # new companies in the registry (LV)
     python3 scripts/run.py content     # posts of the day, missed posts, duplicate pictures
+    python3 scripts/run.py dashboard   # rebuild data/dashboard.html (also done after every other run)
     python3 scripts/run.py status      # last lines of the log
 
 A lock file stops two runs of FLOKTRON from writing the base at the same time.
@@ -41,6 +42,7 @@ JOBS = {
     "gaps": ["gaps_report.py"],
     "registry": ["registry_lv.py"],
     "content": ["content_check.py"],
+    "dashboard": ["dashboard.py"],
 }
 
 
@@ -79,6 +81,9 @@ def main():
             r = subprocess.run([sys.executable, os.path.join(HERE, JOBS[job][0])] + JOBS[job][1:] + sys.argv[2:],
                                cwd=ROOT, stdout=f, stderr=subprocess.STDOUT)
             f.write(f"--- exit {r.returncode}\n")
+            if job != "dashboard":      # the one-page overview follows every run; a failure here never fails the job
+                subprocess.run([sys.executable, os.path.join(HERE, "dashboard.py")], cwd=ROOT,
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=300)
     finally:
         os.remove(LOCK)
 

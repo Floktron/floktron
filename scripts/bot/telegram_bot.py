@@ -19,7 +19,11 @@ Setup (5 minutes):
 Other modes:
     --once     read new messages once and exit (for a scheduler every 1–2 minutes)
     --flow-check   validate the dialog file and print the step tree, no network
-Manager commands (only from manager_chat_ids): /leads — last 10 leads · /funnel — how many reached each step ·
+Voice (telegram.voice, optional): a team member sends a voice message → it is transcribed on this computer
+(scripts/voice.py) → saved to data/voice_reports.xlsx and sent to the manager as text. Audio summary: when a text file
+voice.pulse_dir/pulse_<YYYY-MM-DD>.txt appears (written by the morning AI run), the bot reads it aloud and sends the audio
+to the managers — to listen in the car. See docs/VOICE.md.
+Manager commands (only from manager_chat_ids): /leads — last 10 leads · /funnel — how many reached each step · /pulse — audio summary now ·
 /channels — watched channels; forward a post from a public channel to add it (telegram.channels_file)
 Anyone: /start (optionally /start <source>, e.g. t.me/<bot>?start=qr_bucket) · /menu · /privacy · /forget · /id
 """
@@ -51,6 +55,13 @@ PHONE_RE = re.compile(r"^\+?[0-9 ()-]{7,20}$")
 LEAD_COLUMNS = ["Date", "Lead ID", "Source", "Language", "Telegram", "Chat ID", "Stage", "Name", "Company",
                 "Phone", "Email", "Answers", "Next step", "Owner", "Updated"]
 CORE_FIELDS = {"name": "Name", "company": "Company", "phone": "Phone", "email": "Email"}
+VOICE_COLUMNS = ["Date", "Chat ID", "Telegram", "Who / ray", "Seconds", "Transcript", "File", "Status"]
+VOICE_TEXT = {  # replies to the person who sent a voice message (override in telegram.voice.texts)
+    "saved": "✅ Report saved:\n«{text}»\nIf something is wrong — just send another voice message.",
+    "later": "✅ Voice message received — it will be transcribed a little later.",
+    "not_team": "Voice reports are accepted only from the team. Please write your question as text 🙂",
+    "off": "Please write your message as text 🙂",
+}
 
 
 class BotError(Exception):
@@ -153,6 +164,35 @@ class Api:
         return out.get("result")
 
 
+    def download(self, file_id, dest):
+        """Telegram file → local path (voice messages are small .oga files)."""
+        info = self.call("getFile", file_id=file_id)
+        url = "https://api.telegram.org/file/bot{}/{}".format(self.token, info["file_path"])
+        with urllib.request.urlopen(url, timeout=self.timeout) as r, open(dest, "wb") as f:
+            f.write(r.read(25_000_000))
+        return dest
+
+    def upload(self, method, field, path, **params):
+        """Send a file (sendAudio / sendDocument) as multipart/form-data."""
+        import uuid
+        b = uuid.uuid4().hex
+        body = b""
+        for k, v in params.items():
+            v = json.dumps(v) if isinstance(v, (dict, list)) else str(v)
+            body += f'--{b}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n{v}\r\n'.encode()
+        with open(path, "rb") as f:
+            body += (f'--{b}\r\nContent-Disposition: form-data; name="{field}"; filename="{os.path.basename(path)}"\r\n'
+                     f"Content-Type: application/octet-stream\r\n\r\n").encode() + f.read() + b"\r\n"
+        body += f"--{b}--\r\n".encode()
+        req = urllib.request.Request(API.format(token=self.token, method=method), data=body,
+                                     headers={"Content-Type": f"multipart/form-data; boundary={b}"})
+        with urllib.request.urlopen(req, timeout=max(self.timeout, 120)) as r:
+            out = json.loads(r.read(2_000_000).decode("utf-8"))
+        if not out.get("ok"):
+            raise BotError(f"{method}: {out.get('description', 'error')}")
+        return out.get("result")
+
+
 # ---------------------------------------------------------------- storage
 class Store:
     """data/bot_state.json — sessions and the update offset; data/floktron_leads.xlsx — leads and events."""
@@ -220,6 +260,26 @@ class Store:
                 n += 1
         self._save(wb)
         return n
+
+    def add_voice(self, row, path=None):
+        """data/voice_reports.xlsx, sheet Voice: one row per voice message."""
+        import openpyxl
+        import safe_xlsx  # noqa: F401
+        path = path or os.path.join(os.path.dirname(self.state_path), "voice_reports.xlsx")
+        if os.path.exists(path):
+            wb = openpyxl.load_workbook(path)
+        else:
+            wb = openpyxl.Workbook()
+            wb.active.title = "Voice"
+            wb.active.append(VOICE_COLUMNS)
+        wb["Voice"].append([row.get(c, "") for c in VOICE_COLUMNS])
+        for _ in range(5):
+            try:
+                wb.save(path)
+                return path
+            except PermissionError:
+                time.sleep(3)
+        raise BotError("voice_reports.xlsx is locked (open in Excel?)")
 
     def last_leads(self, k=10):
         if not os.path.exists(self.leads_path):
@@ -362,6 +422,8 @@ class Bot:
             (msg.get("from", {}).get("first_name") or "")
         text = (msg.get("text") or "").strip()
         lang = (self.store.state["sessions"].get(str(chat_id)) or {}).get("lang") or self.langs[0]
+        if msg.get("voice") or msg.get("audio") or msg.get("video_note"):
+            return self.on_voice(chat_id, user, msg)
         if text.startswith("/start"):
             return self.start(chat_id, user, text[6:].strip())
         if text == "/menu":
@@ -374,6 +436,8 @@ class Bot:
             self.store.state["sessions"].pop(str(chat_id), None)
             self.store.forget(chat_id)
             return self.send(chat_id, say(self.flow.get("forgotten", "Done — your data is deleted."), lang))
+        if str(chat_id) in self.managers and text == "/pulse":
+            return self.send_pulse(force=True, only=chat_id)
         if str(chat_id) in self.managers and text in ("/leads", "/funnel", "/channels"):
             return self.manager(chat_id, text)
         if str(chat_id) in self.managers and self.cfg.get("channels_file"):
@@ -460,6 +524,98 @@ class Bot:
         lines = [f"{s}: {f[s]}" for s in order if s in f]
         return self.send(chat_id, "Reached each step (sessions):\n" + ("\n".join(lines) or "—"))
 
+    # ---- voice
+    def vcfg(self):
+        return self.cfg.get("voice") or {}
+
+    def vtext(self, key):
+        return (self.vcfg().get("texts") or {}).get(key) or VOICE_TEXT[key]
+
+    def on_voice(self, chat_id, user, msg):
+        vc = self.vcfg()
+        if not vc.get("enabled"):
+            return self.send(chat_id, self.vtext("off"))
+        users = {str(k): str(v) for k, v in (vc.get("users") or {}).items()}
+        is_mgr = str(chat_id) in self.managers
+        if str(chat_id) not in users and not is_mgr and not vc.get("accept_unknown"):
+            return self.send(chat_id, self.vtext("not_team"))
+        media = msg.get("voice") or msg.get("audio") or msg.get("video_note") or {}
+        if int(media.get("duration") or 0) > int(vc.get("max_seconds", 300)):
+            return self.send(chat_id, f"⚠️ Max {int(vc.get('max_seconds', 300)) // 60} min per message — please split it.")
+        vdir = os.path.join(os.path.dirname(self.store.state_path), "voice")
+        os.makedirs(vdir, exist_ok=True)
+        ext = ".oga" if msg.get("voice") else ".mp4" if msg.get("video_note") else ".m4a"
+        path = os.path.join(vdir, datetime.datetime.now().strftime("%Y%m%d_%H%M%S") + f"_{chat_id}{ext}")
+        who = users.get(str(chat_id), "manager" if is_mgr else "unknown")
+        row = {"Date": now_str(), "Chat ID": str(chat_id), "Telegram": user, "Who / ray": who,
+               "Seconds": media.get("duration", ""), "File": os.path.basename(path), "Status": "New"}
+        try:
+            self.api.download(media["file_id"], path)
+            import voice
+            row["Transcript"] = voice.stt(path, lang=vc.get("stt_lang"), engine=vc.get("stt_engine", "auto"),
+                                          model=vc.get("stt_model", "small"))[:3000]
+        except Exception as e:  # noqa: BLE001 — keep the file, transcribe later
+            row["Transcript"], row["Status"] = "", f"not transcribed: {str(e)[:120]}"
+        rp = vc.get("reports_file")
+        if rp and not os.path.isabs(os.path.expanduser(rp)):
+            rp = os.path.join(os.path.dirname(self.config_path or self.store.state_path), rp)
+        self.store.add_voice(row, rp and os.path.expanduser(rp))
+        if row["Transcript"]:
+            self.send(chat_id, self.vtext("saved").replace("{text}", row["Transcript"][:1500]))
+        else:
+            self.send(chat_id, self.vtext("later"))
+        note = f"🎙 {who} · {user} · {row['Seconds']} s\n" + (row["Transcript"][:3000] or "(" + row["Status"] + ")")
+        for m in self.managers:
+            if m != str(chat_id):
+                try:
+                    self.send(int(m), note)
+                except BotError:
+                    pass
+
+    def pulse_paths(self, day=None):
+        d = self.vcfg().get("pulse_dir")
+        if not d:
+            return None, None
+        d = os.path.expanduser(d)
+        if not os.path.isabs(d):
+            d = os.path.join(os.path.dirname(self.config_path or self.store.state_path), d)
+        day = day or datetime.date.today().isoformat()
+        return os.path.join(d, f"pulse_{day}.txt"), os.path.join(d, f"pulse_{day}.m4a")
+
+    def send_pulse(self, force=False, only=None):
+        """Read today's summary text aloud and send it to the managers (once a day; /pulse = now)."""
+        txt, audio = self.pulse_paths()
+        if not txt:
+            return only and self.send(only, "Audio summary is off (telegram.voice.pulse_dir).")
+        if not os.path.exists(txt):
+            return only and self.send(only, "No summary text for today yet — it appears after the morning run.")
+        vc = self.vcfg()
+        if not os.path.exists(audio) or os.path.getmtime(audio) < os.path.getmtime(txt):
+            import voice
+            with open(txt, encoding="utf-8") as f:
+                voice.tts(f.read(), audio, lang=vc.get("tts_lang", "en"), engine=vc.get("tts_engine", "auto"),
+                          voice=vc.get("tts_voice"))
+        cap = "🎧 " + (vc.get("pulse_caption") or "Morning summary") + " · " + datetime.date.today().strftime("%d.%m")
+        for m in ([str(only)] if only else self.managers):
+            try:
+                self.api.upload("sendAudio", "audio", audio, chat_id=int(m), caption=cap, title=cap[2:])
+            except (BotError, OSError) as e:
+                print(f"{now_str()} audio summary → {m}: {e}")
+        if not only:
+            self.store.state["pulse_sent"] = datetime.date.today().isoformat()
+            self.store.save_state()
+
+    def pulse_due(self):
+        if not self.vcfg().get("pulse_dir") or self.store.state.get("pulse_sent") == datetime.date.today().isoformat():
+            return
+        txt, _ = self.pulse_paths()
+        if txt and os.path.exists(txt):
+            try:
+                self.send_pulse()
+            except Exception as e:  # noqa: BLE001 — never stop the bot
+                print(f"{now_str()} audio summary: {e}")
+                self.store.state["pulse_sent"] = datetime.date.today().isoformat()   # do not retry every minute
+
     def watch_due(self):
         """Channel watch inside the bot: run tg_watch at telegram.watch_times (e.g. ["07:05", "18:40"]).
         A time already passed today and not yet run (Mac was asleep, bot just started) runs now."""
@@ -482,6 +638,7 @@ class Bot:
         timeout = 0 if once else 50
         while True:
             self.watch_due()
+            self.pulse_due()
             try:
                 ups = self.api.call("getUpdates", offset=self.store.state["offset"], timeout=timeout,
                                     allowed_updates=["message", "callback_query"])

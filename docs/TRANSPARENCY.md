@@ -12,6 +12,7 @@ can read every file and check every point below.
 | api.telegram.org — only if you switch the Telegram bot on, with the bot token you created | receive messages people send to YOUR bot, answer them, tell the manager about a new lead | `scripts/bot/telegram_bot.py` |
 | The private read-only link of YOUR calendar (.ics), only if you switch the calendar on | today's events for the morning message; FLOKTRON never writes to your calendar | `scripts/calendar_read.py` |
 | Yahoo Finance public chart data (query1.finance.yahoo.com), Google News RSS and the supplier pages you put into your own Watchlist (only if you use the supply chain watch) | end-of-day prices of the tickers you listed; news about your suppliers, routes and rules; a fingerprint of the supplier page text | `scripts/supply_watch.py` |
+| api.elevenlabs.io — ONLY if you set `telegram.voice.stt_engine` or `tts_engine` to `elevenlabs`, with your own API key. By default voice stays on your computer (local Whisper model, the system voice) | turn a voice report into text / read the audio summary aloud | `scripts/voice.py` |
 | Latvian open data portal data.gov.lv (only if you switch the registry on) | new companies by words in the name | `scripts/registry_lv.py` |
 
 There are no other network calls. An automatic test (`tests/test_network.py`) fails if network code appears
@@ -24,7 +25,8 @@ in any other file.
 - stores passwords in files — only the environment variable or the system keychain;
 - runs hidden commands. The only programs it starts are its own scripts (`scripts/run.py`) and, on a Mac,
   the system keychain tool `security` to read the mail password and the calendar link (`scripts/mail/send.py`) and the bot token
-  (`scripts/bot/telegram_bot.py`); the security checkup starts only the system's own read-only settings tools
+  (`scripts/bot/telegram_bot.py`); for voice (only if you switch it on) `scripts/voice.py` starts the system speech tools `say` and `afconvert` (Mac)
+  or `espeak-ng` / `ffmpeg` (Linux) — the local speech model itself runs inside Python; the security checkup starts only the system's own read-only settings tools
   (the list `READ_ONLY_COMMANDS` in `scripts/security_check.py`, guarded by a test) and connects to nothing.
 
 ## Check it yourself
