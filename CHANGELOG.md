@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.19.1 — 22.11.2026 · overview PDF 1.7
+- `docs/FLOKTRON_overview.pdf` (version 1.7, 8 pages): new page *New in version 0.19 — company snapshot*
+  (profiles, three steps, what stays safe); open version 0.19.0, 87 automated tests in the figures.
+  Other languages on koagu.com/floktron were updated the same day.
+
 ## 0.19.0 — 22.11.2026 · company snapshot
 Learned in real use: a partner, an investor and the tax office each asked "where is the company now?", and each time
 the same facts were gathered again by hand.
