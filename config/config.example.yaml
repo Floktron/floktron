@@ -101,6 +101,11 @@ supply_chain:              # optional: watch list is the sheet Watchlist in data
   yellow_pct: 5            # default alarm for a 5-day move, % (a row's own Yellow % / Red % wins)
   red_pct: 10
 
+invoices:                  # optional: supplier invoices → accounting (docs/INVOICES.md, prompts/50_invoices.md)
+  our_iban: ""             # your company account as printed in bank statements, e.g. LV00BANK0000000000000
+  our_vat: ""              # your VAT number; its country is "home" for the VAT check
+  ray: L7                  # who gets the tasks (finance)
+
 telegram:                  # optional bot: dialog → leads (scripts/bot/telegram_bot.py); off until a token exists
   enabled: false
   token_env: "FLOKTRON_TG_TOKEN"   # bot token from @BotFather comes from this environment variable...

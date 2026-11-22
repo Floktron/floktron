@@ -30,7 +30,7 @@ OKANS = {"Accepted", "Report", "Done"}
 BADANS = {"Question", "Cannot", "No answer"}
 
 T = {
-    "en": dict(title="control panel", upd="updated", all_ok="Everything works", notes="Works, with notes",
+    "en": dict(bills="Invoices → accounting", b_docs="documents", b_sum="EUR in invoices", b_paid="payment found in statement", b_topay="EUR to pay / check", none_bills="All invoices paid and checked", no_bills="No invoices yet — scripts/invoices.py adds them", title="control panel", upd="updated", all_ok="Everything works", notes="Works, with notes",
                check="Something to check", sub="{ok} of {n} systems fine · {a} item(s) need you", calm="Nothing needs your attention",
                att="Needs your attention", next="Coming up", rays="Rays — who confirmed today's tasks", tasks="Open tasks",
                answers="People's answers, 14 days", ok_l="confirmed / report", bad_l="question / no answer",
@@ -43,7 +43,7 @@ T = {
                test="test", foot="the page refreshes itself · your data stays on your computer", days="in {d} d.",
                today="today", tomorrow="tomorrow", late="overdue", due="due", waiting="waiting", nolet="no message yet",
                hidden="+ test tasks hidden: {n}", jobs=("Replies", "Morning message", "News slice", "Supply chain", "Content plan"), open="open", fixlog="see data/run.log", fixbot="is the bot running?", fixmail="is the mail server reachable? see data/run.log", tasks_act="Tasks"),
-    "ru": dict(title="пульт управления", upd="обновлено", all_ok="Всё работает", notes="Работает, есть заметки",
+    "ru": dict(bills="Счета → бухгалтерия", b_docs="документов", b_sum="EUR по счетам", b_paid="оплата найдена в выписке", b_topay="EUR к оплате / проверить", none_bills="Все счета оплачены и сверены", no_bills="Счетов пока нет — их добавляет scripts/invoices.py", title="пульт управления", upd="обновлено", all_ok="Всё работает", notes="Работает, есть заметки",
                check="Есть что проверить", sub="{ok} из {n} систем в порядке · {a} пункт(ов) требуют внимания",
                calm="Ничего не требует вашего внимания", att="Требует внимания", next="Ближайшее",
                rays="Лучи — кто подтвердил задачи", tasks="Открытые задачи", answers="Ответы людей за 14 дней",
@@ -57,7 +57,7 @@ T = {
                test="тест", foot="страница обновляется сама · данные только на вашем компьютере", days="через {d} дн.",
                today="сегодня", tomorrow="завтра", late="просрочено", due="срок", waiting="ждём ответ", nolet="писем нет",
                hidden="+ тестовых задач скрыто: {n}", jobs=("Сбор ответов", "Утренние письма", "Срез новостей", "Цепочка поставок", "Контент-план"), open="открыто", fixlog="см. data/run.log", fixbot="бот запущен?", fixmail="почтовый сервер доступен? см. data/run.log", tasks_act="Задачи"),
-    "lv": dict(title="vadības panelis", upd="atjaunots", all_ok="Viss strādā", notes="Strādā, ir piezīmes",
+    "lv": dict(bills="Rēķini → grāmatvedība", b_docs="dokumenti", b_sum="EUR rēķinos", b_paid="maksājums atrasts izrakstā", b_topay="EUR jāmaksā / jāpārbauda", none_bills="Visi rēķini apmaksāti un pārbaudīti", no_bills="Rēķinu vēl nav — tos pievieno scripts/invoices.py", title="vadības panelis", upd="atjaunots", all_ok="Viss strādā", notes="Strādā, ir piezīmes",
                check="Ir ko pārbaudīt", sub="{ok} no {n} sistēmām kārtībā · {a} punkti prasa uzmanību",
                calm="Nekas neprasa jūsu uzmanību", att="Prasa uzmanību", next="Tuvākais", rays="Virzieni — kas apstiprināja",
                tasks="Atvērtie uzdevumi", answers="Atbildes 14 dienās", ok_l="apstiprināja / atskaite", bad_l="jautājums / nav atbildes",
@@ -217,6 +217,29 @@ def collect(cfg, data=DATA, now=None):
     D["answers14"] = [dict(d=d.strftime("%d.%m"), ok=sum(1 for r in rec if d_of(g(r, "Received")) == d and str(g(r, "Answer")) in OKANS),
                            bad=sum(1 for r in rec if d_of(g(r, "Received")) == d and str(g(r, "Answer")) in BADANS)) for d in days]
 
+    # invoices → accounting (sheet "Invoices", written by scripts/invoices.py)
+    B = dict(n=0, test=0, sum=0.0, paid=0, fin=0, topay=0.0, items=[])
+    for r in sheet(base, "Invoices"):
+        if not g(r, "ID"):
+            continue
+        is_test = str(g(r, "Comment")).upper().startswith("TEST")
+        B["n"] += 1
+        B["test"] += is_test
+        st, typ, tot = str(g(r, "Status") or ""), str(g(r, "Type") or ""), float(g(r, "Total") or 0)
+        if "not an invoice" in typ:
+            continue
+        B["fin"] += 1
+        B["sum"] += 0 if st.startswith("Closed") else tot
+        B["paid"] += st.startswith(("Paid", "Closed"))
+        B["topay"] += tot if st.startswith(("To pay", "Not found")) else 0
+        if not st.startswith(("Paid", "Closed")) or "no final invoice" in st:
+            lvl = "bad" if st.startswith("Not found") else "warn" if "no final invoice" in st else "wait"
+            B["items"].append(dict(lvl=lvl, test=is_test, text=f'{g(r, "Supplier")} · {typ} {g(r, "Document no.")} · {tot:.2f} EUR', sub=st))
+            if lvl == "bad" and not is_test:
+                D["attention"].append(dict(lvl="warn", text=f'{L["bills"]}: {g(r, "Supplier")} {g(r, "Document no.")} — {st}', act=""))
+    B["items"].sort(key=lambda x: {"bad": 0, "warn": 1}.get(x["lvl"], 2))
+    D["bills"] = B
+
     # radar
     sig = [s for s in sheet(radar, "Signal_feed") if d_of(g(s, "Date")) and d_of(g(s, "Date")) >= today - datetime.timedelta(days=7)]
     D["signals"] = [dict(src=str(g(s, "Source"))[:40], title=str(g(s, "Title"))[:95], url=str(g(s, "URL")), rel=str(g(s, "Relevance 1–5")))
@@ -342,6 +365,15 @@ def render(D, colors=None):
     k = D["kpi"]
     kp = "".join(f'<div class="kpi"><b>{v}</b><span>{esc(t)}</span></div>' for v, t in
                  ((k["open"], L["k_open"]), (k["done"], L["k_done"]), (k.get("sig", 0), L["k_sig"]), (k.get("leads", 0), L["k_leads"])))
+    bl = D.get("bills") or dict(n=0)
+    if bl["n"]:
+        kb = "".join(f'<div class="kpi"><b>{v}</b><span>{esc(t)}</span></div>' for v, t in (
+            (bl["n"], L["b_docs"] + (f' ({L["test"]}: {bl["test"]})' if bl["test"] else "")), (f'{bl["sum"]:,.2f}'.replace(",", " "), L["b_sum"]),
+            (f'{bl["paid"]}/{bl["fin"]}', L["b_paid"]), (f'{bl["topay"]:,.2f}'.replace(",", " "), L["b_topay"])))
+        bills = f'<div class="kpis" style="margin-bottom:10px">{kb}</div>' + lst(
+            [li(x["lvl"], esc(x["text"]), esc(x["sub"]), f'<span class="tag idle">{L["test"]}</span>' if x["test"] else "") for x in bl["items"][:8]], L["none_bills"])
+    else:
+        bills = lst([], L["no_bills"])
     ch = D["chain"]
     chain = (f'<div class="chips" style="margin-bottom:8px"><span class="chip ok">🟢 {ch["g"]}</span><span class="chip warn">🟡 {ch["y"]}</span>'
              f'<span class="chip bad">🔴 {ch["r"]}</span><span class="sub">{esc(ch["date"])}</span></div>'
@@ -358,6 +390,7 @@ def render(D, colors=None):
 <div class="card w12"><div class="kpis">{kp}</div></div>
 <div class="card w12"><h3>🧭 {L['rays']}</h3><div class="rays">{rays}</div></div>
 <div class="card"><h3>✅ {L['tasks']}</h3>{lst([li('bad' if t['over'] else 'wait', esc(t['text']), esc(t['ray'] + ' · ' + t['st'] + (' · ' + L['due'] + ' ' + t['due'] if t['due'] else ''))) for t in D['tasks']], L['none_tasks'])}{f'<p class=sub>{L["hidden"].format(n=D["tasks_test"])}</p>' if D['tasks_test'] else ''}</div>
+<div class="card w12"><h3>🧾 {L['bills']}</h3>{bills}</div>
 <div class="card"><h3>📊 {L['answers']}</h3><div class="bars">{bars}</div><div class="legend"><span><i style="background:var(--okc)"></i>{L['ok_l']}</span><span><i style="background:#d69e2e"></i>{L['bad_l']}</span></div></div>
 <div class="card"><h3>🎙 {L['voice']}</h3>{lst([li('wait' if v['new'] else 'idle', esc(v['who'] + ' · ' + v['d']), esc(v['text'])) for v in D['voice']], L['none_voice'])}</div>
 <div class="card"><h3>📣 {L['posts']}</h3>{lst([li('wait', esc(p['plat']), esc(p['text'])) for p in D['posts']], L['none_posts'])}</div>

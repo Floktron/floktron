@@ -8,7 +8,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.17.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.18.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 
@@ -126,7 +126,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.17.1 · last update 22.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.18.0 · last update 22.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
@@ -137,6 +137,7 @@ A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big p
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
 Your team can **report by voice** — the bot turns a voice message into text on your own computer; the manager gets a **morning audio summary** to listen to in the car ([VOICE](docs/VOICE.md)).
 **Your own website before marketing**: the assistant leads you through a safe site on Cloudflare (free certificates, protection, one-click undo) — or on the hosting you already like, such as Namecheap or GoDaddy ([WEBSITE](docs/WEBSITE.md)).
+**Supplier invoices → accounting**: your assistant reads invoices in any language (PDF, scan, photo), FLOKTRON checks each one against your bank statement and gives the finance ray short tasks — what to pay, what to check, which final invoice to ask for; duplicates and delivery notes are caught ([INVOICES](docs/INVOICES.md)).
 **One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
 checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
@@ -199,7 +200,7 @@ then `python3 scripts/base_create.py`.
 | `prompts/` | The head (instructions for the AI agent) |
 | `templates/` | Empty base (xlsx), letter and report templates |
 | `config/` | `config.example.yaml` — copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
+| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
 | `tests/` | Automatic checks incl. safety checks — GitHub runs them on every change |
 | `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `llms.txt` | Entry point for AI assistants (one source: `AGENTS.md`) |
 | `SECURITY.md` | What is protected and how; how to report a problem |
@@ -349,7 +350,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch | What happens in your market and your supply chain? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting | What happens in your market, your supply chain and your payments? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -430,6 +431,15 @@ which rules (duties, restrictions). Fill the sheet `Watchlist` with them (`radar
 `Active = Yes` only for what they approved; no recipes, quantities or contract prices. Test: `supply_watch.py --dry` and
 `--full --dry`. Switch on with `schedule.supply` / `schedule.supply_week`. Every evening read the candidates
 (`prompts/32_supply_chain.md`).
+
+## 8b. Invoices → accounting (if wanted) — follow `docs/INVOICES.md`
+Ask: who gets the finance tasks (ray L7 or another), which bank account is the company's (`invoices.our_iban`), the VAT
+number (`invoices.our_vat`), and where supplier documents arrive today (mail, paper, a folder).
+1. Make the folders `data/invoices/inbox/<supplier>/` and `data/invoices/statements/`.
+2. **First a test on fictional data**: the dry-run line from `docs/INVOICES.md` — show the person the statuses and tasks.
+3. Then 3–5 of their own past invoices + a statement they download themselves (CSV is best). Read them
+   (`prompts/50_invoices.md`), dry run, show, and only then `--apply`. Never log in to their bank.
+4. Remind: VAT remarks are an ESTIMATE for their accountant; nothing is paid or sent by FLOKTRON.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.
@@ -952,6 +962,79 @@ Later you can still move to Path A or add Path D: the files do not change.
 ## Next: the Marketing ray
 Now posts, profiles and QR codes have one address. Link posts to the site with UTM labels
 (`?utm_source=linkedin&utm_campaign=…`) and see the visits in Web Analytics. Set up the content plan next (setup wizard step 9).
+
+
+===== FILE: docs/INVOICES.md =====
+
+# Invoices → accounting — every supplier document read, checked against the bank, handed over
+
+Supplier documents come in every language and shape: a Latvian *rēķins*, a German *Rechnung*, a Spanish *factura
+proforma*, an Estonian *ettemaksuarve*, a scan from a phone, the same invoice forwarded twice, a delivery note that is
+not an invoice at all. FLOKTRON reads them, checks each one against your bank statement and gives the finance ray
+(by default L7) short tasks: what to pay, what to check, which final invoice to ask for, what to pass to the accountant.
+
+**Tested before release on a fictional set** (no real company inside, every page marked *TEST · FICTIONAL*):
+10 documents in 7 languages (LV, EN, DE, ES, LT, ET, RU) plus a Czech scan without a text layer, and a bank statement
+as PDF and as CSV — `tests/fixtures/invoices/`. Try it yourself in one line (dry run, writes nothing):
+
+```
+python3 scripts/invoices.py --folder tests/fixtures/invoices/docs --extraction tests/fixtures/invoices/extraction.json \
+  --statements tests/fixtures/invoices/statements_csv --today 2026-11-22 --test
+```
+
+## Two steps
+
+| Step | Who | What |
+|---|---|---|
+| 1. Read | your AI assistant (`prompts/50_invoices.md`) | opens every new document (PDF, photo, scan), writes one record per document into `data/invoices/extraction.json`: supplier, VAT number, type, number, dates, net / VAT / total, how it is paid, words that identify the supplier in a bank payment. Never invents a figure: what it cannot read stays empty and is flagged |
+| 2. Check and hand over | `scripts/invoices.py` (no AI, no network) | skips duplicates, finds every payment in your bank statement, sets a status, writes the sheet **Invoices** and tasks for the finance ray; the dashboard shows the card *Invoices → accounting* |
+
+## What it catches
+
+| Situation | Status | Task |
+|---|---|---|
+| Paid, payment found (invoice number or supplier name + amount + date) | `Paid <date>` | — (goes into the hand-over task) |
+| The same document forwarded again (`FW_ …`, `(1).pdf`) or already in the base | not added | — |
+| Delivery note / *Lieferschein* / *pavadzīme* without amounts | `Not a payment document`, linked to its invoice | — |
+| Proforma paid, final invoice set off against it | proforma `Closed by invoice …`, invoice `Paid by advance` | — |
+| Proforma, order confirmation or advance invoice paid, no final invoice | `Paid · no final invoice` | ask the supplier for the final invoice |
+| Not paid, due date ahead | `To pay by <date>` | pay by the due date |
+| Not found in the statement | `Not found in statement` | check the payment |
+| Same amount paid to someone else (e.g. a supermarket card payment) | **not** taken as the payment — `(similar payment)` | check the payment, with the similar one named |
+| VAT of another country charged / reverse charge | comment on the row | one task for the accountant (ESTIMATE — to confirm) |
+| Several orders paid with one card payment | `one payment for N documents` | — |
+
+## Folders (all inside your own `data/`, never in git)
+
+```
+data/invoices/inbox/<supplier>/<file>.pdf     ← documents, one folder per supplier (any names, any language)
+data/invoices/statements/<file>.csv|.pdf      ← bank statements you download yourself
+data/invoices/extraction.json                 ← what the assistant read (step 1)
+```
+
+**Bank statements.** Download them yourself from the internet bank — FLOKTRON never logs in to a bank.
+CSV from any bank works (columns *date, counterparty, details, amount*, in EN / LV / LT / ET / DE names; incoming money
+is skipped). PDF statements in the Swedbank layout work too if `pip install pypdf` is done; otherwise the script says so
+and asks for CSV. Only statements of **your** account are read (`invoices.our_iban` in `config.yaml`); a private account
+statement in the same folder is skipped.
+
+## config.yaml
+
+```yaml
+invoices:
+  our_iban: "LV00BANK0000000000000"   # your company account in the statements
+  our_vat: "LV00000000000"            # your VAT number; its country is "home" for the VAT check
+  ray: L7                             # who gets the tasks (finance)
+```
+
+## Rules
+
+- **Nothing is paid, sent or deleted.** Tasks go into the morning message of the finance ray like any other task.
+- **Dry run first**: `python3 scripts/invoices.py` shows everything and writes nothing; `--apply` writes.
+- **Raw materials stay codes.** The base keeps supplier, number, dates and amounts — no product names, recipes or quantities.
+- Every VAT remark is an ESTIMATE for your accountant to confirm, never advice.
+- Supplier names and numbers come from outside: they are written as plain text, never as spreadsheet formulas.
+- Test with fictional data first (`--test`: rows and tasks are marked TEST, the dashboard shows them with a *test* tag).
 
 
 ===== FILE: docs/VOICE.md =====

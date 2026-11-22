@@ -3,6 +3,22 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.18.0 — 22.11.2026 · supplier invoices → accounting
+Learned in real use: supplier documents arrive in every language and shape, and the same invoice comes twice.
+Tested first on real past invoices of the company that uses FLOKTRON every day (they stay private), then on a
+fictional set that is part of this repository.
+- **[INVOICES](docs/INVOICES.md)** — the AI assistant reads every document (PDF, photo, scan; any language) into
+  `data/invoices/extraction.json` (`prompts/50_invoices.md`); `scripts/invoices.py` (no AI, no network) skips duplicates,
+  finds each payment in the bank statement (CSV from any bank; Swedbank-style PDF with optional `pypdf`), sets the status
+  and writes tasks for the finance ray: pay by, check the payment, ask for the final invoice after a proforma, order or
+  advance, VAT remarks for the accountant (ESTIMATE), hand-over of the batch.
+- A payment with the same amount to someone else is **not** taken as the payment (shown as "similar payment").
+- New sheet `Invoices` in the base (`base_create.py`, template rebuilt); dashboard card *Invoices → accounting* (EN / RU / LV).
+- Setup wizard: new step **8b Invoices → accounting** — fictional test first, then a few own past invoices, dry run before apply.
+- `tests/fixtures/invoices/`: 10 fictional documents in 7 languages (LV, EN, DE, ES, LT, ET, RU) + a Czech scan,
+  a forwarded duplicate, a delivery note, a bank statement as PDF and CSV; 7 new automated tests (79 in total).
+- Fixed: the empty base template still carried an old internal name in its first cell.
+
 ## 0.17.1 — 22.11.2026 · overview PDF 1.5
 - `docs/FLOKTRON_overview.pdf` (version 1.5, 6 pages): new page *New in version 0.17 — your own website before marketing*
   (four paths, why Cloudflare is recommended, what stays safe); open version 0.17.0 in the figures.

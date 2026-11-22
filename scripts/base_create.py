@@ -96,6 +96,7 @@ def build(cfg):
         ["Tasks — what goes into the morning message (status not Done, date today or earlier)."],
         ["Receipts and Evening_reports are filled by the reply collector. Do not edit by hand."],
         ["Stock, Movements, Orders, Purchases, Rentals, Thresholds — fill in when the ray starts working."],
+        ["Invoices — supplier documents checked against the bank statement; filled by scripts/invoices.py."],
         ["Every figure carries a status: PUBLIC / ESTIMATE / SCENARIO / DEAL."],
     ], [120], first=True)
 
@@ -138,6 +139,10 @@ def build(cfg):
                              "Delivery", "Comment"], widths=[8, 11, 26, 26, 8, 12, 12, 16, 30])
     add_sheet(wb, "Purchases", ["ID", "Supplier", "Item code", "Qty", "Ordered", "Expected",
                                 "Status", "Tracking", "Comment"], widths=[8, 20, 10, 8, 12, 12, 12, 20, 30])
+    add_sheet(wb, "Invoices", ["ID", "Added", "Supplier", "Reg. / VAT no.", "Type", "Document no.", "Date", "Due", "Net",
+                               "VAT", "Total", "Currency", "Payment method", "Status", "Payment in statement", "Linked to",
+                               "Category", "File", "Hash", "Tasks", "Checked", "Comment"],
+              widths=[10, 11, 28, 15, 15, 14, 11, 11, 9, 8, 9, 7, 12, 30, 34, 18, 14, 36, 12, 22, 8, 44])
     add_sheet(wb, "Rentals", ["Item no.", "Type / size", "Where (site)", "From", "Status", "Comment"],
               widths=[9, 14, 26, 11, 12, 30])
     add_sheet(wb, "Thresholds", ["Rule", "Parameter", "Value", "Figure status", "Comment"], [

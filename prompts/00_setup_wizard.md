@@ -18,7 +18,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch | What happens in your market and your supply chain? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting | What happens in your market, your supply chain and your payments? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -99,6 +99,15 @@ which rules (duties, restrictions). Fill the sheet `Watchlist` with them (`radar
 `Active = Yes` only for what they approved; no recipes, quantities or contract prices. Test: `supply_watch.py --dry` and
 `--full --dry`. Switch on with `schedule.supply` / `schedule.supply_week`. Every evening read the candidates
 (`prompts/32_supply_chain.md`).
+
+## 8b. Invoices → accounting (if wanted) — follow `docs/INVOICES.md`
+Ask: who gets the finance tasks (ray L7 or another), which bank account is the company's (`invoices.our_iban`), the VAT
+number (`invoices.our_vat`), and where supplier documents arrive today (mail, paper, a folder).
+1. Make the folders `data/invoices/inbox/<supplier>/` and `data/invoices/statements/`.
+2. **First a test on fictional data**: the dry-run line from `docs/INVOICES.md` — show the person the statuses and tasks.
+3. Then 3–5 of their own past invoices + a statement they download themselves (CSV is best). Read them
+   (`prompts/50_invoices.md`), dry run, show, and only then `--apply`. Never log in to their bank.
+4. Remind: VAT remarks are an ESTIMATE for their accountant; nothing is paid or sent by FLOKTRON.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.
