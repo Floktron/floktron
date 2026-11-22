@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.16.2 — 22.11.2026 · overview PDF 1.4
+- `docs/FLOKTRON_overview.pdf` (version 1.4, 5 pages): new page *New in version 0.16 — already working* (voice reports,
+  audio summary, dashboard on demo data); in *What else can be plugged in* these three are marked as running; open version 0.16.1, 72 automated tests.
+  Other languages on koagu.com/floktron were updated the same day.
+
 ## 0.16.1 — 22.11.2026 · dashboard speaks your language
 - Dashboard: system names, statuses (Accepted, Question, Sent …) and hints are shown in the page language (EN / RU / LV), not only the headings.
 - koagu.com/floktron shows the dashboard on demo data in all six languages.
