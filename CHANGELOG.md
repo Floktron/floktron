@@ -3,6 +3,12 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.18.1 — 22.11.2026 · overview PDF 1.6
+- `docs/FLOKTRON_overview.pdf` (version 1.6, 7 pages): new page *New in version 0.18 — supplier invoices → accounting*
+  (what it catches, two steps, what stays safe, results on the fictional test set); "Invoices from e-mail to ledger"
+  is marked as running; open version 0.18.0, 79 automated tests in the figures.
+  Other languages on koagu.com/floktron were updated the same day.
+
 ## 0.18.0 — 22.11.2026 · supplier invoices → accounting
 Learned in real use: supplier documents arrive in every language and shape, and the same invoice comes twice.
 Tested first on real past invoices of the company that uses FLOKTRON every day (they stay private), then on a
