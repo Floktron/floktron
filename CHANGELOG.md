@@ -3,6 +3,26 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.22.0 — 23.11.2026 · mail watch: nothing waits unnoticed
+Learned in real use: a request to confirm, an invitation from an association, a deadline in the third paragraph,
+a starred message — and the phone number you need is in a signature somewhere. Tested for days on a live mailbox first.
+- **[MAIL_WATCH](docs/MAIL_WATCH.md)** — `scripts/mail_watch.py` (no AI): reads the mailbox of the `mail` section
+  (Proton Mail Bridge, Gmail, Outlook, any IMAP) **read-only** — received and sent — and keeps one row per message in
+  the new sheet **Mail**: category (Confirm, Reply awaited, Invitation, Deadline, Question, Invoice, Letter,
+  Newsletter, Notice, Notice (important), Auto-reply, Code / login, FLOKTRON (system), Sent), what is needed from you,
+  dates found in the text, ⭐, answered or not. Words in EN, LV, RU, DE, ET, LT.
+- New sheet **Contacts**: name, organisation, phones and website from signatures, first / last message, counts.
+- A short nudge by Telegram bot or e-mail, in your language, only when someone waits for **you**: at once for
+  confirm / reply / invitation / deadline / important notices, after 24 h for a question, after 48 h for a starred
+  message. At most twice, not in quiet hours (22–07); your answer or `Closed` in *Status* stops it. Mail from before
+  the first run is not pushed.
+- Invoice PDFs from attachments → `data/invoices/inbox/<sender>/` (same file once); as soon as the AI assistant has
+  read them into `extraction.json`, the next run starts `scripts/invoices.py --apply` itself.
+- Dashboard card **Mail waits for you** (en / ru / lv); runs after every reply collection (`scripts/run.py collect`)
+  once `mail_watch.enabled: true`; by hand `python3 scripts/run.py mail`.
+- `prompts/54_mail_watch.md`, setup wizard step **8f Mail watch**, config section `mail_watch`; 8 new automated tests
+  on a fictional mailbox (14 messages in 6 languages, built at test time).
+
 ## 0.21.1 — 23.11.2026 · overview PDF 1.9
 - `docs/FLOKTRON_overview.pdf` (version 1.9, 10 pages): new page *New in version 0.21 — follow-ups after an offer, only
   after your "yes"* (days 3 / 7 / 14, three buttons, what stays safe); "Follow-ups after an offer" marked as running in

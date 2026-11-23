@@ -17,6 +17,8 @@
 | Rays — who confirmed today's tasks | sheets Rays / Tasks / Receipts of `floktron_base.xlsx` (test rays are marked) |
 | Open tasks · answers for 14 days | Tasks, Receipts |
 | Voice reports · audio summary player | `voice_reports.xlsx`, `pulse_*.m4a` ([VOICE](VOICE.md)) |
+| Invoices → accounting | sheet Invoices ([INVOICES](INVOICES.md)) |
+| Mail waits for you — waiting for you, starred without an answer, messages in 7 days, up to 10 rows | sheet Mail ([MAIL_WATCH](MAIL_WATCH.md)); a confirm / reply older than a day also goes to *Needs your attention* |
 | Posts today · radar signals · supply chain | `floktron_content.xlsx` Plan, `floktron_radar.xlsx` Signal_feed / Watch_log |
 
 Language follows `company.language` (en, ru, lv); colours follow `colors.main` / `colors.ok`.

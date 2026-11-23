@@ -26,6 +26,7 @@ Status: **18 parts ready, 1 planned.** Working versions are cleaned
 | `calendar_read.py` · `ics.py` | Your calendar (.ics link, read only) in the morning message; .ics files for due dates and meetings | **ready (0.13.0)** |
 | `invoices.py` | Invoices → accounting: AI-read supplier documents checked against the bank statement (CSV, or PDF with pypdf); duplicates, statuses, tasks for the finance ray, sheet Invoices | **ready (0.18.0)** |
 | `snapshot.py` | Company snapshot: facts + base counts → branded PDF (EN / LV / RU) + JSON with status and source per figure; profiles partner / no_bank / tax / public; lock for secrets | **ready (0.19.0)** |
+| `mail_watch.py` | Mail watch: every received and sent message in the sheet Mail (category, need, dates, ⭐, answered), sheet Contacts, invoice PDFs → data/invoices/inbox and invoices.py by itself, a nudge by Telegram or e-mail; read-only, runs after every collect | **ready (0.22.0)** |
 | `followups.py` | Reminders after an offer: finds sent offers and answers in the mailbox, drafts day 3 / 7 / 14 reminders, asks the manager (✅ / ✏️ / ⏸), sends only after OK as a reply in the same thread; sheet Follow-ups | **ready (0.21.0)** |
 | `documents.py` | Branded documents: invoice, advance invoice, acceptance act, offer (LV / EN / LV+EN) → PDF, numbering, sheet Issued | **ready (0.20.0)** |
 | `supply_watch.py` | Supply chain watch: prices, currencies, news and page changes of your Watchlist → Watch_log (🟢/🟡/🔴/⚪) | **ready (0.12.0)** |

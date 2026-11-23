@@ -134,6 +134,18 @@ followups:                 # optional: polite reminders after an offer, only aft
   imap_folders: []         # folders with sent AND received mail (empty = provider default "All Mail")
   free_mail_domains: []    # more domains that are not one company (gmail.com etc. are built in)
 
+mail_watch:                # optional: the whole mailbox in one sheet + a nudge when someone waits for you (docs/MAIL_WATCH.md)
+  enabled: false
+  notify: telegram         # telegram (bot below → manager_chat_ids) | mail (to mail.manager_address) | none
+  notify_subjects: true    # false = the notice shows who and what is needed, not the subject
+  quiet_hours: "22-07"     # nothing is sent in these hours; it waits for the morning
+  important: {}            # organisations whose invitations and portal notices always count, e.g. {vid.gov.lv: "State Revenue Service"}
+  own_addresses: []        # more addresses of yours (aliases)
+  inbox_folders: []        # empty = provider default (INBOX)
+  sent_folders: []         # empty = provider default (Proton "Sent", Gmail "[Gmail]/Sent Mail", Outlook "Sent Items")
+  first_days: 30           # first run reads 30 days back, later runs `days`
+  days: 4
+
 telegram:                  # optional bot: dialog → leads (scripts/bot/telegram_bot.py); off until a token exists
   enabled: false
   token_env: "FLOKTRON_TG_TOKEN"   # bot token from @BotFather comes from this environment variable...

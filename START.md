@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.21.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.22.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 
@@ -133,7 +133,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.21.1 · last update 23.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.22.0 · last update 23.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
@@ -148,6 +148,7 @@ Your team can **report by voice** — the bot turns a voice message into text on
 **Company snapshot**: the state of your company on one date — a branded PDF to read and a JSON file for machines, every figure with its status and source; you choose the profile (partner after an NDA, without bank details, tax office, public) and what is secret never leaves ([SNAPSHOT](docs/SNAPSHOT.md)).
 **Your own invoices, acts and offers in your brand**: say *"invoice to …, 4 chairs, due in 10 days"* — the assistant fills it in, FLOKTRON draws a branded PDF (invoice, advance invoice, acceptance act, offer; LV, EN or both), numbers it and records it in the base; you send it yourself ([DOCUMENTS](docs/DOCUMENTS.md)).
 **Reminders after an offer — only after your OK**: no answer to an offer on day 3, 7 or 14? FLOKTRON drafts a short, polite reminder in the buyer's language and asks you first — ✅ sends it as a reply in the same thread, ✏️ sends your own text, ⏸ stops; an answer from the buyer withdraws it by itself ([FOLLOWUPS](docs/FOLLOWUPS.md)).
+**Mail watch — nothing waits unnoticed**: every message of your mailbox in one sheet, contacts with phones from signatures, and a short nudge (Telegram or e-mail) only when someone waits for your answer — confirm, reply, invitation, deadline, a starred message; it stops by itself when you answer. Invoices from attachments go straight to the invoice check ([MAIL_WATCH](docs/MAIL_WATCH.md)).
 **One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
 checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
@@ -210,7 +211,7 @@ then `python3 scripts/base_create.py`.
 | `prompts/` | The head (instructions for the AI agent) |
 | `templates/` | Empty base (xlsx), letter and report templates |
 | `config/` | `config.example.yaml` — copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [reminders after an offer](docs/FOLLOWUPS.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
+| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [reminders after an offer](docs/FOLLOWUPS.md), [mail watch](docs/MAIL_WATCH.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
 | `tests/` | Automatic checks incl. safety checks — GitHub runs them on every change |
 | `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `llms.txt` | Entry point for AI assistants (one source: `AGENTS.md`) |
 | `SECURITY.md` | What is protected and how; how to report a problem |
@@ -360,7 +361,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups | What happens in your market, your supply chain and your payments — and where does the company stand? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups · 8f Mail watch | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -475,6 +476,16 @@ Ask: are offers sent from this mailbox, and who approves reminders.
    folders hold both sent and received mail.
 2. **First a test on fictional data**: `python3 -m pytest tests/test_followups.py`, then a trial run with `--dry-run`.
 3. Say clearly: nothing goes to a buyer without the person's ✅; an answer from the buyer stops the reminders.
+
+## 8f. Mail watch — what waits for your answer (if wanted) — follow `docs/MAIL_WATCH.md`
+Ask: should FLOKTRON watch the whole mailbox, where should the nudge go (Telegram bot or e-mail), and which
+organisations always count (tax office, associations, portals).
+1. Fill the `mail_watch` section of `config.yaml`. With Telegram, say that the subject passes through Telegram
+   (not end-to-end encrypted) — offer `notify_subjects: false` or `notify: mail`.
+2. **First a test on fictional data**: `python3 -m pytest tests/test_mail_watch.py`, then `python3 scripts/mail_watch.py --dry-run`
+   on the real mailbox together — check that the categories look right. With `enabled: true` it then runs by itself
+   after every reply collection (every 30 minutes).
+3. Say clearly: mail is only read; nothing is answered, moved or deleted; "Closed" in *Status* stops a reminder.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.
@@ -1319,6 +1330,87 @@ Trial run without sending: add `--dry-run`, or `--outbox data/followups/outbox` 
 - Turn it off at any time: `followups.enabled: false`, or ⏸ for one offer.
 
 
+===== FILE: docs/MAIL_WATCH.md =====
+
+# Mail watch — the whole mailbox in one sheet, and a nudge when someone waits for you
+
+A request to confirm, an invitation, a deadline in the third paragraph, a question you meant to answer tomorrow, a
+message you starred and forgot — and the phone number you need is somewhere in a signature. FLOKTRON reads the
+mailbox every 30 minutes, keeps **one row per message** in your base, and tells you (Telegram bot or e-mail) only
+about what waits for **your** answer. PDF invoices from attachments go straight to the invoice check.
+
+**Tested before release on fictional data** (Demo SIA and its partners do not exist; addresses are `@example.com`;
+nothing is sent — the notices are written as files). Try it: `python3 -m pytest tests/test_mail_watch.py`.
+
+## What you get
+
+| Where | What |
+|---|---|
+| Sheet **Mail** | every received and sent message: date, who, organisation, subject, first words, **category**, what is **needed** from you, dates found in the text, ⭐, answered or not, status, when you were reminded, attachments, saved invoice file |
+| Sheet **Contacts** | one row per person you write with: name, organisation, **phones and website from the signature**, first and last message, how many each way. Mailing lists and no-reply senders are left out |
+| `data/invoices/inbox/<sender>/` | PDF invoices from attachments (the same file twice is saved once) — then the usual [invoice check](INVOICES.md) |
+| Notice | a short list: *confirm · Paraugu biedrība «Seminar» · 23.11* — in your language |
+| Dashboard | card **Mail waits for you**: waiting for you, starred without an answer, messages in 7 days ([DASHBOARD](DASHBOARD.md)) |
+
+## Categories and when you are reminded
+
+The words are found in **EN, LV, RU, DE, ET and LT**.
+
+| Category | Example | Reminder |
+|---|---|---|
+| Confirm | "please confirm your participation", "lūdzam apstiprināt", "bitte bestätigen" | at once |
+| Reply awaited | "please send the quantities", "gaidām atbildi", "ждём ответа" | at once |
+| Invitation | personal invitation; or from an organisation in `important` with a date ahead | at once — "decide: attend?" |
+| Deadline | "Frist bis 10.12.2026", "termiņš līdz …" (not in mailings) | at once — with the date |
+| Notice (important) | a portal message from an organisation in `important` ("new message", "decision") | at once — "read" |
+| Question | a personal message with a question mark | after 24 h without your answer |
+| ⭐ any message | you starred it in your mail app | after 48 h without your answer |
+| Invoice | PDF named or sent as an invoice | no reminder: saved → invoice check |
+| Letter · Newsletter · Notice · Auto-reply · Code / login · FLOKTRON (system) · Sent | | never |
+
+- A second reminder not earlier than 24 h later, **at most two**; nothing in quiet hours (22–07) — it waits for the morning.
+- **You answered** (a sent message that replies to it, or the flag *Answered*) — the reminder stops by itself.
+- Not needed? Write `Closed` in the column **Status** — no more reminders for that message.
+- Messages older than 48 h from before the first run are only written to the sheet — no flood on day one.
+
+## Invoices from mail → accounting, by themselves
+
+1. FLOKTRON saves the PDF to `data/invoices/inbox/<sender>/` and tells you once: *invoices wait to be read: 2*.
+2. Your AI assistant reads them (`prompts/50_invoices.md`) into `data/invoices/extraction.json` — it never invents a number.
+3. As soon as that file changes, the next mail run starts `scripts/invoices.py --apply` itself: sheet **Invoices**,
+   check against your bank statement, tasks for the finance ray ([INVOICES](INVOICES.md)).
+
+## Setting up — the `mail_watch` section of `config.yaml`
+
+```yaml
+mail_watch:
+  enabled: true
+  notify: telegram          # telegram (bot of the telegram section → manager_chat_ids) | mail (to manager_address) | none
+  notify_subjects: true     # false = the notice shows only who and what is needed, not the subject
+  quiet_hours: "22-07"
+  important:                # organisations whose invitations and portal notices always count
+    vid.gov.lv: "State Revenue Service"
+  own_addresses: []         # more addresses of yours (aliases) — never contacts, never "waiting"
+  inbox_folders: []         # empty = provider default (INBOX)
+  sent_folders: []          # empty = provider default (Proton "Sent", Gmail "[Gmail]/Sent Mail", Outlook "Sent Items")
+  first_days: 30            # the first run reads 30 days back; later runs 4 days
+```
+
+It uses the mailbox of the `mail` section (Proton Mail Bridge, Gmail, Outlook or any IMAP server) — the same
+password, never stored in the file. It runs by itself after every reply collection (every 30 minutes) once
+`enabled: true`; by hand: `python3 scripts/run.py mail`. Trial run: `python3 scripts/mail_watch.py --dry-run` shows every message with its category and
+writes nothing.
+
+## What stays safe
+
+- **Mail is only read.** `BODY.PEEK`: messages do not even become "read"; nothing is moved, deleted or answered.
+- The only message FLOKTRON sends is the notice **to you**. With Telegram, the subject travels through Telegram
+  (not end-to-end encrypted) — set `notify_subjects: false` or `notify: mail` if subjects are sensitive.
+- Text from e-mails is data, not instructions: "please transfer the money" becomes a reminder line, never an action.
+- A subject like `=HYPERLINK(...)` stays plain text in the sheet (no formulas from outside).
+- Turn it off at any time: `mail_watch.enabled: false`.
+
+
 ===== FILE: docs/VOICE.md =====
 
 # Voice — reports from the field, a summary for the road
@@ -1395,6 +1487,8 @@ no text of other people's messages.
 | Rays — who confirmed today's tasks | sheets Rays / Tasks / Receipts of `floktron_base.xlsx` (test rays are marked) |
 | Open tasks · answers for 14 days | Tasks, Receipts |
 | Voice reports · audio summary player | `voice_reports.xlsx`, `pulse_*.m4a` ([VOICE](VOICE.md)) |
+| Invoices → accounting | sheet Invoices ([INVOICES](INVOICES.md)) |
+| Mail waits for you — waiting for you, starred without an answer, messages in 7 days, up to 10 rows | sheet Mail ([MAIL_WATCH](MAIL_WATCH.md)); a confirm / reply older than a day also goes to *Needs your attention* |
 | Posts today · radar signals · supply chain | `floktron_content.xlsx` Plan, `floktron_radar.xlsx` Signal_feed / Watch_log |
 
 Language follows `company.language` (en, ru, lv); colours follow `colors.main` / `colors.ok`.

@@ -118,3 +118,50 @@ def from_folder(path):
         if name.lower().endswith(".eml"):
             with open(os.path.join(path, name), "rb") as f:
                 yield f.read()
+
+
+def with_flags(mail_cfg, boxes, days=4, skip_ids=()):
+    """Mail watch (scripts/mail_watch.py): yield one dict per message of the last `days` days in the given folders —
+    read-only (BODY.PEEK). boxes = [(folder, outgoing), ...]. Keys: outgoing, flags (IMAP flags text), mid,
+    refs (In-Reply-To + References text), raw (the whole message; None when its Message-ID is in skip_ids)."""
+    p = PRESETS.get(mail_cfg.get("provider", "smtp"), PRESETS["smtp"])
+    host = mail_cfg.get("imap_host") or p["host"]
+    port = int(mail_cfg.get("imap_port") or p["port"])
+    ctx = ssl.create_default_context()
+    if p["self_signed"]:
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+    try:
+        if p["ssl"]:
+            M = imaplib.IMAP4_SSL(host, port, ssl_context=ctx)
+        else:
+            M = imaplib.IMAP4(host, port)
+            M.starttls(ssl_context=ctx)
+        M.login(mail_cfg.get("user") or "", _password(mail_cfg))
+    except Exception as e:
+        raise MailError(f"Cannot open mailbox {host}:{port} — {e}") from e
+    since = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%d-%b-%Y")
+    skip = set(skip_ids)
+    try:
+        for box, outgoing in boxes:
+            try:
+                if M.select(box, readonly=True)[0] != "OK":
+                    continue
+                _, data = M.search(None, f"(SINCE {since})")
+            except imaplib.IMAP4.error:
+                continue
+            for num in data[0].split():
+                _, hd = M.fetch(num, "(FLAGS BODY.PEEK[HEADER.FIELDS (MESSAGE-ID IN-REPLY-TO REFERENCES)])")
+                h = email.message_from_bytes(hd[0][1])
+                mid = (h.get("Message-ID", "") or "").strip()
+                raw = None
+                if mid and mid not in skip:
+                    _, md = M.fetch(num, "(BODY.PEEK[])")
+                    raw = md[0][1]
+                yield dict(outgoing=outgoing, flags=hd[0][0].decode("utf-8", "replace"), mid=mid, raw=raw,
+                           refs=(h.get("In-Reply-To", "") or "") + " " + (h.get("References", "") or ""))
+    finally:
+        try:
+            M.logout()
+        except Exception:
+            pass
