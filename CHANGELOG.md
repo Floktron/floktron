@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.22.1 — 23.11.2026 · overview PDF 1.10
+- `docs/FLOKTRON_overview.pdf` (version 1.10, 11 pages): new page *New in version 0.22 — mail watch: nothing waits
+  unnoticed* (what is in the mail and what FLOKTRON does, sheets Mail and Contacts, what stays safe); open version
+  0.22.0, 116 automated tests in the figures. Other languages on koagu.com/floktron were updated the same day.
+
 ## 0.22.0 — 23.11.2026 · mail watch: nothing waits unnoticed
 Learned in real use: a request to confirm, an invitation from an association, a deadline in the third paragraph,
 a starred message — and the phone number you need is in a signature somewhere. Tested for days on a live mailbox first.
