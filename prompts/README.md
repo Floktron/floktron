@@ -17,6 +17,7 @@ Codex, Cursor…); tested with Claude. Every prompt starts with the safety rule 
 | `51_snapshot.md` | Once: fill the facts file with the person (public facts from the register, the rest only from the person); then a snapshot per recipient — profile, dry check, PDF + JSON | **draft (0.19.0)** |
 | `54_mail_watch.md` | When the person asks what waits for them in the mailbox, looks for a contact, or has invoices from mail to read — sheets Mail and Contacts; never answers mail | **draft (0.22.0)** |
 | `55_prospects.md` | When the person asks who to write to, or wants a first letter to a new company — sheet Prospects; only company data; never sends | **draft (0.23.0)** |
+| `56_gateways.md` | When the person asks which card payments have no invoice, how to get a business invoice from a gateway, or what to give the accountant — sheet Gateways; never opens links, never sends | **draft (0.24.0)** |
 | `53_followups.md` | When the person asks who has not answered an offer, or wants another reminder text — show the sheet Follow-ups, help with a draft; never sends | **draft (0.21.0)** |
 | `52_documents.md` | When the person asks for an invoice, act or offer — fill the document file from their words, dry run, record after "yes" | **draft (0.20.0)** |
 | `35_reasons_without_news.md` | When there is no news — reasons from the company's own life | **draft (0.5.0)** |

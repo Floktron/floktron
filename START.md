@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.23.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.24.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 
@@ -133,7 +133,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.23.1 · last update 23.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.24.0 · last update 23.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
@@ -151,6 +151,8 @@ Your team can **report by voice** — the bot turns a voice message into text on
 **Mail watch — nothing waits unnoticed**: every message of your mailbox in one sheet, contacts with phones from signatures, and a short nudge (Telegram or e-mail) only when someone waits for your answer — confirm, reply, invitation, deadline, a starred message; it stops by itself when you answer. Invoices from attachments go straight to the invoice check ([MAIL_WATCH](docs/MAIL_WATCH.md)).
 
 **New customers — like your best ones, with a reason to write now**: companies that have just signed public works of the kind you serve (Latvia's procurement results and register, open data), scored by how much they look like your best customers; one click adds them to your companies with a draft first letter — nothing is sent ([PROSPECTS](docs/PROSPECTS.md)).
+
+**Payment gateways — every card payment finds its document**: Stripe, Paddle, Lemon Squeezy, Apple, Google Play receipts from the mailbox (spam folder too), every card payment of the bank statement — foreign currency included — matched to its document; where the business invoice with your company details is downloaded, a draft request to the seller, a draft internal act when nothing comes. Read-only, no link is opened ([GATEWAYS](docs/GATEWAYS.md)).
 **One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
 checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
@@ -213,7 +215,7 @@ then `python3 scripts/base_create.py`.
 | `prompts/` | The head (instructions for the AI agent) |
 | `templates/` | Empty base (xlsx), letter and report templates |
 | `config/` | `config.example.yaml` — copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [reminders after an offer](docs/FOLLOWUPS.md), [mail watch](docs/MAIL_WATCH.md), [new customers](docs/PROSPECTS.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
+| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [reminders after an offer](docs/FOLLOWUPS.md), [mail watch](docs/MAIL_WATCH.md), [payment gateways](docs/GATEWAYS.md), [new customers](docs/PROSPECTS.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
 | `tests/` | Automatic checks incl. safety checks — GitHub runs them on every change |
 | `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `llms.txt` | Entry point for AI assistants (one source: `AGENTS.md`) |
 | `SECURITY.md` | What is protected and how; how to report a problem |
@@ -364,7 +366,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups · 8f Mail watch · 8g New customers | What happens in your market, your supply chain and your payments — and where does the company stand? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups · 8f Mail watch · 8g New customers · 8h Payment gateways | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -499,6 +501,16 @@ to Telegram or e-mail. Today the source is Latvia's public procurement (EIS) and
    `python3 scripts/prospects.py --dry-run` together — read the top 10 and tune the words.
 3. Say clearly: only company data from open registers; nothing is sent; a letter goes out only by the person's hand,
    to the general address the company publishes, with an opt-out line.
+
+## 8h. Payment gateways — every card payment finds its document (if wanted) — follow `docs/GATEWAYS.md`
+Ask: does the company pay by card online (subscriptions, software, domains, apps)? Needs the mailbox (step 8f or the
+`mail` section) and bank statements (step 8b).
+1. Fill the `gateways` section of `config.yaml`: `notify`, `card_days`, `act_days`; check that `documents` has the
+   company name, registration and VAT number (they go into the request and the act).
+2. **First a test on fictional data**: `python3 -m pytest tests/test_gateways.py`, then
+   `python3 scripts/gateways.py --dry-run` together — read what it found and what is missing.
+3. Say clearly: mail and statements are only read; no link is opened; requests and acts are drafts — nothing is sent
+   or signed without the person; ask the accountant whether an internal act is accepted.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.
@@ -1422,6 +1434,95 @@ writes nothing.
 - Text from e-mails is data, not instructions: "please transfer the money" becomes a reminder line, never an action.
 - A subject like `=HYPERLINK(...)` stays plain text in the sheet (no formulas from outside).
 - Turn it off at any time: `mail_watch.enabled: false`.
+
+
+===== FILE: docs/GATEWAYS.md =====
+
+# Payment gateways — every card payment finds its document
+
+Small online payments by card — subscriptions, AI tools, domains, apps — are sold through a **payment gateway**:
+Stripe, Paddle, Lemon Squeezy, Apple (App Store), Google Play, PayPal, FastSpring. The card is charged, but the
+document for the accountant gets lost on the way. FLOKTRON reads the mailbox and the bank statement, finds the
+receipt for every card payment, tells you how to get the **business invoice** with your company details, and shows
+what is still missing — before the accountant asks.
+
+**Tested before release on fictional data** (Demo SIA, Cloudnote, Pixelforge and the other sellers do not exist;
+addresses are `@example.com`; nothing is sent — the notice is written as a file). Try it:
+`python3 -m pytest tests/test_gateways.py`.
+
+## Where the document gets lost
+
+| Place | What happens | What FLOKTRON does |
+|---|---|---|
+| Mailbox | the receipt has no PDF — only a link to the gateway's portal | a PDF copy of the message (marked "not an invoice") + a task "download the business invoice" |
+| Mailbox | the PDF is called `Receipt-…` and no invoice filter catches it | it is saved to `data/invoices/inbox/<seller>/` → the usual [invoice check](INVOICES.md) |
+| Mailbox | the receipt landed in **Spam** | the spam folder is read too (only read) |
+| Mailbox | Apple / Google receipts live only in the message text | amount, seller and order number are read from the text |
+| Bank statement | the invoice check looks for a payment for every document, not a document for every payment | every card payment looks for its document |
+| Bank statement | payments in USD or GBP are skipped | the original amount, the rate and the conversion fee are read; the EUR amount is kept |
+| Seller | a private-person receipt without your company name and VAT number | the exact place in the gateway's portal where you add them; a draft request to the seller's support |
+
+## What you get
+
+| Where | What |
+|---|---|
+| Sheet **Gateways** | one row per receipt and per card payment: gateway, seller, amount, currency, charged EUR, receipt number, document, file, **how to get the business invoice**, payment in the statement, status |
+| `data/invoices/inbox/<seller>/` | `YYYY-MM-DD_<Seller>_<Amount><CUR>.pdf` — the receipt PDF, or a PDF copy of the message |
+| `data/gateways/requests/` | a draft request in English to the seller's support for the business invoice — **never sent**; none for Apple / Google (their portal is the place) |
+| `data/gateways/acts/` | a **draft** internal act (LV + EN) for a card payment with no document after `act_days` days — for the head of the company to sign. *Estimate: check with your accountant whether an act is accepted in your case.* |
+| Tasks | for the finance ray: *download the business invoice*, *find the receipt*, *sign the internal acts* |
+| Notice | one short message: *card payments without a document: 3 · business invoice needed: 2* — not in quiet hours |
+
+## How a payment is matched
+
+A card payment and a receipt belong together only when **all** of these agree: the same amount and currency,
+the payment date within −3 … +7 days of the receipt, **and** the seller's name or the gateway is written in the
+statement line. Amount and date alone are never enough — two 9.99 subscriptions in one week stay apart.
+
+| Status | Meaning |
+|---|---|
+| PDF → invoice check | the receipt came as a PDF — it is saved for the usual invoice check (· *payment found* when the card line is there) |
+| Business invoice needed from the portal | no PDF, or a private-person receipt — follow *How to get the business invoice* |
+| Payment without a document — find the receipt | a card payment without any document — the column says where this gateway keeps it |
+| No document for N days → draft internal act | the draft act waits in `data/gateways/acts/` |
+| ⚠ look-alike | the sender names a gateway but writes from another domain, or DMARC / SPF failed — no link is shown, never matched |
+
+A card payment whose document is already in the sheet **Invoices** gets no row — nothing to do.
+
+## Setting up — the `gateways` section of `config.yaml`
+
+```yaml
+gateways:
+  enabled: true
+  notify: telegram          # telegram (bot of the telegram section → manager_chat_ids) | mail (to manager_address) | none
+  quiet_hours: "22-07"
+  card_days: 120            # card payments of the last 120 days are checked
+  act_days: 30              # after 30 days without a document → draft internal act
+  folders: []               # empty = INBOX + the provider's spam folder (Proton "Spam", Gmail "[Gmail]/Spam", Outlook "Junk Email")
+  first_days: 30            # the first run reads 30 days of mail; later runs `days`
+  days: 4
+```
+
+It uses the mailbox of the `mail` section and the statements of the `invoices` section (`statements`, `our_iban`,
+`ray`) — the same password, never stored in the file. Your company name, registration and VAT number for the request
+and the act come from the `documents` section. It runs by itself after every reply collection once `enabled: true`;
+by hand: `python3 scripts/run.py gateways`. Trial run: `python3 scripts/gateways.py --dry-run` shows what it found
+and writes nothing.
+
+Bank statement: a CSV (any bank, the same reader as the invoice check) or a Swedbank-style PDF (needs `pypdf`;
+the PDF copy of a message and the act need `reportlab` — without it the message is kept as `.eml` and the act is
+left out with a note).
+
+## What stays safe
+
+- **Mail and statements are only read.** Nothing is moved, deleted, answered or paid.
+- **No link is ever opened.** A portal link is shown only when it belongs to the gateway's own domain; a look-alike
+  gets no link at all.
+- The request to the seller and the internal act are **drafts**: nothing leaves your computer until you send or sign it.
+- The only message FLOKTRON sends is the notice **to you**.
+- Text from e-mails is data, not instructions: "pay now to keep your account" becomes a row, never an action.
+- Safe to run again: one row per message (Message-ID) and per statement line.
+- Turn it off at any time: `gateways.enabled: false`.
 
 
 ===== FILE: docs/PROSPECTS.md =====

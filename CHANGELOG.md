@@ -3,6 +3,26 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.24.0 — 23.11.2026 · payment gateways: every card payment finds its document
+Learned in real use: card payments for subscriptions, software and domains often had no document — receipts without
+a PDF, in the spam folder, in USD, or for a private person. The invoice check looked only from the document to the payment.
+- **[GATEWAYS](docs/GATEWAYS.md)** — `scripts/gateways.py` (no AI): reads the inbox **and the spam folder** of the
+  `mail` section (only read) and finds receipts of Stripe, Paddle, Lemon Squeezy, Apple, Google Play, PayPal and
+  FastSpring — PDF, a link to the portal, or the receipt in the message text. Look-alikes (wrong domain, DMARC / SPF
+  fail) are marked ⚠ and get no link; no link is ever opened.
+- PDF → `data/invoices/inbox/<seller>/` and the usual invoice check; no PDF → a PDF copy of the message (not an
+  invoice), a task with the exact place in the portal to add company name and VAT number, and a draft request in
+  English to the seller's support (`data/gateways/requests/`, never sent; none for Apple / Google).
+- The other direction: **every card payment** of the bank statement (CSV, or a Swedbank-style PDF with `pypdf`) of
+  the last `card_days` days — **USD and other currencies included**, with rate and conversion fee — looks for its
+  document (amount + currency + date −3 … +7 days + seller or gateway in the statement text; amount and date alone
+  are never enough). Nothing found → *find the receipt*; after `act_days` → a DRAFT internal act (LV + EN) for the
+  head to sign (`data/gateways/acts/`, check with your accountant).
+- New sheet **Gateways**, tasks for the finance ray, one short notice (Telegram or e-mail, quiet hours); runs after
+  every reply collection once `gateways.enabled: true`, by hand `python3 scripts/run.py gateways`.
+- `prompts/56_gateways.md`, setup wizard step **8h Payment gateways**, config section `gateways`; no new network
+  use; 6 new automated tests on fictional sellers (TEST · FICTIONAL, files built at test time).
+
 ## 0.23.1 — 23.11.2026 · overview PDF 1.11
 - `docs/FLOKTRON_overview.pdf` (version 1.11, 12 pages): new page *New in version 0.23 — new customers: like your
   best ones, with a reason to write now* (where the facts come from, sheet Prospects, what stays safe); the row

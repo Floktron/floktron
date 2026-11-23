@@ -6,7 +6,7 @@ import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCES = ["AGENTS.md", "README.md", "SECURITY.md", "docs/TRANSPARENCY.md", "prompts/00_setup_wizard.md",
-           "docs/GMAIL_TEST.md", "docs/TELEGRAM.md", "docs/CALENDAR.md", "docs/SUPPLY_CHAIN.md", "docs/WEBSITE.md", "docs/INVOICES.md", "docs/SNAPSHOT.md", "docs/DOCUMENTS.md", "docs/FOLLOWUPS.md", "docs/MAIL_WATCH.md", "docs/PROSPECTS.md", "docs/VOICE.md", "docs/DASHBOARD.md", "docs/INSTALL.md", "docs/SECURITY_CHECKUP.md", "docs/UNINSTALL.md", "docs/FEEDBACK.md", "LICENSING.md"]
+           "docs/GMAIL_TEST.md", "docs/TELEGRAM.md", "docs/CALENDAR.md", "docs/SUPPLY_CHAIN.md", "docs/WEBSITE.md", "docs/INVOICES.md", "docs/SNAPSHOT.md", "docs/DOCUMENTS.md", "docs/FOLLOWUPS.md", "docs/MAIL_WATCH.md", "docs/GATEWAYS.md", "docs/PROSPECTS.md", "docs/VOICE.md", "docs/DASHBOARD.md", "docs/INSTALL.md", "docs/SECURITY_CHECKUP.md", "docs/UNINSTALL.md", "docs/FEEDBACK.md", "LICENSING.md"]
 HEAD = """# FLOKTRON — full text for AI assistants (one file)
 
 You are an AI assistant. A person wants to test or set up FLOKTRON. This single file contains everything you need:

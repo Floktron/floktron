@@ -13,6 +13,7 @@
     python3 scripts/run.py registry    # new companies in the registry (LV)
     python3 scripts/run.py content     # posts of the day, missed posts, duplicate pictures
     python3 scripts/run.py mail        # mail watch by hand (it also runs after every collect, docs/MAIL_WATCH.md)
+    python3 scripts/run.py gateways    # payment gateways by hand (it also runs after every collect, docs/GATEWAYS.md)
     python3 scripts/run.py prospects   # new customers like your best ones, with a reason to write now (once a day)
     python3 scripts/run.py dashboard   # rebuild data/dashboard.html (also done after every other run)
     python3 scripts/run.py status      # last lines of the log
@@ -45,6 +46,7 @@ JOBS = {
     "registry": ["registry_lv.py"],
     "content": ["content_check.py"],
     "mail": ["mail_watch.py"],
+    "gateways": ["gateways.py"],
     "prospects": ["prospects.py"],
     "dashboard": ["dashboard.py"],
 }
@@ -91,6 +93,14 @@ def main():
                 m = subprocess.run([sys.executable, os.path.join(HERE, "mail_watch.py")], cwd=ROOT, stdout=f,
                                    stderr=subprocess.STDOUT, timeout=900)
                 f.write(f"--- exit {m.returncode}\n")
+                f.write(f"=== {datetime.datetime.now():%Y-%m-%d %H:%M} gateways\n")   # card payments → documents (nothing while gateways.enabled is false)
+                f.flush()
+                try:
+                    g = subprocess.run([sys.executable, os.path.join(HERE, "gateways.py")], cwd=ROOT, stdout=f,
+                                       stderr=subprocess.STDOUT, timeout=600)
+                    f.write(f"--- exit {g.returncode}\n")
+                except subprocess.TimeoutExpired:
+                    f.write("--- gateways: timeout\n")
             if job != "dashboard":      # the one-page overview follows every run; a failure here never fails the job
                 subprocess.run([sys.executable, os.path.join(HERE, "dashboard.py")], cwd=ROOT,
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=300)
