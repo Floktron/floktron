@@ -3,6 +3,12 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.23.1 — 23.11.2026 · overview PDF 1.11
+- `docs/FLOKTRON_overview.pdf` (version 1.11, 12 pages): new page *New in version 0.23 — new customers: like your
+  best ones, with a reason to write now* (where the facts come from, sheet Prospects, what stays safe); the row
+  "New customer search" in *What else can be connected* now says running since 0.23; open version 0.23.0,
+  124 automated tests in the figures. Other languages on koagu.com/floktron were updated the same day.
+
 ## 0.23.0 — 23.11.2026 · new customers: like your best ones, with a reason to write now
 Learned in real use: the best first letters went to small firms that had just started a job of the right kind.
 - **[PROSPECTS](docs/PROSPECTS.md)** — `scripts/prospects.py` (no AI): reads Latvia's public procurement results
