@@ -13,6 +13,7 @@
     python3 scripts/run.py registry    # new companies in the registry (LV)
     python3 scripts/run.py content     # posts of the day, missed posts, duplicate pictures
     python3 scripts/run.py mail        # mail watch by hand (it also runs after every collect, docs/MAIL_WATCH.md)
+    python3 scripts/run.py prospects   # new customers like your best ones, with a reason to write now (once a day)
     python3 scripts/run.py dashboard   # rebuild data/dashboard.html (also done after every other run)
     python3 scripts/run.py status      # last lines of the log
 
@@ -44,6 +45,7 @@ JOBS = {
     "registry": ["registry_lv.py"],
     "content": ["content_check.py"],
     "mail": ["mail_watch.py"],
+    "prospects": ["prospects.py"],
     "dashboard": ["dashboard.py"],
 }
 

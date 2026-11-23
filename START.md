@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.22.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.23.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 
@@ -133,7 +133,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.22.1 · last update 23.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.23.0 · last update 23.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
@@ -149,6 +149,8 @@ Your team can **report by voice** — the bot turns a voice message into text on
 **Your own invoices, acts and offers in your brand**: say *"invoice to …, 4 chairs, due in 10 days"* — the assistant fills it in, FLOKTRON draws a branded PDF (invoice, advance invoice, acceptance act, offer; LV, EN or both), numbers it and records it in the base; you send it yourself ([DOCUMENTS](docs/DOCUMENTS.md)).
 **Reminders after an offer — only after your OK**: no answer to an offer on day 3, 7 or 14? FLOKTRON drafts a short, polite reminder in the buyer's language and asks you first — ✅ sends it as a reply in the same thread, ✏️ sends your own text, ⏸ stops; an answer from the buyer withdraws it by itself ([FOLLOWUPS](docs/FOLLOWUPS.md)).
 **Mail watch — nothing waits unnoticed**: every message of your mailbox in one sheet, contacts with phones from signatures, and a short nudge (Telegram or e-mail) only when someone waits for your answer — confirm, reply, invitation, deadline, a starred message; it stops by itself when you answer. Invoices from attachments go straight to the invoice check ([MAIL_WATCH](docs/MAIL_WATCH.md)).
+
+**New customers — like your best ones, with a reason to write now**: companies that have just signed public works of the kind you serve (Latvia's procurement results and register, open data), scored by how much they look like your best customers; one click adds them to your companies with a draft first letter — nothing is sent ([PROSPECTS](docs/PROSPECTS.md)).
 **One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
 checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
@@ -211,7 +213,7 @@ then `python3 scripts/base_create.py`.
 | `prompts/` | The head (instructions for the AI agent) |
 | `templates/` | Empty base (xlsx), letter and report templates |
 | `config/` | `config.example.yaml` — copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [reminders after an offer](docs/FOLLOWUPS.md), [mail watch](docs/MAIL_WATCH.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
+| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [reminders after an offer](docs/FOLLOWUPS.md), [mail watch](docs/MAIL_WATCH.md), [new customers](docs/PROSPECTS.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
 | `tests/` | Automatic checks incl. safety checks — GitHub runs them on every change |
 | `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `llms.txt` | Entry point for AI assistants (one source: `AGENTS.md`) |
 | `SECURITY.md` | What is protected and how; how to report a problem |
@@ -315,6 +317,7 @@ can read every file and check every point below.
 | Yahoo Finance public chart data (query1.finance.yahoo.com), Google News RSS and the supplier pages you put into your own Watchlist (only if you use the supply chain watch) | end-of-day prices of the tickers you listed; news about your suppliers, routes and rules; a fingerprint of the supplier page text | `scripts/supply_watch.py` |
 | api.elevenlabs.io — ONLY if you set `telegram.voice.stt_engine` or `tts_engine` to `elevenlabs`, with your own API key. By default voice stays on your computer (local Whisper model, the system voice) | turn a voice report into text / read the audio summary aloud | `scripts/voice.py` |
 | Latvian open data portal data.gov.lv (only if you switch the registry on) | new companies by words in the name | `scripts/registry_lv.py` |
+| data.gov.lv public procurement results (EIS) and the register (only if you switch prospects on) | who has just signed a contract of the kind you serve; form, town, registration date of those companies | `scripts/registry_lv.py` (used by `scripts/prospects.py`) |
 
 There are no other network calls. An automatic test (`tests/test_network.py`) fails if network code appears
 in any other file.
@@ -361,7 +364,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups · 8f Mail watch | What happens in your market, your supply chain and your payments — and where does the company stand? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups · 8f Mail watch · 8g New customers | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -486,6 +489,16 @@ organisations always count (tax office, associations, portals).
    on the real mailbox together — check that the categories look right. With `enabled: true` it then runs by itself
    after every reply collection (every 30 minutes).
 3. Say clearly: mail is only read; nothing is answered, moved or deleted; "Closed" in *Status* stops a reminder.
+
+## 8g. New customers — like your best ones, with a reason to write now (if wanted) — follow `docs/PROSPECTS.md`
+Ask: who are your 2–5 best customers (reg. numbers), what kind of work do your buyers do, and should the nudge go
+to Telegram or e-mail. Today the source is Latvia's public procurement (EIS) and Register of Enterprises.
+1. Fill the `prospects` section of `config.yaml`: `best_customers`, the words of `signals` and `exclude_words`
+   for your trade, `pitch` (two sentences from the person's own facts).
+2. **First a test on fictional data**: `python3 -m pytest tests/test_prospects.py`, then
+   `python3 scripts/prospects.py --dry-run` together — read the top 10 and tune the words.
+3. Say clearly: only company data from open registers; nothing is sent; a letter goes out only by the person's hand,
+   to the general address the company publishes, with an opt-out line.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.
@@ -1411,6 +1424,97 @@ writes nothing.
 - Turn it off at any time: `mail_watch.enabled: false`.
 
 
+===== FILE: docs/PROSPECTS.md =====
+
+# New customers that look like your best ones — with a reason to write now
+
+`scripts/prospects.py` (no AI, version 0.23.0). Only public open data, only company data. Nothing is sent.
+
+## The idea
+A good first letter needs two things: the right company and the right moment.
+- **The right company** looks like your best customers: same legal form, same area, about as young.
+  You give their reg. numbers (`prospects.best_customers`); FLOKTRON reads their facts from the register and builds the portrait.
+- **The right moment** is a fresh contract: the company has just won and signed public works of the kind you serve.
+  In a few weeks it will need what you sell.
+
+## Where the facts come from
+| Source | What is used | Status |
+|---|---|---|
+| Public procurement results of Latvia (EIS e-iepirkumi, data.gov.lv, CSV per year, updated daily) | winner and reg. no., buyer, subject, sum, signing date, works until, ended or not | PUBLIC |
+| Register of Enterprises (register.csv, data.gov.lv) | legal form, registration date, town, terminated | PUBLIC |
+| Kind of work | words in the contract subject (`prospects.signals`) — the file has no CPV code | ESTIMATE |
+| Score, priority, "looks like" | the rules below | ESTIMATE |
+
+No people, no personal contacts: the procurement file and the register hold company data only.
+
+## What gets in
+A contract counts when: the winner is a Latvian company (11-digit reg. no.), the contract is signed within
+`days` (180), the sum is at least `min_eur` (10 000 EUR) in EUR, it was not ended, and the subject has words of one
+of your signals and no exclude word (design, supervision, supply of goods, rent...). Companies that are already in
+the sheet **Companies**, marked *Do not contact* there, terminated in the register, or are one of your best customers
+are skipped.
+
+## Score (ESTIMATE)
+| Points | For |
+|---|---|
+| signal weight (finishing 3, building 2, networks 1 in the example) | kind of work |
+| 3 / 2 / 1 | signed within 30 / 90 / 180 days |
+| +1 | the works are still under way |
+| +2 / +1 | contract up to `small_max_eur` / up to 5 × that (the size of a small contractor) |
+| −2 | wins over `big_total_eur` in 12 months (a big general contractor) |
+| +1 | two or more wins in 12 months |
+| +1 each | same legal form, same area, not older than your oldest best customer + 3 years |
+
+Priority 1 from 9 points, 2 from 6, else 3. At most `max_new` (40) new rows per run.
+
+## Sheet "Prospects" (radar base)
+ID, Found, Company, Reg. no., Score, Priority, **Why now** (e.g. "signed 10.11.2026 · 84 500 EUR · remont; works under way"),
+Contract subject, Buyer, Sum EUR, Signed, Works until, Wins 12 months, Form, Town, Registered, Looks like,
+Source (link to the procurement), Data status, **Decision**, Status, Draft, Comment.
+
+**Decision**
+- `Add` → the company goes to the sheet **Companies** (goal Client, work status New) and a draft first letter is
+  written to `data/prospects/drafts/<ID>_<company>.txt` from your template (`prospects.letter`, placeholders
+  `{company}`, `{works}`, `{pitch}`, `{product_line}`, `{signature}`).
+- `No` → never suggested again.
+
+The draft is **not sent**. You find the company's GENERAL address on its own website, check the text and send it
+yourself — one personal business letter to one company, with a line to opt out. That is the line between a
+business letter and spam; FLOKTRON does not cross it.
+
+## Notice
+When a run finds new prospects: one short Telegram message or e-mail (like mail watch, `prospects.notify`) with
+the number and the top 3. No new prospects — no message.
+
+## Settings (`config.yaml`)
+```yaml
+prospects:
+  enabled: false
+  notify: telegram          # telegram | mail | none
+  best_customers: []        # reg. numbers of your best customers, e.g. ["40000000001"]
+  home_area: []             # town words; empty = the towns of your best customers
+  days: 180
+  min_eur: 10000
+  pitch: ""                 # two sentences for the draft letter
+  letter: ""                # your own template file (optional)
+  signals: [...]            # see config.example.yaml; stems in the language of the file; first match wins, `unless` steps aside
+```
+
+## Run
+```
+python3 scripts/prospects.py --dry-run          # look first, write nothing
+python3 scripts/run.py prospects                # the daily run (scheduler: once a day, e.g. 07:20)
+python3 scripts/prospects.py --eis-csv results.csv --register-csv register.csv   # files you downloaded yourself
+```
+Network: only data.gov.lv, through `scripts/registry_lv.py` (see `docs/TRANSPARENCY.md`).
+Tests: `python3 -m pytest tests/test_prospects.py` — fictional companies (TEST · FICTIONAL), files built at test time.
+
+## Limits
+- Only Latvia so far (the EIS and UR open data). Other countries: the same columns from your own CSV via `--eis-csv`.
+- The kind of work comes from words, not from a CPV code — read the subject before you write.
+- Public contracts only; private building sites are not in any open file.
+
+
 ===== FILE: docs/VOICE.md =====
 
 # Voice — reports from the field, a summary for the road
@@ -1489,6 +1593,7 @@ no text of other people's messages.
 | Voice reports · audio summary player | `voice_reports.xlsx`, `pulse_*.m4a` ([VOICE](VOICE.md)) |
 | Invoices → accounting | sheet Invoices ([INVOICES](INVOICES.md)) |
 | Mail waits for you — waiting for you, starred without an answer, messages in 7 days, up to 10 rows | sheet Mail ([MAIL_WATCH](MAIL_WATCH.md)); a confirm / reply older than a day also goes to *Needs your attention* |
+| New customers: why now — new prospects, priority 1, up to 6 rows with the reason and the town | sheet Prospects in the radar base ([PROSPECTS](PROSPECTS.md)) |
 | Posts today · radar signals · supply chain | `floktron_content.xlsx` Plan, `floktron_radar.xlsx` Signal_feed / Watch_log |
 
 Language follows `company.language` (en, ru, lv); colours follow `colors.main` / `colors.ok`.

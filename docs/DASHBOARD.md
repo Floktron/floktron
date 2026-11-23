@@ -19,6 +19,7 @@
 | Voice reports · audio summary player | `voice_reports.xlsx`, `pulse_*.m4a` ([VOICE](VOICE.md)) |
 | Invoices → accounting | sheet Invoices ([INVOICES](INVOICES.md)) |
 | Mail waits for you — waiting for you, starred without an answer, messages in 7 days, up to 10 rows | sheet Mail ([MAIL_WATCH](MAIL_WATCH.md)); a confirm / reply older than a day also goes to *Needs your attention* |
+| New customers: why now — new prospects, priority 1, up to 6 rows with the reason and the town | sheet Prospects in the radar base ([PROSPECTS](PROSPECTS.md)) |
 | Posts today · radar signals · supply chain | `floktron_content.xlsx` Plan, `floktron_radar.xlsx` Signal_feed / Watch_log |
 
 Language follows `company.language` (en, ru, lv); colours follow `colors.main` / `colors.ok`.

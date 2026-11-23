@@ -3,6 +3,22 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.23.0 — 23.11.2026 · new customers: like your best ones, with a reason to write now
+Learned in real use: the best first letters went to small firms that had just started a job of the right kind.
+- **[PROSPECTS](docs/PROSPECTS.md)** — `scripts/prospects.py` (no AI): reads Latvia's public procurement results
+  (EIS, data.gov.lv, updated daily) and finds companies that have just signed a contract of the kind you serve
+  (words in the subject, `prospects.signals`; design, supervision and supplies are left out).
+- The register (data.gov.lv) adds form, town and registration date; terminated companies drop out. Your best
+  customers (`prospects.best_customers`) give the portrait — a prospect that looks like them scores higher.
+- New sheet **Prospects** in the radar base: score and priority (ESTIMATE), *Why now*, contract, source link,
+  data status. *Decision* `Add` → sheet **Companies** + a draft first letter in `data/prospects/drafts/`;
+  `No` → never again. Companies already known or marked *Do not contact* are skipped. Nothing is ever sent.
+- A short notice (Telegram or e-mail) only when there are new prospects; dashboard card **New customers: why now**
+  (en / ru / lv); job `python3 scripts/run.py prospects` (once a day).
+- `prompts/55_prospects.md`, setup wizard step **8g New customers**, config section `prospects`; network only through
+  `scripts/registry_lv.py` (new helper `resources()`, `docs/TRANSPARENCY.md`); 8 new automated tests on fictional
+  companies (TEST · FICTIONAL, files built at test time) — 124 in all.
+
 ## 0.22.1 — 23.11.2026 · overview PDF 1.10
 - `docs/FLOKTRON_overview.pdf` (version 1.10, 11 pages): new page *New in version 0.22 — mail watch: nothing waits
   unnoticed* (what is in the mail and what FLOKTRON does, sheets Mail and Contacts, what stays safe); open version

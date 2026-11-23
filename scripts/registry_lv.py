@@ -38,6 +38,13 @@ CKAN = "https://data.gov.lv/dati/api/3/action/package_show?id=uz"
 UA = {"User-Agent": "FLOKTRON registry reader"}
 
 
+def resources(package_id):
+    """Resources (files) of a data.gov.lv dataset: [{"url", "format", "name", ...}] (used by prospects.py)."""
+    url = "https://data.gov.lv/dati/api/3/action/package_show?id=" + package_id
+    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30) as r:
+        return json.load(r)["result"]["resources"]
+
+
 def csv_url():
     with urllib.request.urlopen(urllib.request.Request(CKAN, headers=UA), timeout=30) as r:
         res = json.load(r)["result"]["resources"]

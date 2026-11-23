@@ -42,7 +42,7 @@ T = {
                none_posts="No posts planned today", none_sig="No new signals", none_chain="No notable changes",
                test="test", foot="the page refreshes itself · your data stays on your computer", days="in {d} d.",
                today="today", tomorrow="tomorrow", late="overdue", due="due", waiting="waiting", nolet="no message yet",
-               hidden="+ test tasks hidden: {n}", jobs=("Replies", "Morning message", "News slice", "Supply chain", "Content plan"), open="open", fixlog="see data/run.log", fixbot="is the bot running?", fixmail="is the mail server reachable? see data/run.log", tasks_act="Tasks", inbox="Mail waits for you", i_need="wait for you", i_star="starred, no answer", i_week="messages in 7 days", i_all="in the register", none_inbox="Everything answered 👍", no_inbox="No mail register yet — scripts/mail_watch.py keeps it (docs/MAIL_WATCH.md)", i_rem="reminded", i_att="Mail waits"),
+               hidden="+ test tasks hidden: {n}", jobs=("Replies", "Morning message", "News slice", "Supply chain", "Content plan"), open="open", fixlog="see data/run.log", fixbot="is the bot running?", fixmail="is the mail server reachable? see data/run.log", tasks_act="Tasks", inbox="Mail waits for you", i_need="wait for you", i_star="starred, no answer", i_week="messages in 7 days", i_all="in the register", none_inbox="Everything answered 👍", no_inbox="No mail register yet — scripts/mail_watch.py keeps it (docs/MAIL_WATCH.md)", i_rem="reminded", i_att="Mail waits", prosp="New customers: why now", none_prosp="No new prospects", no_prosp="Not switched on: scripts/prospects.py (docs/PROSPECTS.md)", p_new="new", p_top="priority 1"),
     "ru": dict(bills="Счета → бухгалтерия", b_docs="документов", b_sum="EUR по счетам", b_paid="оплата найдена в выписке", b_topay="EUR к оплате / проверить", none_bills="Все счета оплачены и сверены", no_bills="Счетов пока нет — их добавляет scripts/invoices.py", title="пульт управления", upd="обновлено", all_ok="Всё работает", notes="Работает, есть заметки",
                check="Есть что проверить", sub="{ok} из {n} систем в порядке · {a} пункт(ов) требуют внимания",
                calm="Ничего не требует вашего внимания", att="Требует внимания", next="Ближайшее",
@@ -56,7 +56,7 @@ T = {
                none_posts="Сегодня по плану постов нет", none_sig="Новых сигналов нет", none_chain="Без заметных изменений",
                test="тест", foot="страница обновляется сама · данные только на вашем компьютере", days="через {d} дн.",
                today="сегодня", tomorrow="завтра", late="просрочено", due="срок", waiting="ждём ответ", nolet="писем нет",
-               hidden="+ тестовых задач скрыто: {n}", jobs=("Сбор ответов", "Утренние письма", "Срез новостей", "Цепочка поставок", "Контент-план"), open="открыто", fixlog="см. data/run.log", fixbot="бот запущен?", fixmail="почтовый сервер доступен? см. data/run.log", tasks_act="Задачи", inbox="Почта ждёт ответа", i_need="ждут вас", i_star="со ⭐ без ответа", i_week="писем за 7 дней", i_all="всего в реестре", none_inbox="Всё отвечено 👍", no_inbox="Реестра почты пока нет — его ведёт scripts/mail_watch.py (docs/MAIL_WATCH.md)", i_rem="напомнено", i_att="Письмо ждёт"),
+               hidden="+ тестовых задач скрыто: {n}", jobs=("Сбор ответов", "Утренние письма", "Срез новостей", "Цепочка поставок", "Контент-план"), open="открыто", fixlog="см. data/run.log", fixbot="бот запущен?", fixmail="почтовый сервер доступен? см. data/run.log", tasks_act="Задачи", inbox="Почта ждёт ответа", i_need="ждут вас", i_star="со ⭐ без ответа", i_week="писем за 7 дней", i_all="всего в реестре", none_inbox="Всё отвечено 👍", no_inbox="Реестра почты пока нет — его ведёт scripts/mail_watch.py (docs/MAIL_WATCH.md)", i_rem="напомнено", i_att="Письмо ждёт", prosp="Новые клиенты: почему сейчас", none_prosp="Новых кандидатов нет", no_prosp="Не включено: scripts/prospects.py (docs/PROSPECTS.md)", p_new="новых", p_top="приоритет 1"),
     "lv": dict(bills="Rēķini → grāmatvedība", b_docs="dokumenti", b_sum="EUR rēķinos", b_paid="maksājums atrasts izrakstā", b_topay="EUR jāmaksā / jāpārbauda", none_bills="Visi rēķini apmaksāti un pārbaudīti", no_bills="Rēķinu vēl nav — tos pievieno scripts/invoices.py", title="vadības panelis", upd="atjaunots", all_ok="Viss strādā", notes="Strādā, ir piezīmes",
                check="Ir ko pārbaudīt", sub="{ok} no {n} sistēmām kārtībā · {a} punkti prasa uzmanību",
                calm="Nekas neprasa jūsu uzmanību", att="Prasa uzmanību", next="Tuvākais", rays="Virzieni — kas apstiprināja",
@@ -68,7 +68,7 @@ T = {
                none_voice="Vēl nav. Darbinieks sūta balss ziņu botam — šeit parādīsies teksts.", none_posts="Šodien ierakstu nav",
                none_sig="Jaunu signālu nav", none_chain="Būtisku izmaiņu nav", test="tests",
                foot="lapa atjaunojas pati · dati paliek jūsu datorā", days="pēc {d} d.", today="šodien", tomorrow="rīt",
-               late="nokavēts", due="termiņš", waiting="gaidām", nolet="vēstuļu nav", hidden="+ testa uzdevumi paslēpti: {n}", jobs=("Atbilžu vākšana", "Rīta vēstules", "Ziņu apskats", "Piegādes ķēde", "Satura plāns"), open="atvērti", fixlog="skat. data/run.log", fixbot="vai bots strādā?", fixmail="vai pasta serveris pieejams? skat. data/run.log", tasks_act="Uzdevumi", inbox="Pasts gaida atbildi", i_need="gaida jūs", i_star="ar ⭐ bez atbildes", i_week="vēstules 7 dienās", i_all="reģistrā kopā", none_inbox="Uz visu atbildēts 👍", no_inbox="Pasta reģistra vēl nav — to ved scripts/mail_watch.py (docs/MAIL_WATCH.md)", i_rem="atgādināts", i_att="Vēstule gaida"),
+               late="nokavēts", due="termiņš", waiting="gaidām", nolet="vēstuļu nav", hidden="+ testa uzdevumi paslēpti: {n}", jobs=("Atbilžu vākšana", "Rīta vēstules", "Ziņu apskats", "Piegādes ķēde", "Satura plāns"), open="atvērti", fixlog="skat. data/run.log", fixbot="vai bots strādā?", fixmail="vai pasta serveris pieejams? skat. data/run.log", tasks_act="Uzdevumi", inbox="Pasts gaida atbildi", i_need="gaida jūs", i_star="ar ⭐ bez atbildes", i_week="vēstules 7 dienās", i_all="reģistrā kopā", none_inbox="Uz visu atbildēts 👍", no_inbox="Pasta reģistra vēl nav — to ved scripts/mail_watch.py (docs/MAIL_WATCH.md)", i_rem="atgādināts", i_att="Vēstule gaida", prosp="Jauni klienti: kāpēc tieši tagad", none_prosp="Jaunu kandidātu nav", no_prosp="Nav ieslēgts: scripts/prospects.py (docs/PROSPECTS.md)", p_new="jauni", p_top="1. prioritāte"),
 }
 
 
@@ -276,6 +276,22 @@ def collect(cfg, data=DATA, now=None):
     MB["items"].sort(key=lambda x: ({"bad": 0, "warn": 1}.get(x["lvl"], 2), x["d"]))
     D["inbox"] = MB
 
+    # new customers (sheet "Prospects" in the radar base, written by scripts/prospects.py)
+    PR = dict(n=0, new=0, top=0, items=[])
+    for r in sheet(radar, "Prospects"):
+        if not g(r, "Reg. no."):
+            continue
+        PR["n"] += 1
+        if str(g(r, "Status")) != "New":
+            continue
+        PR["new"] += 1
+        p = int(g(r, "Priority") or 3)
+        PR["top"] += p == 1
+        PR["items"].append(dict(p=p, s=-(float(g(r, "Score") or 0)), url=str(g(r, "Source")), test=str(g(r, "Comment")).upper().startswith("TEST"),
+                                text=f'{str(g(r, "Company"))[:45]}', sub=f'{str(g(r, "Why now"))[:90]}' + (f' · {g(r, "Town")}' if g(r, "Town") else "")))
+    PR["items"].sort(key=lambda x: (x["p"], x["s"]))
+    D["prospects"] = PR
+
     # radar
     sig = [s for s in sheet(radar, "Signal_feed") if d_of(g(s, "Date")) and d_of(g(s, "Date")) >= today - datetime.timedelta(days=7)]
     D["signals"] = [dict(src=str(g(s, "Source"))[:40], title=str(g(s, "Title"))[:95], url=str(g(s, "URL")), rel=str(g(s, "Relevance 1–5")))
@@ -418,6 +434,13 @@ def render(D, colors=None):
             [li(x["lvl"], esc(x["text"]), esc(x["sub"]), f'<span class="tag idle">{L["test"]}</span>' if x["test"] else "") for x in mb["items"][:10]], L["none_inbox"])
     else:
         inbox = lst([], L["no_inbox"])
+    pr_ = D.get("prospects") or dict(n=0)
+    if pr_["n"]:
+        kq = "".join(f'<div class="kpi"><b>{v}</b><span>{esc(t)}</span></div>' for v, t in ((pr_["new"], L["p_new"]), (pr_["top"], L["p_top"])))
+        prosp = f'<div class="kpis" style="margin-bottom:10px">{kq}</div>' + lst(
+            [li("ok" if x["p"] == 1 else "wait", link(x["url"], x["text"]), esc(x["sub"]), f'<span class="tag idle">{L["test"]}</span>' if x["test"] else "") for x in pr_["items"][:6]], L["none_prosp"])
+    else:
+        prosp = lst([], L["no_prosp"])
     ch = D["chain"]
     chain = (f'<div class="chips" style="margin-bottom:8px"><span class="chip ok">🟢 {ch["g"]}</span><span class="chip warn">🟡 {ch["y"]}</span>'
              f'<span class="chip bad">🔴 {ch["r"]}</span><span class="sub">{esc(ch["date"])}</span></div>'
@@ -436,6 +459,7 @@ def render(D, colors=None):
 <div class="card"><h3>✅ {L['tasks']}</h3>{lst([li('bad' if t['over'] else 'wait', esc(t['text']), esc(t['ray'] + ' · ' + t['st'] + (' · ' + L['due'] + ' ' + t['due'] if t['due'] else ''))) for t in D['tasks']], L['none_tasks'])}{f'<p class=sub>{L["hidden"].format(n=D["tasks_test"])}</p>' if D['tasks_test'] else ''}</div>
 <div class="card w12"><h3>🧾 {L['bills']}</h3>{bills}</div>
 <div class="card w12"><h3>📥 {L['inbox']}</h3>{inbox}</div>
+<div class="card w12"><h3>🔎 {L['prosp']}</h3>{prosp}</div>
 <div class="card"><h3>📊 {L['answers']}</h3><div class="bars">{bars}</div><div class="legend"><span><i style="background:var(--okc)"></i>{L['ok_l']}</span><span><i style="background:#d69e2e"></i>{L['bad_l']}</span></div></div>
 <div class="card"><h3>🎙 {L['voice']}</h3>{lst([li('wait' if v['new'] else 'idle', esc(v['who'] + ' · ' + v['d']), esc(v['text'])) for v in D['voice']], L['none_voice'])}</div>
 <div class="card"><h3>📣 {L['posts']}</h3>{lst([li('wait', esc(p['plat']), esc(p['text'])) for p in D['posts']], L['none_posts'])}</div>

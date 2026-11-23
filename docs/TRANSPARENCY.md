@@ -14,6 +14,7 @@ can read every file and check every point below.
 | Yahoo Finance public chart data (query1.finance.yahoo.com), Google News RSS and the supplier pages you put into your own Watchlist (only if you use the supply chain watch) | end-of-day prices of the tickers you listed; news about your suppliers, routes and rules; a fingerprint of the supplier page text | `scripts/supply_watch.py` |
 | api.elevenlabs.io — ONLY if you set `telegram.voice.stt_engine` or `tts_engine` to `elevenlabs`, with your own API key. By default voice stays on your computer (local Whisper model, the system voice) | turn a voice report into text / read the audio summary aloud | `scripts/voice.py` |
 | Latvian open data portal data.gov.lv (only if you switch the registry on) | new companies by words in the name | `scripts/registry_lv.py` |
+| data.gov.lv public procurement results (EIS) and the register (only if you switch prospects on) | who has just signed a contract of the kind you serve; form, town, registration date of those companies | `scripts/registry_lv.py` (used by `scripts/prospects.py`) |
 
 There are no other network calls. An automatic test (`tests/test_network.py`) fails if network code appears
 in any other file.

@@ -146,6 +146,23 @@ mail_watch:                # optional: the whole mailbox in one sheet + a nudge 
   first_days: 30           # first run reads 30 days back, later runs `days`
   days: 4
 
+prospects:                 # optional: new customers like your best ones, with a reason to write now (docs/PROSPECTS.md)
+  enabled: false
+  notify: telegram         # telegram | mail | none — a short message when there are new prospects
+  best_customers: []       # reg. numbers of your best customers — their form, town and age make the portrait
+  home_area: []            # town words that count as near; empty = the towns of your best customers
+  days: 180                # contracts signed in the last N days
+  min_eur: 10000
+  max_new: 40
+  pitch: ""                # two sentences for the draft letter, from your own fact sheet
+  product_line: ""         # subject line of the draft
+  letter: ""               # optional template file ({company} {works} {pitch} {product_line} {signature})
+  signals:                 # kind of work by words (stems) in the contract subject — tune them for your trade; first match wins
+    - {name: networks, weight: 1, words: ["ūdensapgād", "kanalizāc", "ielas", "ceļa", "tilta"], unless: ["flīz", "sanmezgl", "iekšdarb", "apdar", "ēkas"]}
+    - {name: finishing, weight: 3, words: ["flīz", "apdar", "iekšdarb", "remont", "sanmezgl", "grīd", "apmet", "betona", "fasād"]}
+    - {name: building, weight: 2, words: ["būvdarb", "būvniecīb", "pārbūv", "rekonstrukc", "izbūv", "atjaunoš", "jumta", "ēkas"]}
+  exclude_words: ["projektēš", "būvprojekt", "būvuzraudz", "autoruzraudz", "ekspertīz", "konsultāc", "piegāde", "noma"]
+
 telegram:                  # optional bot: dialog → leads (scripts/bot/telegram_bot.py); off until a token exists
   enabled: false
   token_env: "FLOKTRON_TG_TOKEN"   # bot token from @BotFather comes from this environment variable...
