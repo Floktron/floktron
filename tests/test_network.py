@@ -30,3 +30,10 @@ def test_network_only_in_known_files():
 def test_processes_only_in_known_files():
     bad = [r for r, s in _py() if PROC.search(s) and r not in ALLOWED_PROC]
     assert not bad, f"subprocess outside the allowed files: {bad}"
+
+
+def test_model_download_is_listed():
+    """The voice model is the one thing downloaded later — it must stay listed in TRANSPARENCY and VOICE."""
+    for rel in ("docs/TRANSPARENCY.md", "docs/VOICE.md"):
+        text = open(os.path.join(ROOT, rel), encoding="utf-8").read()
+        assert "huggingface.co" in text, f"{rel} must name huggingface.co (one-time speech model download)"

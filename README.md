@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.24.1 · last update 23.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.24.2 · last update 23.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
@@ -27,7 +27,19 @@ checks disk encryption, firewall, updates, open network doors, passwords and bac
 and shows where to click — you make each change. At the end the system works and is protected with what your computer
 already has; your own antivirus can be added on top ([SECURITY_CHECKUP](docs/SECURITY_CHECKUP.md)).
 
-**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 13 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, what else can be plugged in. Other languages: [koagu.com/floktron](https://koagu.com/en/floktron/).
+**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 14 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, a safe first test, what else can be plugged in. Other languages: [koagu.com/floktron](https://koagu.com/en/floktron/).
+
+## Before you install — a safe first test
+
+FLOKTRON works with your mail and your files, so try it safely first. Each point is explained in [SECURITY](SECURITY.md).
+
+| Point | What it means for you |
+|---|---|
+| **Mail is only read** | FLOKTRON reads the mailbox you give it (every 30 minutes, if you switch the mail watch on). It never moves, deletes or forwards a message; a letter goes out only after your button ([MAIL_WATCH](docs/MAIL_WATCH.md)) |
+| **A separate mailbox** | Make a mailbox only for FLOKTRON, with an app password — not your main work account. For the first look, the [15-minute Gmail test](docs/GMAIL_TEST.md) |
+| **A separate place for the first run** | Your AI assistant downloads and runs code from this repository and asks before each step. For the first run use a separate user account on your computer or a virtual machine, with test data only |
+| **Every connection is listed** | What FLOKTRON connects to — and the one-time download of the voice model, if you switch voice on — is in [TRANSPARENCY](docs/TRANSPARENCY.md); a test fails if network code appears anywhere else |
+| **Latvia first** | The new-customer search uses Latvia's open data. In other countries bring the same columns as your own CSV ([PROSPECTS](docs/PROSPECTS.md)); everything else works anywhere |
 
 ## How it works — two layers
 

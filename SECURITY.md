@@ -40,6 +40,7 @@ It sends nothing to the authors. Full list and how to check: [docs/TRANSPARENCY.
 ## Practical advice
 
 - Make a separate mailbox for FLOKTRON with an app password; give it no access to other systems.
+- For the first run use a separate user account on your computer or a virtual machine, with test data and the test mailbox only.
 - Run FLOKTRON under an ordinary user account, not an administrator.
 - Run the security checkup once a month and after big updates: `python3 scripts/security_check.py --manual`.
 - Keep the storage folder in a cloud with version history (iCloud / Google Drive / OneDrive) — a damaged base can be restored.

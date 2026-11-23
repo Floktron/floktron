@@ -13,6 +13,9 @@ Two optional features of the Telegram bot (`scripts/bot/telegram_bot.py` + `scri
 |---|---|---|
 | Speech → text | `faster-whisper` model on your computer (downloads once, "small" ≈ 460 MB) | ElevenLabs Scribe |
 | Text → speech | macOS `say` (system voices) · Linux `espeak-ng` | ElevenLabs |
+The model is downloaded **once** from huggingface.co (the `faster-whisper` package does it on the first voice message)
+and stays on your computer; after that speech → text works without the internet. Only the model comes in — no voice
+or text goes out. Want no download at all from FLOKTRON? Copy the model folder yourself and put its path in `stt_model`.
 Nothing goes to the cloud unless you set `stt_engine` / `tts_engine` to `elevenlabs` yourself
 (key: environment `ELEVENLABS_API_KEY` or macOS Keychain item `FLOKTRON_ELEVENLABS`). See [TRANSPARENCY](TRANSPARENCY.md).
 
@@ -28,7 +31,7 @@ Nothing goes to the cloud unless you set `stt_engine` / `tts_engine` to `elevenl
     accept_unknown: false     # strangers get "please write as text"
     max_seconds: 300
     stt_engine: auto          # auto = local; or elevenlabs
-    stt_model: small          # tiny | base | small | medium — bigger = more exact, slower
+    stt_model: small          # tiny | base | small | medium — bigger = more exact, slower; or a folder path
     stt_lang:                 # empty = detect the language of each message
     pulse_dir: "../data/audio"  # where the morning run writes pulse_<date>.txt
     tts_engine: auto          # auto = system voice; or elevenlabs
