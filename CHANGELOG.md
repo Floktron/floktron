@@ -3,6 +3,18 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.24.2 — 23.11.2026 · before you install: a safe first test
+Learned from outside AI assistants that reviewed FLOKTRON: the safety advice was there, but deep in SECURITY.md and
+AGENTS.md; a first look at the README did not show it. One gap was real: the speech model download was not listed.
+- README: new section **Before you install — a safe first test** — mail is only read, a separate mailbox, a separate
+  user account or virtual machine for the first run, every connection listed, Latvia first for new-customer search.
+- [TRANSPARENCY](docs/TRANSPARENCY.md) and [VOICE](docs/VOICE.md): the one-time download of the speech model from
+  huggingface.co (only if voice is switched on with the local engine) is now listed; after it speech → text works
+  offline; `stt_model` may be a folder path for no download at all. New automated test keeps it listed.
+- SECURITY: first run in a separate user account or virtual machine.
+- Automated tests now also run on macOS.
+- `docs/FLOKTRON_overview.pdf` version 1.13 (14 pages): new page *Before you install — a safe first test*.
+
 ## 0.24.1 — 23.11.2026 · overview PDF 1.12
 - `docs/FLOKTRON_overview.pdf` (version 1.12, 13 pages): new page *New in version 0.24 — payment gateways: every
   card payment finds its document* (where the document gets lost and what FLOKTRON does, what you get, what stays
