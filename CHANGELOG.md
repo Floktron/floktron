@@ -3,6 +3,12 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.24.1 — 23.11.2026 · overview PDF 1.12
+- `docs/FLOKTRON_overview.pdf` (version 1.12, 13 pages): new page *New in version 0.24 — payment gateways: every
+  card payment finds its document* (where the document gets lost and what FLOKTRON does, what you get, what stays
+  safe); open version 0.24.0, 130 automated tests in the figures. Other languages on koagu.com/floktron were updated
+  the same day.
+
 ## 0.24.0 — 23.11.2026 · payment gateways: every card payment finds its document
 Learned in real use: card payments for subscriptions, software and domains often had no document — receipts without
 a PDF, in the spam folder, in USD, or for a private person. The invoice check looked only from the document to the payment.
