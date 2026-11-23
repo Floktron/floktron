@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.24.3 — 24.11.2026 · tests on Linux only again
+- The macOS test job added in 0.24.2 never got a GitHub runner and was cancelled; it is removed. Automated tests run
+  on Linux (Python 3.10 and 3.12), as before 0.24.2.
+- `docs/FLOKTRON_overview.pdf` version 1.14: the line about tests on macOS is corrected; open version 0.24.3.
+
 ## 0.24.2 — 23.11.2026 · before you install: a safe first test
 Learned from outside AI assistants that reviewed FLOKTRON: the safety advice was there, but deep in SECURITY.md and
 AGENTS.md; a first look at the README did not show it. One gap was real: the speech model download was not listed.
