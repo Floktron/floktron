@@ -18,7 +18,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | I. You | 0 Before you start · 1 What for, who you are | Who are you and what do you want FLOKTRON for? |
 | II. Your channels | 2 Mailbox · 3 Calendar | How does FLOKTRON reach you, and when are you busy? |
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
-| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups · 8f Mail watch · 8g New customers | What happens in your market, your supply chain and your payments — and where does the company stand? |
+| IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups · 8f Mail watch · 8g New customers · 8h Payment gateways | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
 | VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
 
@@ -153,6 +153,16 @@ to Telegram or e-mail. Today the source is Latvia's public procurement (EIS) and
    `python3 scripts/prospects.py --dry-run` together — read the top 10 and tune the words.
 3. Say clearly: only company data from open registers; nothing is sent; a letter goes out only by the person's hand,
    to the general address the company publishes, with an opt-out line.
+
+## 8h. Payment gateways — every card payment finds its document (if wanted) — follow `docs/GATEWAYS.md`
+Ask: does the company pay by card online (subscriptions, software, domains, apps)? Needs the mailbox (step 8f or the
+`mail` section) and bank statements (step 8b).
+1. Fill the `gateways` section of `config.yaml`: `notify`, `card_days`, `act_days`; check that `documents` has the
+   company name, registration and VAT number (they go into the request and the act).
+2. **First a test on fictional data**: `python3 -m pytest tests/test_gateways.py`, then
+   `python3 scripts/gateways.py --dry-run` together — read what it found and what is missing.
+3. Say clearly: mail and statements are only read; no link is opened; requests and acts are drafts — nothing is sent
+   or signed without the person; ask the accountant whether an internal act is accepted.
 
 ## 8a. Website (if wanted) — follow `docs/WEBSITE.md`
 Before the Marketing ray and the content plan: posts, profiles and QR codes need one address to point to.

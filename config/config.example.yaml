@@ -146,6 +146,16 @@ mail_watch:                # optional: the whole mailbox in one sheet + a nudge 
   first_days: 30           # first run reads 30 days back, later runs `days`
   days: 4
 
+gateways:                  # optional: every card payment finds its document — Stripe, Paddle, Apple, Google … (docs/GATEWAYS.md)
+  enabled: false
+  notify: telegram         # telegram | mail | none
+  quiet_hours: "22-07"
+  card_days: 120           # card payments of the last N days are checked
+  act_days: 30             # no document after N days → draft internal act for the head to sign
+  folders: []              # empty = INBOX + the provider's spam folder
+  first_days: 30
+  days: 4
+
 prospects:                 # optional: new customers like your best ones, with a reason to write now (docs/PROSPECTS.md)
   enabled: false
   notify: telegram         # telegram | mail | none — a short message when there are new prospects
