@@ -2,6 +2,7 @@
 
 > AI-assisted operations system for companies, built for the owner or manager who runs teams, production and processes (construction, logistics, production, rental, wholesale, services): morning tasks by e-mail per department,
 > one-button replies, escalation to whoever decides, and a radar for news, tenders and public consultations.
+> Runs in a real company: the daily work of an operating manufacturing company (tasks, replies, mail, invoices, Telegram reports) runs on FLOKTRON, and new features work there first; public examples and tests use fictional companies only.
 > Python scripts + instructions for an AI agent. Early preview, open for testing; use only the parts you need. Removal: docs/UNINSTALL.md.
 
 Everything in one plain-text file (for assistants that cannot open several pages): llms-full.txt

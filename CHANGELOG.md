@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.26.1 — 24.11.2026 · runs in a real company
+- README, AGENTS.md, llms.txt: FLOKTRON runs the daily work of an operating manufacturing company; new features work there
+  first, on real everyday actions. Public examples, tests and screenshots use fictional companies only; real company data
+  never leaves the company.
+
 ## 0.26.0 — 24.11.2026 · breath: the computer does the routine, the AI does the thinking
 FLOKTRON had a face (dashboard), a mouth (messages, morning audio), eyes (radar, watches), ears (replies, voice, bot)
 and hands (scripts). Now it breathes: the routine runs on the company's own computer, and the AI assistant reads one
