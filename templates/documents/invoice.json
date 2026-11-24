@@ -1,0 +1,25 @@
+{
+ "_about": "Invoice (rēķins). Fill buyer and lines; date = today. Run: python3 scripts/documents.py --doc <this file>",
+ "type": "invoice",
+ "lang": "lv",
+ "date": "",
+ "due_days": 10,
+ "supply_date": "",
+ "buyer": {
+  "name": "",
+  "reg_no": "",
+  "vat_no": "",
+  "address": "",
+  "email": ""
+ },
+ "basis": "",
+ "lines": [
+  {
+   "desc": "",
+   "qty": 1,
+   "unit": "gab.",
+   "price": 0
+  }
+ ],
+ "vat_rate": 21
+}

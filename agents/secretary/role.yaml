@@ -1,0 +1,14 @@
+# AI secretary — which FLOKTRON parts belong to this role (tests/test_roles.py checks every path)
+role: secretary
+title: AI secretary
+status: ready
+since: "0.26.0"
+scripts: [scripts/mail_watch.py, scripts/followups.py, scripts/calendar_read.py, scripts/library.py,
+          scripts/documents.py, scripts/invoices.py, scripts/gateways.py, scripts/bot/telegram_bot.py, scripts/dashboard.py]
+prompts: [prompts/54_mail_watch.md, prompts/53_followups.md, prompts/52_documents.md, prompts/50_invoices.md, prompts/56_gateways.md]
+docs: [docs/MAIL_WATCH.md, docs/FOLLOWUPS.md, docs/CALENDAR.md, docs/LIBRARY.md, docs/DOCUMENTS.md, docs/INVOICES.md,
+       docs/GATEWAYS.md, docs/TELEGRAM.md, docs/BREATH.md]
+config: [company, mail, calendar, documents, followups, mail_watch, invoices, gateways, telegram]
+wizard_steps: ["0", "1", "2", "3", "8b", "8d", "8e", "8f", "8h", "10", "12"]
+dashboard: [mail waiting, follow-ups, invoices, gateways]
+never: [send to a customer without OK, pay, delete or move mail, open links from letters]

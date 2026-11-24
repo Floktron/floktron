@@ -8,3 +8,4 @@
 | `letter_morning.html` | Morning task letter with `+ / − / ?` buttons carrying the task line | to clean |
 | `letter_evening.html` | Evening report request | to clean |
 | `report_weekly.md` | Weekly summary per ray | new |
+| `documents/invoice.json`, `advance.json`, `act.json`, `offer.json` | Empty document templates; copied into the company library by `scripts/library.py init` (docs/LIBRARY.md) | **ready (0.26.0)** |

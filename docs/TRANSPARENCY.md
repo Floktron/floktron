@@ -30,7 +30,8 @@ in any other file, or if the model download is missing from this list.
   the system keychain tool `security` to read the mail password and the calendar link (`scripts/mail/send.py`) and the bot token
   (`scripts/bot/telegram_bot.py`); for voice (only if you switch it on) `scripts/voice.py` starts the system speech tools `say` and `afconvert` (Mac)
   or `espeak-ng` / `ffmpeg` (Linux) — the local speech model itself runs inside Python; the security checkup starts only the system's own read-only settings tools
-  (the list `READ_ONLY_COMMANDS` in `scripts/security_check.py`, guarded by a test) and connects to nothing.
+  (the list `READ_ONLY_COMMANDS` in `scripts/security_check.py`, guarded by a test) and connects to nothing; the capacity
+  check (`scripts/capacity_check.py`) starts only `sysctl -n hw.memsize` on a Mac to read the memory size.
 
 ## Check it yourself
 1. Ask your AI assistant: *"Read all files in scripts/ and tell me every place where FLOKTRON connects to the internet

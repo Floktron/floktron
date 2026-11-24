@@ -1,0 +1,25 @@
+{
+ "_about": "Offer (piedāvājums) — prices and conditions before the deal; reminders after it: docs/FOLLOWUPS.md.",
+ "type": "offer",
+ "lang": "en",
+ "date": "",
+ "valid_until": "",
+ "buyer": {
+  "name": "",
+  "reg_no": "",
+  "vat_no": "",
+  "address": "",
+  "email": ""
+ },
+ "lines": [
+  {
+   "desc": "",
+   "qty": 1,
+   "unit": "",
+   "price": 0
+  }
+ ],
+ "notes": "",
+ "signed_by": "",
+ "vat_rate": 21
+}

@@ -29,6 +29,8 @@ Before any step, say this to the person in their language, in plain words:
 - Setup ends with a **security checkup of their own computer** (`docs/SECURITY_CHECKUP.md`). Their data stays with them,
   so they protect it: you check, explain each point in plain words and show where to click; they make every change.
   At the end the system is set up and protected with what their computer already has; an antivirus can go on top later.
+- Setup starts with a read-only **capacity check** of their computer (`scripts/capacity_check.py`, `docs/BREATH.md`):
+  the routine runs there by itself, and you read short summaries — less AI work, the data stays with them.
 
 If the person asks to switch off or remove FLOKTRON, follow `docs/UNINSTALL.md`.
 If the person asks whether FLOKTRON does anything hidden, show `docs/TRANSPARENCY.md`, read `scripts/` with them and run `pytest -q`.
@@ -97,6 +99,8 @@ available in an assistant that works on their computer. Do not skip Way A. Then 
 |---|---|
 | `scripts/` | The hands — Python, standard library + `openpyxl`, `PyYAML` |
 | `prompts/` | The head — instructions for the AI agent (setup wizard, monitoring, news, content) |
+| `agents/` | Ready AI roles (secretary, operations director): which parts, which steps, what never without a person |
+| `templates/documents/` | Empty document templates for the company library (`scripts/library.py`, `docs/LIBRARY.md`) |
 | `config/` | `config.example.yaml`, `config.gmail-example.yaml` → copy to `config.yaml` (never committed) |
 | `docs/` | Requirements, install, security checkup, Gmail test, support, storage, site module, roadmap, feedback |
 | `tests/` | Automatic checks incl. safety checks — `pip install -r requirements.txt pytest && pytest -q` |

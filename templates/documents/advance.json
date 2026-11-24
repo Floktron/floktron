@@ -1,0 +1,24 @@
+{
+ "_about": "Advance invoice (avansa rēķins) — part payment before the work or delivery.",
+ "type": "advance",
+ "lang": "lv",
+ "date": "",
+ "due_days": 5,
+ "buyer": {
+  "name": "",
+  "reg_no": "",
+  "vat_no": "",
+  "address": "",
+  "email": ""
+ },
+ "basis": "",
+ "lines": [
+  {
+   "desc": "Avanss",
+   "qty": 1,
+   "unit": "kompl.",
+   "price": 0
+  }
+ ],
+ "vat_rate": 21
+}

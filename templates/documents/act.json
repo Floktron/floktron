@@ -1,0 +1,25 @@
+{
+ "_about": "Acceptance act (pieņemšanas-nodošanas akts) — work or goods handed over and accepted.",
+ "type": "act",
+ "lang": "lv",
+ "date": "",
+ "supply_date": "",
+ "place": "",
+ "buyer": {
+  "name": "",
+  "reg_no": "",
+  "vat_no": "",
+  "address": "",
+  "email": ""
+ },
+ "basis": "",
+ "lines": [
+  {
+   "desc": "",
+   "qty": 1,
+   "unit": "",
+   "price": 0
+  }
+ ],
+ "vat_rate": 21
+}
