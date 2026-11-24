@@ -12,6 +12,7 @@ target, and the texts no longer use them as examples. Nothing in the code change
 - LICENSING: examples are companies (haulage, construction, an IT partner that installs it for a client).
 - Setup wizard, step 4: a company may start with one or two rays; the construction example is *Sites · Materials · Crews*.
 - FEEDBACK template: company examples only.
+- `docs/FLOKTRON_overview.pdf` version 1.15: the cover line and *What it is* say who it is for; open version 0.25.0.
 
 ## 0.24.3 — 24.11.2026 · tests on Linux only again
 - The macOS test job added in 0.24.2 never got a GitHub runner and was cancelled; it is removed. Automated tests run
