@@ -21,6 +21,7 @@ Tell the person which version you are working with.
 
 Before any step, say this to the person in their language, in plain words:
 - FLOKTRON runs only on their own computer (or server) and in their own mailbox. The authors see nothing: no data, no mail, no passwords.
+- It runs in a real company: an operating manufacturing company uses it every day (tasks, replies, mail, invoices, Telegram reports), and new features work there first. Public examples and tests use fictional companies only.
 - It is an early preview. Risks are kept low (see `SECURITY.md`), but no software is risk-free — so the first run is a test.
 - Support: GitHub Issues or floktron@koagu.com (subject "FLOKTRON"); answers on working days.
 - They use only the parts they need: one or two rays, or only the radar and the content plan — the rest stays off.
