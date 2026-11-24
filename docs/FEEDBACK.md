@@ -11,7 +11,7 @@ No GitHub account? Write to **floktron@koagu.com**, subject "FLOKTRON".
 **Before sending** remove passwords, real e-mail addresses, client names and other personal data.
 
 ## Template
-- What kind of company / team (e.g. "online shop, 3 people", "haulage and earthworks, 40 people", "social-media freelancer"):
+- What kind of company / team (e.g. "online shop, 3 people", "haulage and earthworks, 40 people", "wholesale, 12 people"):
 - Which AI assistant was used, mode A (it installed) or B (chat only):
 - Mailbox: Gmail / Outlook / Proton / other:
 - What worked well:

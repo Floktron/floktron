@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.24.3. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.25.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 
@@ -27,7 +27,7 @@ You are an AI assistant (Claude, ChatGPT, Gemini, Copilot, Codex, Cursor or any 
 A person gave you the link to this repository and probably asked something like
 *"connect to this tool"*, *"set up FLOKTRON for my company"* or *"let me test this"*.
 
-**FLOKTRON** is an operations system for anyone who runs work — one person (a social-media manager, a freelancer, a consultant), a team or a company with departments, in any field: every morning each department (a "ray")
+**FLOKTRON** is an operations system for companies — for the owner or manager who runs teams, production and processes (construction, logistics, production, rental, wholesale, services): every morning each department (a "ray")
 gets its tasks by e-mail, people answer with one button, blocked work goes up to whoever decides,
 and a radar watches news, tenders and public consultations by the company's keywords.
 Python scripts do the routine work ("hands"); text instructions in `prompts/` tell an AI agent what to look for ("head").
@@ -133,10 +133,10 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.24.3 · last update 24.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.25.0 · last update 24.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
-AI-assisted operations system for anyone who runs work — from one person (a social-media manager, a freelancer, a consultant) to a company with departments: an online shop, logistics, production, services, construction.
+AI-assisted operations system for companies. Built for the owner or manager who runs teams, production and processes — departments, crews, sites, a fleet, a workshop — and wants to see it all in one place. B2B fields: construction, logistics and haulage, production, equipment rental, wholesale, services.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
 Every morning each department gets its tasks; people answer with one button; blocked work goes up the chain to whoever decides; the manager sees progress. A radar watches news, public consultations and search demand by the company's own keywords.
 Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) shows your day in the morning message, and due dates come as a calendar file you add with one tap ([CALENDAR](docs/CALENDAR.md)).
@@ -429,10 +429,10 @@ a key to their calendar. Ask whether titles may appear in messages or only "busy
 `python3 scripts/calendar_read.py --check` → `OK — calendar read …`. FLOKTRON only reads; it never changes the calendar.
 
 ## 4. Departments (rays) — only the ones needed
-Rays are optional. A freelancer may need one or two (e.g. Clients · Marketing) or none at all — only the radar
+Rays are optional. A company may start with one or two (e.g. Sales · Purchasing) or none at all — only the radar
 and the content plan. Show the default list: Sales · Stock · Purchasing · Production/Quality · Logistics · Marketing ·
 Compliance/Finance · Market research. Keep, rename, remove or add (examples: a machinery company may need
-Dispatch · Rental · Workshop · Haulage; a crew may need Sites · Materials · Team). For each: responsible person,
+Dispatch · Rental · Workshop · Haulage; a construction company may need Sites · Materials · Crews). For each: responsible person,
 e-mail, language of the messages, team lead's e-mail (gets escalations), send time. Manager's address (end of the chain).
 Ask who the support person is (gets the gaps report) — can be the manager.
 For a test, the rays may be the person's own spare addresses.
@@ -1912,7 +1912,7 @@ No GitHub account? Write to **floktron@koagu.com**, subject "FLOKTRON".
 **Before sending** remove passwords, real e-mail addresses, client names and other personal data.
 
 ## Template
-- What kind of company / team (e.g. "online shop, 3 people", "haulage and earthworks, 40 people", "social-media freelancer"):
+- What kind of company / team (e.g. "online shop, 3 people", "haulage and earthworks, 40 people", "wholesale, 12 people"):
 - Which AI assistant was used, mode A (it installed) or B (chat only):
 - Mailbox: Gmail / Outlook / Proton / other:
 - What worked well:
@@ -1936,9 +1936,9 @@ This page is a summary. If it differs from [LICENSE.md](LICENSE.md), the licence
 
 | You may | Example |
 |---|---|
-| Use FLOKTRON for yourself or inside your own company, also a commercial one | A freelancer watches news and plans posts; a construction company runs it for its own departments and crews |
+| Use FLOKTRON for yourself or inside your own company, also a commercial one | A haulage company runs it for dispatch and the workshop; a construction company runs it for its own departments and crews |
 | Read, copy, change and extend the code for your own use | Add a module for your trade, translate the letters |
-| Set FLOKTRON up for a client who then uses it under this licence | A consultant installs and supports FLOKTRON for a company |
+| Set FLOKTRON up for a client who then uses it under this licence | An IT partner installs and supports FLOKTRON for a company |
 | Use it for non-commercial education and research | A university course, a student project |
 
 ## Needs a separate agreement (commercial licence)

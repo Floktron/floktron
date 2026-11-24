@@ -3,6 +3,17 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.25.0 — 24.11.2026 · built for companies (B2B)
+FLOKTRON is now described for what it does best: a company with teams, production and processes, run by an owner or
+a manager who wants to see everything in one place. One-person setups (a freelancer, a consultant) are no longer the
+target, and the texts no longer use them as examples. Nothing in the code changes.
+- README, AGENTS.md, llms.txt: who it is for — the owner or manager of a B2B company; fields: construction, logistics
+  and haulage, production, equipment rental, wholesale, services.
+- LICENSING: examples are companies (haulage, construction, an IT partner that installs it for a client).
+- Setup wizard, step 4: a company may start with one or two rays; the construction example is *Sites · Materials · Crews*.
+- FEEDBACK template: company examples only.
+- `docs/FLOKTRON_overview.pdf` version 1.15: the cover line and *What it is* say who it is for; open version 0.25.0.
+
 ## 0.24.3 — 24.11.2026 · tests on Linux only again
 - The macOS test job added in 0.24.2 never got a GitHub runner and was cancelled; it is removed. Automated tests run
   on Linux (Python 3.10 and 3.12), as before 0.24.2.

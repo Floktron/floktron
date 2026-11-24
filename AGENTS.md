@@ -4,7 +4,7 @@ You are an AI assistant (Claude, ChatGPT, Gemini, Copilot, Codex, Cursor or any 
 A person gave you the link to this repository and probably asked something like
 *"connect to this tool"*, *"set up FLOKTRON for my company"* or *"let me test this"*.
 
-**FLOKTRON** is an operations system for anyone who runs work — one person (a social-media manager, a freelancer, a consultant), a team or a company with departments, in any field: every morning each department (a "ray")
+**FLOKTRON** is an operations system for companies — for the owner or manager who runs teams, production and processes (construction, logistics, production, rental, wholesale, services): every morning each department (a "ray")
 gets its tasks by e-mail, people answer with one button, blocked work goes up to whoever decides,
 and a radar watches news, tenders and public consultations by the company's keywords.
 Python scripts do the routine work ("hands"); text instructions in `prompts/` tell an AI agent what to look for ("head").
