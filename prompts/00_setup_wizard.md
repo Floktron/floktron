@@ -66,10 +66,10 @@ a key to their calendar. Ask whether titles may appear in messages or only "busy
 `python3 scripts/calendar_read.py --check` → `OK — calendar read …`. FLOKTRON only reads; it never changes the calendar.
 
 ## 4. Departments (rays) — only the ones needed
-Rays are optional. A freelancer may need one or two (e.g. Clients · Marketing) or none at all — only the radar
+Rays are optional. A company may start with one or two (e.g. Sales · Purchasing) or none at all — only the radar
 and the content plan. Show the default list: Sales · Stock · Purchasing · Production/Quality · Logistics · Marketing ·
 Compliance/Finance · Market research. Keep, rename, remove or add (examples: a machinery company may need
-Dispatch · Rental · Workshop · Haulage; a crew may need Sites · Materials · Team). For each: responsible person,
+Dispatch · Rental · Workshop · Haulage; a construction company may need Sites · Materials · Crews). For each: responsible person,
 e-mail, language of the messages, team lead's e-mail (gets escalations), send time. Manager's address (end of the chain).
 Ask who the support person is (gets the gaps report) — can be the manager.
 For a test, the rays may be the person's own spare addresses.

@@ -1,6 +1,6 @@
 # FLOKTRON
 
-> AI-assisted operations system for anyone who runs work (from one person — a social-media manager, a freelancer — to a company with departments: online shop, logistics, production, services, construction): morning tasks by e-mail per department,
+> AI-assisted operations system for companies, built for the owner or manager who runs teams, production and processes (construction, logistics, production, rental, wholesale, services): morning tasks by e-mail per department,
 > one-button replies, escalation to whoever decides, and a radar for news, tenders and public consultations.
 > Python scripts + instructions for an AI agent. Early preview, open for testing; use only the parts you need. Removal: docs/UNINSTALL.md.
 
