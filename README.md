@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.25.0 · last update 24.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.26.0 · last update 24.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 AI-assisted operations system for companies. Built for the owner or manager who runs teams, production and processes — departments, crews, sites, a fleet, a workshop — and wants to see it all in one place. B2B fields: construction, logistics and haulage, production, equipment rental, wholesale, services.
@@ -21,13 +21,16 @@ Your team can **report by voice** — the bot turns a voice message into text on
 **New customers — like your best ones, with a reason to write now**: companies that have just signed public works of the kind you serve (Latvia's procurement results and register, open data), scored by how much they look like your best customers; one click adds them to your companies with a draft first letter — nothing is sent ([PROSPECTS](docs/PROSPECTS.md)).
 
 **Payment gateways — every card payment finds its document**: Stripe, Paddle, Lemon Squeezy, Apple, Google Play receipts from the mailbox (spam folder too), every card payment of the bank statement — foreign currency included — matched to its document; where the business invoice with your company details is downloaded, a draft request to the seller, a draft internal act when nothing comes. Read-only, no link is opened ([GATEWAYS](docs/GATEWAYS.md)).
+**Breath — your computer does the routine, the AI does the thinking**: news slices, monitoring, mail, invoices, documents and the dashboard run as scripts on your own computer; your AI assistant reads one short summary instead of every page. Setup starts with a read-only **capacity check** of the computer (cores, memory, disk, Python) and ends with the list of what now runs by itself ([BREATH](docs/BREATH.md)).
+**Company library**: the company profile and ready templates (invoice, advance invoice, acceptance act, offer) are made once and kept in one folder on your computer — open them offline or give them to any AI assistant; no document is built from nothing again ([LIBRARY](docs/LIBRARY.md)).
+**Ready AI roles**: set FLOKTRON up as the **AI secretary** (mail, calendar, follow-ups, documents, invoices) or the **AI operations director** (morning tasks, escalation, radar, supply chain, dashboard) — the same parts, switched on together with the instructions for your assistant; procurement and project coordinator come next ([agents](agents/README.md)).
 **One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
 checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
 and shows where to click — you make each change. At the end the system works and is protected with what your computer
 already has; your own antivirus can be added on top ([SECURITY_CHECKUP](docs/SECURITY_CHECKUP.md)).
 
-**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 14 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, a safe first test, what else can be plugged in. Other languages: [koagu.com/floktron](https://koagu.com/en/floktron/).
+**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 15 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, breath and ready roles, a safe first test, what else can be plugged in. Other languages: [koagu.com/floktron](https://koagu.com/en/floktron/).
 
 ## Before you install — a safe first test
 

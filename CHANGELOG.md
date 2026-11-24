@@ -3,6 +3,25 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.26.0 — 24.11.2026 · breath: the computer does the routine, the AI does the thinking
+FLOKTRON had a face (dashboard), a mouth (messages, morning audio), eyes (radar, watches), ears (replies, voice, bot)
+and hands (scripts). Now it breathes: the routine runs on the company's own computer, and the AI assistant reads one
+short summary and spends its work on judgement. Less AI work per day, the same result, the data stays with you.
+- New [BREATH](docs/BREATH.md): what runs on the computer and what the assistant still does, task by task.
+- New `scripts/capacity_check.py`: read-only check of the computer (system, cores, memory, free disk, Python) with
+  ✅ / ⚠️ / ❌ and the breath table; report in `data/`. Nothing is changed, nothing is sent.
+- New company library — [LIBRARY](docs/LIBRARY.md), `scripts/library.py` (`init`, `check`, `list`, `new`): the company
+  profile and the templates for invoice, advance invoice, acceptance act and offer (`templates/documents/`) are made
+  once in `data/library/`, never overwritten, usable offline and by any AI assistant; `documents.py --seller
+  data/library/company.json` draws from it.
+- New [ready AI roles](agents/README.md): **secretary** and **operations director** — `ROLE.md` (what the role does
+  and never does), `agent.md` (instructions for the assistant), `role.yaml` (scripts, prompts, config sections, setup
+  steps, dashboard cards). Procurement and project coordinator are next.
+- Setup wizard v0.7: step 0 runs the capacity check, explains breath and offers a role; step 8d makes the library;
+  step 12 closes with what now runs by itself.
+- Tests: `test_library.py`, `test_capacity.py`, `test_roles.py` (fictional Demo SIA only).
+- `docs/FLOKTRON_overview.pdf` version 1.16: new page *Breath and ready roles*; open version 0.26.0.
+
 ## 0.25.0 — 24.11.2026 · built for companies (B2B)
 FLOKTRON is now described for what it does best: a company with teams, production and processes, run by an owner or
 a manager who wants to see everything in one place. One-person setups (a freelancer, a consultant) are no longer the

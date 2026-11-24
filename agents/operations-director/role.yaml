@@ -1,0 +1,15 @@
+# AI operations director — which FLOKTRON parts belong to this role (tests/test_roles.py checks every path)
+role: operations-director
+title: AI operations director
+status: ready
+since: "0.26.0"
+scripts: [scripts/send_morning.py, scripts/collect_replies.py, scripts/route.py, scripts/weekly_summary.py,
+          scripts/gaps_report.py, scripts/news_slice.py, scripts/supply_watch.py, scripts/tg_watch.py,
+          scripts/dashboard.py, scripts/voice.py, scripts/snapshot.py, scripts/capacity_check.py]
+prompts: [prompts/20_monitoring_weekly.md, prompts/30_news_evening.md, prompts/31_news_check.md,
+          prompts/32_supply_chain.md, prompts/51_snapshot.md]
+docs: [docs/SUPPLY_CHAIN.md, docs/DASHBOARD.md, docs/VOICE.md, docs/SNAPSHOT.md, docs/BREATH.md]
+config: [company, mail, rays, schedule, escalation, radar, supply_chain, snapshot]
+wizard_steps: ["0", "1", "2", "4", "5", "6", "7", "8", "8c", "11", "12"]
+dashboard: [system health, answers, escalation, deadlines, signals]
+never: [decide money or contracts, change task owners, publish]
