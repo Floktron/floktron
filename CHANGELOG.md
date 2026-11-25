@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.30.1 — 26.11.2026 · overview PDF 1.21
+- `docs/FLOKTRON_overview.pdf` = overview 1.21 (19 pages): new page 17 "The radar ready on day one — a keyword set
+  for your industry"; every address now floktron.com, github.com/floktron/floktron, support@floktron.com.
+  9 languages on floktron.com.
+
 ## 0.30.0 — 26.11.2026 · industry packs: the radar ready on day one
 - A new company no longer invents 30 search words from scratch. `templates/industry/construction.json` — the first
   industry pack: 24 keywords in Latvian, Russian and English (demand, rules, environment, funding, costs, people, risk,
