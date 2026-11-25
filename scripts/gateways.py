@@ -66,7 +66,7 @@ ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, "data")
 sys.path.insert(0, HERE)
 
-VERSION = "0.24.0"
+VERSION = "0.28.0"
 SHEET = "Gateways"
 HEAD = ["ID", "Found", "Source", "Paid on", "Gateway", "Seller", "Amount", "Currency", "Charged EUR", "Receipt / invoice no.",
         "Document", "File", "How to get the business invoice", "Payment in statement", "Status", "Tasks", "Key", "Comment"]
@@ -699,6 +699,16 @@ def run(cfg, a):
         ws.auto_filter.ref = f"A1:{get_column_letter(len(HEAD))}1"
     ws = wb[SHEET]
     col = {h: n for n, h in enumerate(HEAD)}
+    # presses in Telegram (✅ Found / ⛔ Not needed, data/task_actions.jsonl) → column "Status"
+    import task_notice
+    acts, st["tg_offset"] = task_notice.read_actions(task_notice.actions_path(cfg), st.get("tg_offset", 0), "gw")
+    by_id = {str(r[col["ID"]].value): r for r in ws.iter_rows(min_row=2) if r[col["ID"]].value} if acts else {}
+    for x in acts:
+        r = by_id.get(str(x["key"]))
+        if r is not None:
+            r[col["Status"]].value = "PDF found (Telegram ✅)" if x["ans"] == "y" else "Not needed (Telegram ⛔)"
+            old_c = str(r[col["Comment"]].value or "")
+            r[col["Comment"]].value = (old_c + "; " if old_c else "") + task_notice.note(x)
     have = {str(r[col["Key"]].value) for r in ws.iter_rows(min_row=2) if r[col["Key"]].value}
     old = []  # gateway messages of earlier runs, for matching with a later statement
     for r in ws.iter_rows(min_row=2, values_only=True):
@@ -845,7 +855,17 @@ def run(cfg, a):
     quiet = (hr >= q0 or hr < q1) if q0 > q1 else (q0 <= hr < q1)
     err = ""
     need = [r for r in rows if not str(r[14]).startswith("PDF")]
-    if need and not quiet and not a.no_notify:
+    if need and not quiet and not a.no_notify and task_notice.via_telegram(cfg, gcfg):
+        # one payment without a document = one message with ✅ Found / ⛔ Not needed; at most 5 per run
+        for r in need[:5]:
+            d = str(r[3] or "")[:10]
+            d = f"{d[8:10]}.{d[5:7]}" if len(d) == 10 else d
+            amount = f" · {r[6]} {r[7]}" if r[6] is not None else ""
+            text = ("[TEST] " if a.test else "") + f"🧾 {str(r[5])[:40]}{amount} · {d}\n{r[14]}" + (f"\n→ {r[12]}" if r[12] else "")
+            err = task_notice.send(cfg, text, "gw", r[0], lang, a.outbox) or err
+        if len(need) > 5:
+            err = task_notice.info(cfg, f"🧾 +{len(need) - 5} · FLOKTRON gateways — more payments without a document, see the dashboard.", a.outbox) or err
+    elif need and not quiet and not a.no_notify:
         T = TX.get(lang, TX["en"])
         text = "\n".join([T["head"].format(n=len(rows))] + [f"• {r[5]} {r[6]} {r[7]} — {r[14]}" for r in need[:10]] + [T["foot"]])
         err = notify(cfg, gcfg, text, T["subj"].format(n=len(rows)), a.outbox)

@@ -91,12 +91,23 @@ def test_answered_star_and_reminders(world):
     # same hour again: nothing new, no second reminder
     world["run"]("2026-11-23 10:30")
     assert len(world["notices"]()) == 2
-    # next day: the second (last) reminder
-    rows, _ = world["run"]("2026-11-24 10:30")
+    # next day: nothing — the next reminder is on day 3, 7, 14 ("no fanaticism")
+    world["run"]("2026-11-24 10:30")
+    assert len(world["notices"]()) == 2
+    rows, _ = world["run"]("2026-11-26 09:30")   # Angebot came 23.11 09:00 → day 3
     assert rows["Angebot"]["Reminded"].endswith("(2)")
     assert len(world["notices"]()) == 3
-    rows, _ = world["run"]("2026-11-25 11:00")
-    assert len(world["notices"]()) == 3  # at most twice
+    rows, _ = world["run"]("2026-11-27 11:00")
+    assert len(world["notices"]()) == 3
+    rows, _ = world["run"]("2026-11-30 09:30")   # day 7
+    assert rows["Angebot"]["Reminded"].endswith("(3)")
+    rows, _ = world["run"]("2026-12-07 09:30")   # day 14
+    assert rows["Angebot"]["Reminded"].endswith("(4)")
+    rows, _ = world["run"]("2026-12-08 10:30")   # no answer after day 14 → closed, never again
+    assert rows["Angebot"]["Status"] == "Closed · 14 days"
+    n = len(world["notices"]())
+    world["run"]("2026-12-10 09:30")
+    assert len(world["notices"]()) == n
 
 
 def test_closed_by_hand_and_quiet_hours(world):
@@ -237,3 +248,60 @@ def test_imap_path_read_only(world, monkeypatch):
     calls.clear()
     assert mw.main(args) == 0  # second run: headers only, no bodies for known messages
     assert calls and all("HEADER.FIELDS" in c for c in calls)
+
+
+def _eml(folder, name, frm, to, subject, date, body, extra=""):
+    with open(os.path.join(folder, name + ".eml"), "w", encoding="utf-8") as f:
+        f.write(f"From: {frm}\nTo: {to}\nSubject: {subject}\nDate: {date}\nMessage-ID: <{name}@test.example.com>\n{extra}"
+                f"MIME-Version: 1.0\nContent-Type: text/plain; charset=utf-8\n\n{body}\n")
+
+
+def test_service_confirmation_is_never_a_task(world):
+    mail = os.path.join(world["tmp"], "mail")
+    _eml(mail, "90_verify", "Demo Cloud (TEST) <hello@cloud-demo.example.com>", "office@demo-sia.example.com",
+         "Verify your email address", "Mon, 23 Nov 2026 08:00:00 +0200", "Please click the link to verify your email address.")
+    _eml(mail, "91_receipt", "Forms Demo (TEST) <team@forms-demo.example.com>", "office@demo-sia.example.com",
+         "We received your submission: DEMO", "Mon, 23 Nov 2026 08:10:00 +0200", "Thanks! Could you tell us more?")
+    rows, _ = world["run"]("2026-11-23 10:00")
+    v, r = rows["Verify your email address"], rows["We received your submission: DEMO"]
+    assert v["Category"] == "Service confirmation" and not v["Need"] and not v["Reminded"]
+    assert r["Category"] == "Notice" and not r["Need"]
+    assert not any("Verify your email" in n for n in world["notices"]())
+
+
+def test_correspondence_goes_on_means_answered(world):
+    mail = os.path.join(world["tmp"], "mail")
+    _eml(mail, "92_q", "Ieva Paraugs <ieva@buve-demo.example.com>", "office@demo-sia.example.com",
+         "Cena par 10 maisiem?", "Mon, 23 Nov 2026 08:00:00 +0200", "Labdien, lūdzam atsūtīt cenu par 10 maisiem.")
+    world["run"]("2026-11-23 10:00")
+    # a new letter (not a reply to that message) from you to the same company → the correspondence goes on
+    _eml(mail, "93_sent", "office@demo-sia.example.com", "juris@buve-demo.example.com", "Piedāvājums",
+         "Tue, 24 Nov 2026 09:00:00 +0200", "Sūtām piedāvājumu.")
+    rows, _ = world["run"]("2026-11-24 10:00")
+    q = rows["Cena par 10 maisiem?"]
+    assert q["Answered"] == "yes" and q["Status"] == "Answered"
+
+
+def test_telegram_one_message_per_letter_and_press_closes(world, tmp_path):
+    tg = tmp_path / "tg"
+    tg.mkdir()
+    p = tmp_path / "cfg_tg.yaml"
+    p.write_text(CFG.replace("LANG", "ru").replace("notify: mail", "notify: telegram").replace("INBOX", str(tmp_path / "inbox"))
+                 .replace("EXTR", str(tmp_path / "extraction.json")) + f"telegram: {{enabled: true, data_dir: '{tg}'}}\n", encoding="utf-8")
+    out = tmp_path / "out_tg"
+    args = ["--config", str(p), "--base", str(world["base"]), "--mail-folder", os.path.join(world["tmp"], "mail"),
+            "--outbox", str(out), "--now", "2026-11-23 10:00", "--test"]
+    assert mw.main(args) == 0
+    sent = [json.loads(x) for x in open(out / "telegram_tasks.jsonl", encoding="utf-8")]
+    assert 1 <= len(sent) <= 5 and all(len(m["buttons"][0]) == 2 for m in sent)
+    one = next(m for m in sent if "Angebot" in m["text"])
+    assert one["text"].startswith("📬 Почта · ") and "Mail" not in one["text"] and "Status" not in one["text"]
+    yes, no = one["buttons"][0]
+    assert yes["text"] == "✅ Ответил" and no["text"] == "⛔ Не нужно" and len(yes["callback_data"].encode()) <= 64
+    # the bot writes the press; the next run closes the row
+    _, kind, key, _ = no["callback_data"].split(":")
+    (tg / "task_actions.jsonl").write_text(json.dumps({"ts": "2026-11-23 10:31", "kind": kind, "key": key, "ans": "n"}) + "\n", encoding="utf-8")
+    assert mw.main(args[:-2] + ["2026-11-23 10:40", "--test"]) == 0
+    wb = openpyxl.load_workbook(world["base"])
+    row = {r[5]: dict(zip(mw.HEAD, r)) for r in wb["Mail"].iter_rows(min_row=2, values_only=True)}["Angebot"]
+    assert row["Status"] == "Closed · not needed" and "Telegram" in row["Comment"]

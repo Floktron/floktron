@@ -24,5 +24,6 @@ AI assistants: start with AGENTS.md (setup steps and safety rules), then prompts
 - [docs/BREATH.md](docs/BREATH.md): capacity check; the computer does the routine, the AI reads summaries
 - [docs/LIBRARY.md](docs/LIBRARY.md): company profile and document templates kept on the computer
 - [docs/MOVE.md](docs/MOVE.md): the whole setup in one password-protected archive — move to another computer or AI assistant, weekly backup
+- [docs/TASKS_TIDY.md](docs/TASKS_TIDY.md): the manager's tasks without old resolved things; yes / no in Telegram; friendly letter about posts
 - [SECURITY.md](SECURITY.md): what FLOKTRON protects against and how
 - [docs/FEEDBACK.md](docs/FEEDBACK.md): how to send wishes and bug reports

@@ -13,7 +13,8 @@ Mail is only READ (BODY.PEEK - messages do not become "read"); nothing is moved,
 except the short notice to you.
 1. Sheet "Mail": one row per message, received and sent - date, who, subject, category, dates found in the text,
    star, answered or not, status. Categories: Confirm · Reply awaited · Invitation · Deadline · Question · Invoice ·
-   Letter · Newsletter · Notice · Notice (important) · Auto-reply · Code / login · FLOKTRON (system) · Sent.
+   Letter · Newsletter · Notice · Notice (important) · Auto-reply · Code / login · Service confirmation ·
+   FLOKTRON (system) · Sent. "Service confirmation" = a service asks to verify your address / account: never a task.
    The words are found in EN, LV, RU, DE, ET and LT.
 2. Sheet "Contacts": address, name, organisation, phones and website from the signature, first / last mail, counts.
 3. PDF invoices from attachments go to data/invoices/inbox/<sender>/ (duplicates by SHA-256 are skipped).
@@ -23,9 +24,13 @@ except the short notice to you.
        at once      - Confirm, Reply awaited, personal invitations, invitations / important notices from the
                       organisations in mail_watch.important;
        after 24 h   - a Question without your answer;   after 48 h - a starred message without your answer.
-   Again not earlier than after 24 h, at most twice; nothing in quiet hours (22-07) - it waits for the morning.
-   You answered (a sent message that replies to it, or the flag "Answered") - the reminder stops by itself.
-   Write "Closed" in the column "Status" - no more reminders for that message.
+   Then again on day 3, 7 and 14 after the message came (mail_watch.remind_days), then never ("no fanaticism");
+   nothing in quiet hours (22-07) - it waits for the morning.
+   You answered - the reminder stops by itself: a sent message that replies to it, the flag "Answered", or any later
+   message from you to that address (or that company's domain): the correspondence goes on.
+   No answer after the 14th day (mail_watch.close_after_days) → "Closed · 14 days".
+   Telegram: one message per letter with two buttons ✅ Answered / ⛔ Not needed (scripts/task_notice.py), at most 5
+   per run; a press closes the row on the next run. E-mail notice: one short list.
 Safe to run again: every message is one row (by Message-ID).
 --mail-folder  read .eml files from a folder instead of the mailbox (tests). Outgoing = From is one of your addresses.
                Stars: optional flags.json in that folder, {"file.eml": ["\\\\Flagged"]}.
@@ -52,7 +57,7 @@ ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, "data")
 sys.path.insert(0, HERE)
 
-VERSION = "0.22.0"
+VERSION = "0.28.0"
 SHEET, CSHEET = "Mail", "Contacts"
 HEAD = ["Date", "Direction", "From / To", "Address", "Organisation", "Subject", "Summary", "Category", "Need",
         "Dates in mail", "Star", "Answered", "Status", "Reminded", "Attachments", "Invoice file", "Message-ID", "Comment"]
@@ -81,6 +86,14 @@ AUTO_SENDER = re.compile(r"(?i)(portal|e-?pakalpojum|sistēma|system|automat|not
 AUTO_REPLY = re.compile(r"(?i)^\s*(automatic reply|auto-?reply|automātiskā atbilde|автоответ|out of office|abwesenheit|prombūtnē|automaatvastus)")
 CONFIRM_STRICT = (r"e-?pasta\s+adreses\s+apstiprin|verify\s+your|confirm\s+your\s+(e-?mail|registration|account|attendance|participation|subscription)"
                   r"|apstipriniet\s+(savu|dalību|reģistr|e-?pasta)|подтвердите\s+(адрес|почту|регистрац|участие)")
+SERVICE_CONFIRM = re.compile(
+    r"(?i)verify\s+(your\s+)?(e-?mail|account|address|identity)|confirm\s+your\s+(e-?mail|account|address|registration|subscription|sign.?up)"
+    r"|activate\s+your\s+account|подтверд(ите|ить)\s+(свой\s+|ваш\s+)?(адрес|e-?mail|почт|регистрац|аккаунт|учётн)"
+    r"|e-?pasta\s+adreses\s+apstiprin|apstipriniet\s+(savu\s+)?e-?past|bestätigen\s+sie\s+ihre\s+e-?mail"
+    r"|kinnita(ge)?\s+oma\s+e-?post|patvirtinkite\s+(savo\s+)?el\.?\s*pašt")
+RECEIPT = re.compile(r"(?i)we\s+received\s+your\s+(submission|application|request)|thank\s+you\s+for\s+(your\s+)?(submission|signing\s+up|registering)")
+PUBLIC_MAIL = {"gmail.com", "googlemail.com", "outlook.com", "hotmail.com", "live.com", "yahoo.com", "icloud.com", "me.com",
+               "proton.me", "protonmail.com", "inbox.lv", "one.lv", "tvnet.lv", "mail.ru", "yandex.ru", "gmx.de", "web.de"}
 READ_IT = r"jauns\s+ziņojums|new\s+message|новое\s+сообщение|lēmum|decision|решени|entscheid|otsus|sprendim|dokuments\s+ar\s+e-?parakstu"
 CODES = re.compile(r"(?i)verification code|single-use code|security code|one-time (pass)?code|login code|verifikācijas kods"
                    r"|vienreizēj|код подтверждения|одноразов|bestätigungscode|kinnituskood|patvirtinimo kodas")
@@ -102,24 +115,30 @@ MONTHS = {  # month word stems → number (LV, EN, RU, DE, ET, LT)
 
 # ---------------------------------------------------------------- notice texts (company.language)
 TX = {
-    "en": dict(head="📬 FLOKTRON · mail waits for you", foot="Answer it and the reminder stops. Not needed: write Closed in the sheet Mail, column Status.",
+    "en": dict(head="📬 FLOKTRON · mail waits for you", foot="Answer it and the reminder stops. Without an answer it stops by itself after 14 days.",
                inv="🧾 FLOKTRON · invoices from mail wait to be read: {n}", inv2="Your AI assistant reads them (prompts/50_invoices.md), then the check against the bank statement → sheet Invoices.",
-               subj="[FLOKTRON · mail] {n} waiting for you"),
-    "lv": dict(head="📬 FLOKTRON · pasts gaida jūs", foot="Atbildiet - atgādinājums beigsies pats. Nav vajadzīgs: lapā Mail, kolonnā Status ierakstiet Closed.",
+               subj="[FLOKTRON · mail] {n} waiting for you",
+               item="📬 Mail · {who}\n«{subj}» · {date}\n{why}", wait="waiting {n} d.", today="came today", star="you starred it"),
+    "lv": dict(head="📬 FLOKTRON · pasts gaida jūs", foot="Atbildiet - atgādinājums beigsies pats. Bez atbildes tas beigsies pēc 14 dienām.",
                inv="🧾 FLOKTRON · rēķini no pasta gaida nolasīšanu: {n}", inv2="AI asistents tos nolasa (prompts/50_invoices.md), pēc tam pārbaude pret bankas izrakstu → lapa Invoices.",
-               subj="[FLOKTRON · mail] {n} gaida jūs"),
-    "ru": dict(head="📬 FLOKTRON · почта ждёт вас", foot="Ответите - напоминание снимется само. Не нужно: в листе Mail, столбец Status - Closed.",
+               subj="[FLOKTRON · mail] {n} gaida jūs",
+               item="📬 Pasts · {who}\n«{subj}» · {date}\n{why}", wait="gaida {n} d.", today="atnāca šodien", star="atzīmējāt ar ⭐"),
+    "ru": dict(head="📬 FLOKTRON · почта ждёт вас", foot="Ответите - напоминание снимется само. Без ответа оно само прекратится через 14 дней.",
                inv="🧾 FLOKTRON · счета из почты ждут чтения: {n}", inv2="ИИ-ассистент читает их (prompts/50_invoices.md), затем сверка с выпиской → лист Invoices.",
-               subj="[FLOKTRON · mail] ждут вас: {n}"),
-    "de": dict(head="📬 FLOKTRON · Post wartet auf Sie", foot="Antworten Sie, und die Erinnerung endet. Nicht nötig: im Blatt Mail, Spalte Status, Closed eintragen.",
+               subj="[FLOKTRON · mail] ждут вас: {n}",
+               item="📬 Почта · {who}\n«{subj}» · {date}\n{why}", wait="ждёт ответа {n} дн.", today="пришло сегодня", star="вы отметили ⭐"),
+    "de": dict(head="📬 FLOKTRON · Post wartet auf Sie", foot="Antworten Sie, und die Erinnerung endet. Ohne Antwort endet sie nach 14 Tagen von selbst.",
                inv="🧾 FLOKTRON · Rechnungen aus der Post warten aufs Lesen: {n}", inv2="Ihr KI-Assistent liest sie (prompts/50_invoices.md), dann Abgleich mit dem Kontoauszug → Blatt Invoices.",
-               subj="[FLOKTRON · mail] {n} warten auf Sie"),
-    "et": dict(head="📬 FLOKTRON · post ootab teid", foot="Vastake ja meeldetuletus lõpeb. Pole vaja: lehel Mail, veerus Status kirjutage Closed.",
+               subj="[FLOKTRON · mail] {n} warten auf Sie",
+               item="📬 Post · {who}\n«{subj}» · {date}\n{why}", wait="wartet {n} T.", today="heute gekommen", star="von Ihnen markiert ⭐"),
+    "et": dict(head="📬 FLOKTRON · post ootab teid", foot="Vastake ja meeldetuletus lõpeb. Vastuseta lõpeb see 14 päeva pärast ise.",
                inv="🧾 FLOKTRON · arved postist ootavad lugemist: {n}", inv2="Teie AI-assistent loeb need (prompts/50_invoices.md), siis kontroll pangaväljavõttega → leht Invoices.",
-               subj="[FLOKTRON · mail] ootab teid: {n}"),
-    "lt": dict(head="📬 FLOKTRON · paštas laukia jūsų", foot="Atsakykite ir priminimas baigsis. Nereikia: lape Mail, stulpelyje Status įrašykite Closed.",
+               subj="[FLOKTRON · mail] ootab teid: {n}",
+               item="📬 Post · {who}\n«{subj}» · {date}\n{why}", wait="ootab {n} p.", today="tuli täna", star="märkisite ⭐"),
+    "lt": dict(head="📬 FLOKTRON · paštas laukia jūsų", foot="Atsakykite ir priminimas baigsis. Be atsakymo jis baigsis pats po 14 dienų.",
                inv="🧾 FLOKTRON · sąskaitos iš pašto laukia skaitymo: {n}", inv2="Jūsų DI asistentas jas perskaito (prompts/50_invoices.md), tada tikrinimas su banko išrašu → lapas Invoices.",
-               subj="[FLOKTRON · mail] laukia jūsų: {n}"),
+               subj="[FLOKTRON · mail] laukia jūsų: {n}",
+               item="📬 Paštas · {who}\n«{subj}» · {date}\n{why}", wait="laukia {n} d.", today="atėjo šiandien", star="pažymėjote ⭐"),
 }
 NEED = {  # how the stored English "Need" is shown in a notice
     "lv": {"confirm": "apstiprināt", "reply": "atbildēt", "reply?": "atbildēt?", "decide: attend?": "izlemt: piedalīties?",
@@ -209,12 +228,16 @@ def classify(subject, own, msg, addr, pdfs, outgoing, own_addrs, system):
         return "FLOKTRON (system)"
     if CODES.search(subject):
         return "Code / login"
+    if SERVICE_CONFIRM.search(subject + " " + own[:600]):
+        return "Service confirmation"   # "verify your e-mail" from a service is never a task
     s = (subject + "\n" + own[:2500]).lower()
     if pdfs and (re.search(RX_INVOICE, subject.lower()) or any(re.search(RX_INVOICE, f.lower()) for f in pdfs)):
         return "Invoice"
     if AUTO_REPLY.match(subject) or msg.get("X-Autoreply") or (msg.get("Auto-Submitted", "") or "").lower() == "auto-replied":
         return "Auto-reply"
     bulk = is_bulk(msg, addr)
+    if RECEIPT.search(subject):
+        return "Notice"                 # "we received your submission" — nothing to answer
     for name, rx in RX:
         if re.search(rx, s):
             if bulk and name == "Confirm" and not re.search(CONFIRM_STRICT, s):
@@ -564,10 +587,35 @@ def run(cfg, base, sources, now, state_path, outbox=None, dry=False, test=False,
     hours = str(wcfg.get("quiet_hours") or "22-07").split("-")
     q0, q1 = int(hours[0]), int(hours[1])
     quiet = (now.hour >= q0 or now.hour < q1) if q0 > q1 else (q0 <= now.hour < q1)
-    max_n, rep_h = int(wcfg.get("max_reminders", 2)), float(wcfg.get("repeat_hours", 24))
+    days_r = [float(x) for x in (wcfg.get("remind_days") or [3, 7, 14])]   # after the first notice: day 3, 7, 14 — then stop
+    close_d = float(wcfg.get("close_after_days", 14))
     q_h, star_h = float(wcfg.get("question_hours", 24)), float(wcfg.get("star_hours", 48))
     rem = st.get("rem", {})
     due = []
+    # presses ✅ / ⛔ in Telegram (data/task_actions.jsonl, written by the bot) → this sheet
+    import task_notice
+    acts, st["tg_offset"] = task_notice.read_actions(task_notice.actions_path(cfg), st.get("tg_offset", 0), "mail")
+    by_key = {task_notice.key_of(m): r for m, r in rows.items()} if acts else {}
+    for a in acts:
+        r = by_key.get(str(a["key"]))
+        if r is not None:
+            yes = a["ans"] == "y"
+            r[col["Status"]].value = "Closed · Telegram ✅" if yes else "Closed · not needed"
+            if yes:
+                r[col["Answered"]].value = "yes"
+            old = str(r[col["Comment"]].value or "")
+            r[col["Comment"]].value = (old + "; " if old else "") + task_notice.note(a)
+    # the correspondence goes on: the last message you sent to each address and company domain
+    sent_to = {}
+    for r in rows.values():
+        if str(r[col["Direction"]].value or "").startswith("→"):
+            when_s = str(r[col["Date"]].value or "")[:16]
+            for a in re.split(r"[,;\s]+", str(r[col["Address"]].value or "").lower()):
+                if "@" in a:
+                    dom = a.split("@")[-1]
+                    for k in (a, None if dom in PUBLIC_MAIL else "@" + dom):
+                        if k and when_s > sent_to.get(k, ""):
+                            sent_to[k] = when_s
     for mid, r in rows.items():
         if str(r[col["Direction"]].value or "").startswith("→"):
             continue
@@ -578,6 +626,16 @@ def run(cfg, base, sources, now, state_path, outbox=None, dry=False, test=False,
         if ans or mid in replied:
             r[col["Answered"]].value = "yes"
         status = str(r[col["Status"]].value or "")
+        cat0 = str(r[col["Category"]].value or "")
+        if status in ("Action needed", "Reminded", "Starred, waiting", "", "—") and cat0 in ("Confirm", "Question", "Code / login") \
+                and SERVICE_CONFIRM.search(str(r[col["Subject"]].value or "") + " " + str(r[col["Summary"]].value or "")):
+            r[col["Category"]].value, r[col["Need"]].value = "Service confirmation", ""   # rows from before 0.28
+            r[col["Status"]].value = status = "Closed · service"
+        addr0 = str(r[col["Address"]].value or "").lower()
+        dom0 = addr0.split("@")[-1]
+        later = max(sent_to.get(addr0, ""), "" if dom0 in PUBLIC_MAIL else sent_to.get("@" + dom0, ""))
+        if later and later > str(r[col["Date"]].value or "")[:16] and status in ("Action needed", "Reminded", "Starred, waiting"):
+            r[col["Answered"]].value = "yes"   # you wrote to them after this message: the correspondence goes on
         if r[col["Answered"]].value == "yes" and status in ("Action needed", "Reminded", "Starred, waiting"):
             r[col["Status"]].value = status = "Answered"
         if status.lower().startswith(CLOSED):
@@ -589,7 +647,13 @@ def run(cfg, base, sources, now, state_path, outbox=None, dry=False, test=False,
         except ValueError:
             continue
         age = (now - when).total_seconds() / 3600
-        if age > 24 * 21 or r[col["Answered"]].value == "yes":
+        if r[col["Answered"]].value == "yes":
+            continue
+        if age > 24 * (close_d + 1) and status in ("Action needed", "Reminded", "Starred, waiting"):
+            r[col["Status"]].value = f"Closed · {close_d:g} days"   # no answer for 14 days — stop, no fanaticism
+            rem.pop(mid, None)
+            continue
+        if age > 24 * 21:
             continue  # older than 3 weeks: only in the sheet
         if star and not need:
             need, delay = "starred, waiting", star_h
@@ -600,11 +664,13 @@ def run(cfg, base, sources, now, state_path, outbox=None, dry=False, test=False,
         else:
             continue
         sent = rem.get(mid, [])
-        if age < delay or len(sent) >= max_n or (sent and now.timestamp() - sent[-1] < rep_h * 3600):
+        if len(sent) > len(days_r) or age < (delay if not sent else days_r[len(sent) - 1] * 24) \
+                or (sent and now.timestamp() - sent[-1] < 20 * 3600):
             continue
         if age > 48 and not sent and when.timestamp() < st["start"]:
             continue  # mail from before FLOKTRON watched the mailbox: only in the sheet and on the dashboard
         due.append((mid, r, need))
+    how = wcfg.get("notify") or ("telegram" if (cfg.get("telegram") or {}).get("enabled") else "mail")
 
     # invoices from mail → invoices.py, as soon as the AI assistant has read them
     unread, known = unread_invoices(inbox, extraction) if os.path.isdir(inbox) else ([], set())
@@ -641,7 +707,31 @@ def run(cfg, base, sources, now, state_path, outbox=None, dry=False, test=False,
             err = e
         else:
             st["unread_told"] = sorted(set(st.get("unread_told", [])) | set(new_unread))
-    if due and not quiet and not no_notify:
+    told = due
+    if due and not quiet and not no_notify and how == "telegram":   # one letter = one message, ✅ / ⛔
+        show_subj = wcfg.get("notify_subjects", True)
+        told = []
+        for mid, r, need in due[:5]:   # the rest — in the next run
+            who = str(r[col["Organisation"]].value or "") or str(r[col["From / To"]].value or "")
+            d = str(r[col["Date"]].value)
+            try:
+                n = (now - dt.datetime.strptime(d, "%Y-%m-%d %H:%M").replace(tzinfo=now.tzinfo)).days
+            except ValueError:
+                n = 0
+            why = T["star"] if need == "starred, waiting" else (T["wait"].format(n=n) if n else T["today"])
+            subj = str(r[col["Subject"]].value or "")[:90] if show_subj else need_word(lang, need)
+            e = task_notice.send(cfg, T["item"].format(who=who[:40], subj=subj, date=f"{d[8:10]}.{d[5:7]}", why=why),
+                                 "mail", task_notice.key_of(mid), lang, outbox)
+            if e:
+                err = e
+                break
+            told.append((mid, r, need))
+        for mid, r, need in told:
+            rem.setdefault(mid, []).append(now.timestamp())
+            r[col["Reminded"]].value = now.strftime("%d.%m %H:%M") + (f" ({len(rem[mid])})" if len(rem[mid]) > 1 else "")
+            if str(r[col["Status"]].value) == "Action needed":
+                r[col["Status"]].value = "Reminded"
+    elif due and not quiet and not no_notify:
         show_subj = wcfg.get("notify_subjects", True)
         lines = [T["head"]]
         for mid, r, need in due[:15]:
@@ -664,9 +754,9 @@ def run(cfg, base, sources, now, state_path, outbox=None, dry=False, test=False,
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(st, f)
     os.replace(tmp, state_path)
-    log(f"mail_watch {VERSION}: new {added}, invoices saved {inv} (waiting to be read {len(unread)}), remind {len(due)}"
+    log(f"mail_watch {VERSION}: new {added}, invoices saved {inv} (waiting to be read {len(unread)}), remind {len(told)}"
         + (" (quiet hours — in the morning)" if quiet and due else "") + (f"; {note}" if note else "") + (f"; ⚠ {err}" if err else ""))
-    return dict(added=added, due=len(due), invoices=inv, unread=len(unread), note=note, err=err)
+    return dict(added=added, due=len(told), invoices=inv, unread=len(unread), note=note, err=err, presses=len(acts))
 
 
 def context(cfg, now):

@@ -32,11 +32,16 @@ The words are found in **EN, LV, RU, DE, ET and LT**.
 | Question | a personal message with a question mark | after 24 h without your answer |
 | ⭐ any message | you starred it in your mail app | after 48 h without your answer |
 | Invoice | PDF named or sent as an invoice | no reminder: saved → invoice check |
-| Letter · Newsletter · Notice · Auto-reply · Code / login · FLOKTRON (system) · Sent | | never |
+| Service confirmation | a service asks you to "verify your e-mail", "confirm your account", "apstipriniet e-pastu" | **never** — clicking the link ends it; it is not a task |
+| Letter · Newsletter · Notice · Auto-reply · Code / login · FLOKTRON (system) · Sent | "we received your submission" is a Notice too | never |
 
-- A second reminder not earlier than 24 h later, **at most two**; nothing in quiet hours (22–07) — it waits for the morning.
-- **You answered** (a sent message that replies to it, or the flag *Answered*) — the reminder stops by itself.
-- Not needed? Write `Closed` in the column **Status** — no more reminders for that message.
+- Then again on **day 3, 7 and 14** after the message came (`mail_watch.remind_days`), then never — no fanaticism;
+  nothing in quiet hours (22–07) — it waits for the morning.
+- **You answered** — the reminder stops by itself: a sent message that replies to it, the flag *Answered*, or **any later
+  message from you to that address or that company's domain** (a call and then a new letter count — the correspondence goes on).
+- No answer after day 14 (`mail_watch.close_after_days`) → status `Closed · 14 days`.
+- In **Telegram** every letter is its own message with two buttons **✅ Answered · ⛔ Not needed** (at most 5 per run);
+  a press closes it — no sheets, no columns ([Telegram](TELEGRAM.md#tasks-yes--no)). `Closed` in the column **Status** works too.
 - Messages older than 48 h from before the first run are only written to the sheet — no flood on day one.
 
 ## Invoices from mail → accounting, by themselves

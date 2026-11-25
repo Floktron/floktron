@@ -87,6 +87,8 @@ calendar:                  # optional: your calendar in the morning message + du
 content:                   # optional content plan (data/floktron_content.xlsx, prompts/40_content_plan.md)
   notify: ""               # who gets the posts of the day; empty → mail.manager_address
   links_file: "data/published_links.txt"   # paste links of published posts here (one per line)
+  engage: []               # friendly letter to the team who like / comment (only posts Scheduled or Published today):
+    # - {name: "Anna", email: "anna@yourcompany.com", language: "en"}
   profiles:                # public pages the AI agent may READ to confirm a post went out (prompts/41_published_check.md)
     # Facebook: "https://www.facebook.com/yourpage"
     # LinkedIn: "https://www.linkedin.com/company/yourcompany/posts/"
@@ -153,6 +155,11 @@ mail_watch:                # optional: the whole mailbox in one sheet + a nudge 
   sent_folders: []         # empty = provider default (Proton "Sent", Gmail "[Gmail]/Sent Mail", Outlook "Sent Items")
   first_days: 30           # first run reads 30 days back, later runs `days`
   days: 4
+  remind_days: [3, 7, 14]  # after the first nudge: again on these days after the message came, then never
+  close_after_days: 14     # no answer after this day → "Closed · 14 days"
+
+tasks_tidy:                # the manager's tasks without old resolved things (docs/TASKS_TIDY.md)
+  rays: []                 # empty = the ray whose e-mail is mail.manager_address
 
 gateways:                  # optional: every card payment finds its document — Stripe, Paddle, Apple, Google … (docs/GATEWAYS.md)
   enabled: false
@@ -187,6 +194,8 @@ telegram:                  # optional bot: dialog → leads (scripts/bot/telegra
   keychain_service: "FLOKTRON_TG_BOT"  # ...or from macOS Keychain (scripts/install/telegram/1_token.command saves it here)
   flow: "bot_flow.yaml"         # the dialog, next to this config (copy config/bot_flow.example.yaml)
   manager_chat_ids: []          # who gets new leads and may use /leads /funnel — write /id to the bot to see yours
+  team_chat_ids: []             # more team members: like managers, never the client dialog; tasks with ✅ / ⛔
+  team_texts: {}                # your own words for the team chat: help, closed_y, closed_n, toast, reply_closed, already
   data_dir: ""                  # empty = data/ of FLOKTRON; relative paths start at this config file
   leads_file: ""                # empty = <data_dir>/floktron_leads.xlsx
   channels_file: "channels.txt" # channel watch: one public channel per line; forward a post to the bot to add one

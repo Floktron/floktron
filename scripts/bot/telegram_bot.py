@@ -23,6 +23,9 @@ Voice (telegram.voice, optional): a team member sends a voice message → it is 
 (scripts/voice.py) → saved to data/voice_reports.xlsx and sent to the manager as text. Audio summary: when a text file
 voice.pulse_dir/pulse_<YYYY-MM-DD>.txt appears (written by the morning AI run), the bot reads it aloud and sends the audio
 to the managers — to listen in the car. See docs/VOICE.md.
+The team (manager_chat_ids, team_chat_ids, voice users) never gets the client dialog: free text and /start give a short help;
+tasks come one per message with two buttons ✅ / ⛔ (scripts/task_notice.py) — a press is written to data/task_actions.jsonl
+and the message turns into «✅ Closed · dd.mm hh:mm»; a text reply to a task message closes it with the comment. /client — try the dialog.
 Manager commands (only from manager_chat_ids): /leads — last 10 leads · /funnel — how many reached each step · /pulse — audio summary now ·
 /channels — watched channels; forward a post from a public channel to add it (telegram.channels_file) ·
 /backup — password-protected backup of the whole setup now, kept on the computer (docs/MOVE.md)
@@ -62,6 +65,14 @@ VOICE_TEXT = {  # replies to the person who sent a voice message (override in te
     "later": "✅ Voice message received — it will be transcribed a little later.",
     "not_team": "Voice reports are accepted only from the team. Please write your question as text 🙂",
     "off": "Please write your message as text 🙂",
+}
+
+
+TEAM_TEXT = {  # replies in the team's own chat — managers never get the client dialog (override in telegram.team_texts)
+    "help": "This is your work chat. One message = one task: ✅ done · ⛔ not needed.\n"
+            "Or reply to a task message with text — it closes with your comment.\n/pulse — audio summary · /client — try the client dialog",
+    "closed_y": "✅ Closed", "closed_n": "⛔ Not needed", "toast": "Saved ✅",
+    "reply_closed": "✅ Closed with your comment.", "already": "ℹ️ This task is already closed.",
 }
 
 
@@ -322,6 +333,10 @@ class Bot:
         self.langs = flow.get("languages") or ["en"]
         self.managers = {str(x) for x in cfg.get("manager_chat_ids") or []}
         self.config_path = cfg.get("_config_path")
+        voice_users = (cfg.get("voice") or {}).get("users") or {}
+        # the team: managers + team_chat_ids + voice users — tasks, buttons ✅/⛔, never the client funnel
+        self.team = self.managers | {str(x) for x in cfg.get("team_chat_ids") or []} | {str(k) for k in voice_users}
+        self.ttext = {**TEAM_TEXT, **(cfg.get("team_texts") or {})}
 
     # ---- sending
     def send(self, chat_id, text, keyboard=None, contact_button=None):
@@ -405,6 +420,8 @@ class Bot:
         if "callback_query" in upd:
             q = upd["callback_query"]
             chat_id = q["message"]["chat"]["id"]
+            if str(q.get("data", "")).startswith("fk:"):     # task buttons ✅ / ⛔ (scripts send them to the team)
+                return self.on_task_button(q)
             try:
                 self.api.call("answerCallbackQuery", callback_query_id=q["id"])
             except BotError:
@@ -425,6 +442,11 @@ class Bot:
         lang = (self.store.state["sessions"].get(str(chat_id)) or {}).get("lang") or self.langs[0]
         if msg.get("voice") or msg.get("audio") or msg.get("video_note"):
             return self.on_voice(chat_id, user, msg)
+        team = str(chat_id) in self.team
+        if team and text in ("/start", "/menu", "/help") or (team and text.startswith("/start ")):
+            return self.team_help(chat_id)
+        if team and text == "/client":
+            return self.start(chat_id, user, "team_test")
         if text.startswith("/start"):
             return self.start(chat_id, user, text[6:].strip())
         if text == "/menu":
@@ -449,6 +471,8 @@ class Bot:
             if ch:
                 return self.add_channel(chat_id, ch)
         sess = self.store.state["sessions"].get(str(chat_id))
+        if team and not (sess and not sess.get("done") and sess.get("source") == "team_test"):
+            return self.on_team_text(chat_id, msg, text)      # the team is never a client
         if not sess or sess.get("done"):
             return self.start(chat_id, user)
         st = self.steps.get(sess["step"], {})
@@ -460,6 +484,76 @@ class Bot:
         else:
             self.send(chat_id, say(self.flow.get("use_buttons", "Please use the buttons ↑"), lang))
             self.show(chat_id, sess)
+
+    # ---- the team's tasks: one message = one task, buttons ✅ / ⛔, reply with text = ✅ with a comment
+    def actions_file(self):
+        return os.path.join(os.path.dirname(self.store.state_path), self.cfg.get("actions_file") or "task_actions.jsonl")
+
+    def team_help(self, chat_id):
+        self.store.state["sessions"].pop(str(chat_id), None)   # an unfinished client dialog of a team member — gone
+        return self.send(chat_id, self.ttext["help"])
+
+    def close_task(self, chat_id, msg, data, frm, comment=""):
+        parts = str(data).split(":")
+        if len(parts) != 4 or parts[0] != "fk" or parts[3] not in ("y", "n"):
+            return ""
+        who = "@" + frm["username"] if frm.get("username") else str(frm.get("first_name") or chat_id)
+        rec = {"ts": now_str(), "chat": str(chat_id), "by": who, "kind": parts[1], "key": parts[2], "ans": parts[3],
+               "comment": re.sub(r"[\x00-\x1f]", " ", comment or "").strip()[:MAX_TEXT]}
+        with open(self.actions_file(), "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        label = self.ttext["closed_y" if parts[3] == "y" else "closed_n"]
+        text = (msg.get("text") or "").rstrip() + f"\n\n{label} · {datetime.datetime.now():%d.%m %H:%M}"
+        if rec["comment"]:
+            text += f"\n💬 {rec['comment'][:300]}"
+        try:   # no reply_markup → Telegram removes the buttons
+            self.api.call("editMessageText", chat_id=chat_id, message_id=msg["message_id"], text=text[:4000],
+                          disable_web_page_preview=True)
+        except (BotError, KeyError):
+            pass
+        return self.ttext["toast"]
+
+    def on_task_button(self, q):
+        chat_id = q["message"]["chat"]["id"]
+        toast = ""
+        if str(chat_id) in self.team and not self.flood(chat_id):
+            toast = self.close_task(chat_id, q["message"], q.get("data", ""), q.get("from", {}))
+        try:
+            self.api.call("answerCallbackQuery", callback_query_id=q["id"], text=toast)
+        except BotError:
+            pass
+
+    def task_of(self, chat_id, rep):
+        """callback_data of ✅ under the message the team member replied to ('' = not an open task)."""
+        for row in (rep.get("reply_markup") or {}).get("inline_keyboard") or []:
+            for b in row:
+                d = str(b.get("callback_data", ""))
+                if d.startswith("fk:") and d.endswith(":y"):
+                    return d
+        sent = os.path.join(os.path.dirname(self.actions_file()), "task_sent.jsonl")   # written by scripts/task_notice.py
+        found = ""
+        if rep.get("message_id") and os.path.exists(sent):
+            with open(sent, encoding="utf-8") as f:
+                for line in f:
+                    try:
+                        s = json.loads(line)
+                    except ValueError:
+                        continue
+                    if str(s.get("chat")) == str(chat_id) and s.get("mid") == rep["message_id"]:
+                        found = str(s.get("y", ""))
+        if found and any(self.ttext[k] in (rep.get("text") or "") for k in ("closed_y", "closed_n")):
+            return "closed"
+        return found
+
+    def on_team_text(self, chat_id, msg, text):
+        rep = msg.get("reply_to_message") or {}
+        data = self.task_of(chat_id, rep) if rep else ""
+        if data == "closed":
+            return self.send(chat_id, self.ttext["already"])
+        if data and text:
+            self.close_task(chat_id, rep, data, msg.get("from", {}), comment=text)
+            return self.send(chat_id, self.ttext["reply_closed"])
+        return self.team_help(chat_id)
 
     def on_button(self, chat_id, data, frm):
         sess = self.store.state["sessions"].get(str(chat_id))

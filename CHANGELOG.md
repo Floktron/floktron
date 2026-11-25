@@ -3,6 +3,29 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.28.0 — 25.11.2026 · tidy: yes / no in Telegram, mail and tasks without old things
+From a real company's first days: the manager got old resolved tasks every morning, mail-confirmation letters as
+"unanswered", test messages, and Telegram notices that asked to write into sheets — and the bot greeted the manager
+as a new client. Now:
+- **Telegram yes / no** ([Telegram](docs/TELEGRAM.md#tasks-yes--no)): the manager and the team (`team_chat_ids`, voice
+  users) never get the client dialog — free text and `/start` give a short help, `/client` tries the dialog. One task =
+  one message with two buttons ✅ / ⛔: mail waiting for you, the top 3 new prospects, card payments without a document.
+  A press turns the message into «✅ Closed · time» and goes to `data/task_actions.jsonl`; mail_watch, prospects and
+  gateways move it into their sheets. A text reply to a task message closes it with the comment. New
+  `scripts/task_notice.py`. No text about sheets or columns in Telegram.
+- **Mail** ([Mail watch](docs/MAIL_WATCH.md)): new category *Service confirmation* ("verify your e-mail") — never a task,
+  old open ones are closed; "we received your submission" is a notice. Reminders: the first nudge, then day 3, 7 and 14,
+  then never (`remind_days`); any later message from you to that address or company domain = answered (the
+  correspondence goes on); no answer after day 14 → `Closed · 14 days` (`close_after_days`).
+- **The manager's tasks** (new [Tasks tidy](docs/TASKS_TIDY.md), `scripts/tasks_tidy.py`, after every collect and
+  `run.py tidy`): the event happened (a message went to that company, a meeting day passed) → Done with the reason;
+  tests and escalations of test rays → Cancelled; a task comes on its first day and day 3, 7, 14, then Archive
+  (column Shown, `send_morning.py`).
+- **Friendly letter about posts** (`content.engage`): only posts Scheduled or Published today, time · platform · topic ·
+  first words → link, plus "yesterday also out"; "if you have a minute — like or comment if you want"; no deadline, no
+  escalation; no post → no letter.
+- Tests on a fictional Demo SIA: `tests/test_task_buttons.py`, `tests/test_tasks_tidy.py`, more in `test_mail_watch.py`.
+
 ## 0.27.1 — 25.11.2026 · overview PDF 1.17
 - `docs/FLOKTRON_overview.pdf` version 1.17 (16 pages): new page *Move in one click — to another computer or another
   AI assistant*; open version 0.27.0. The same PDF in 8 languages on koagu.com/floktron.
