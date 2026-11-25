@@ -22,13 +22,16 @@ Needs: reportlab (pip install reportlab) and a TTF font with Latvian letters (Li
 import argparse, datetime as dt, json, os, re, sys
 from decimal import Decimal, ROUND_HALF_UP
 
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
-from reportlab.lib.colors import HexColor, white
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.utils import ImageReader
+try:
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import mm
+    from reportlab.lib.colors import HexColor, white
+    from reportlab.pdfgen import canvas
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.lib.utils import ImageReader
+except ImportError:  # a clear sentence instead of a traceback on a new computer
+    sys.exit("documents.py needs the reportlab package for PDF. Install it once:  python -m pip install --user reportlab")
 
 VERSION = "0.21.0"
 

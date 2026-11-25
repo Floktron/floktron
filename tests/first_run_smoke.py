@@ -42,6 +42,11 @@ def env_plain():
 
 
 def main():
+    # this report itself must print on any console (the scripts it runs are NOT helped by this)
+    try:
+        sys.stdout.reconfigure(errors="replace")
+    except Exception:  # noqa: BLE001
+        pass
     tmp = tempfile.mkdtemp(prefix="floktron_smoke_")
     root = os.path.join(tmp, "floktron")
     copy_repo(root)

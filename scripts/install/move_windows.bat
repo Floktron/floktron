@@ -2,7 +2,7 @@
 rem FLOKTRON - move and backup on Windows (double-click). One archive with the whole setup, password-protected (docs\MOVE.md).
 cd /d "%~dp0\..\.."
 where python >nul 2>nul || (echo Python not found - install it from python.org, tick "Add to PATH" & pause & exit /b 1)
-python -c "import openpyxl, yaml, pyzipper" 2>nul || python -m pip install --user -q openpyxl pyyaml pyzipper
+python -c "import openpyxl, yaml, pyzipper, tzdata" 2>nul || python -m pip install --user -q openpyxl pyyaml pyzipper tzdata
 echo FLOKTRON in: %CD%
 echo   1  Pack everything for a move (to another computer or AI assistant)
 echo   2  Unpack a move archive here

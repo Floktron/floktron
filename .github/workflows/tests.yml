@@ -20,6 +20,9 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: pip install -r requirements.txt pytest pyzipper
+      - name: Optional packages a full setup uses (PDF documents, PDF statements)
+        if: matrix.python == '3.12'
+        run: pip install reportlab pypdf
       - run: pytest -q
       - name: First-run smoke test (the safe first test, fictional data)
         if: always()
