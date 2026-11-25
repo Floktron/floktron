@@ -3,6 +3,20 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.30.0 — 26.11.2026 · industry packs: the radar ready on day one
+- A new company no longer invents 30 search words from scratch. `templates/industry/construction.json` — the first
+  industry pack: 24 keywords in Latvian, Russian and English (demand, rules, environment, funding, costs, people, risk,
+  market, events), typical public sources (EU construction tenders CPV 45, building permits, construction statistics,
+  labour inspection, construction policy), registry queries for new construction companies and developers, two
+  supply-chain examples (off until switched on).
+- `scripts/industry_pack.py`: `list`, `show`, `apply <pack> --country --city --competitor …` (adds to the radar,
+  never overwrites, never adds the same word twice; competitors go to Keywords and Players), `words`, `add`, `off`.
+- The setup wizard (step 7) asks only three things: industry, country and city, 3–5 competitors.
+- Telegram, managers only: `/words` — the words searched now, `/addword <words>`, `/delword <words>` (pauses, the row stays).
+- `news_slice.py`: more than 8 keywords per language now go to Google News as several queries (up to 32), before only
+  the first 8 were searched. Keyword priority `off` = paused.
+- `docs/INDUSTRY_PACKS.md`. Next packs: logistics, wholesale.
+
 ## 0.29.5 — 25.11.2026 · safe first test on a clean install
 - `tests/first_run_smoke.py`: on a computer with only `requirements.txt` installed, the two move-archive steps
   showed FAIL, because the password archive needs the optional package `pyzipper`. They are now marked

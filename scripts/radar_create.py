@@ -154,9 +154,10 @@ def build(cfg):
                ["Priority", "Signal type", "In Trends set", "Comment"],
                [["K01", "Core demand"] + ["" for _ in langs] + ["A", "Demand", "", "example row — replace"]],
                [6, 22] + [30] * len(langs) + [9, 16, 12, 30],
-               note="One idea per row, translated into every working language. Priority A = every run, B = first run of the month. "
+               note="One idea per row, translated into every working language. Priority A = every run, B = first run of the month, off = paused. "
+                    "A ready start for your industry: scripts/industry_pack.py (docs/INDUSTRY_PACKS.md). "
                     "Write whole words (they are also used for Google News); other endings are found automatically.")
-    dv = DataValidation(type="list", formula1='"A,B"')
+    dv = DataValidation(type="list", formula1='"A,B,off"')
     ws.add_data_validation(dv)
     dv.add(f"{get_column_letter(3 + len(langs))}4:{get_column_letter(3 + len(langs))}500")
 

@@ -1,0 +1,56 @@
+{
+  "id": "construction",
+  "title": {"en": "Construction", "lv": "Būvniecība", "ru": "Строительство"},
+  "for": "Builders, finishing and renovation crews, building-material suppliers, construction services",
+  "version": "1.0",
+  "note": "A neutral starting set of public keywords and sources. The company adds and removes its own words — nothing here is secret. Write whole words; other endings are found automatically.",
+  "prefix": "BU",
+  "keywords": [
+    {"cluster": "Demand", "priority": "A", "signal": "Tender", "lv": "būvdarbu iepirkums", "ru": "строительный тендер", "en": "construction tender"},
+    {"cluster": "Demand", "priority": "A", "signal": "Demand", "lv": "būvatļauja", "ru": "разрешение на строительство", "en": "building permit"},
+    {"cluster": "Demand", "priority": "A", "signal": "Demand", "lv": "renovācija", "ru": "реновация", "en": "building renovation"},
+    {"cluster": "Demand", "priority": "A", "signal": "Demand", "lv": "daudzdzīvokļu māju renovācija", "ru": "реновация многоквартирных домов", "en": "apartment building renovation"},
+    {"cluster": "Demand", "priority": "B", "signal": "Demand", "lv": "dzīvojamais projekts", "ru": "жилой проект", "en": "residential development"},
+    {"cluster": "Demand", "priority": "B", "signal": "Demand", "lv": "būvniecības apjomi", "ru": "объёмы строительства", "en": "construction output"},
+    {"cluster": "Rules", "priority": "A", "signal": "Consultation", "lv": "būvniecības likums", "ru": "закон о строительстве", "en": "construction law"},
+    {"cluster": "Rules", "priority": "A", "signal": "Consultation", "lv": "būvnormatīvs", "ru": "строительные нормы", "en": "building regulations"},
+    {"cluster": "Rules", "priority": "A", "signal": "News", "lv": "darba drošība būvlaukumā", "ru": "безопасность на стройке", "en": "construction site safety"},
+    {"cluster": "Rules", "priority": "B", "signal": "News", "lv": "darba inspekcija būvniecība", "ru": "трудовая инспекция стройка", "en": "labour inspection construction"},
+    {"cluster": "Rules", "priority": "B", "signal": "Consultation", "lv": "ēku energoefektivitāte", "ru": "энергоэффективность зданий", "en": "energy performance of buildings"},
+    {"cluster": "Environment", "priority": "B", "signal": "News", "lv": "būvniecības atkritumi", "ru": "строительные отходы", "en": "construction waste"},
+    {"cluster": "Environment", "priority": "B", "signal": "News", "lv": "notekūdeņi būvlaukumā", "ru": "сточные воды стройки", "en": "construction site wastewater"},
+    {"cluster": "Funding", "priority": "A", "signal": "Funding", "lv": "ES fondi būvniecība", "ru": "фонды ЕС строительство", "en": "EU funds construction"},
+    {"cluster": "Funding", "priority": "B", "signal": "Funding", "lv": "Atveseļošanas fonds renovācija", "ru": "фонд восстановления реновация", "en": "recovery fund renovation"},
+    {"cluster": "Costs", "priority": "A", "signal": "News", "lv": "būvmateriālu cenas", "ru": "цены на стройматериалы", "en": "construction material prices"},
+    {"cluster": "Costs", "priority": "B", "signal": "News", "lv": "cementa cena", "ru": "цена цемента", "en": "cement price"},
+    {"cluster": "Costs", "priority": "B", "signal": "News", "lv": "armatūras cena", "ru": "цена арматуры", "en": "rebar price"},
+    {"cluster": "Costs", "priority": "B", "signal": "News", "lv": "būvniecības izmaksu indekss", "ru": "индекс стоимости строительства", "en": "construction cost index"},
+    {"cluster": "People", "priority": "B", "signal": "News", "lv": "darbaspēka trūkums būvniecībā", "ru": "нехватка рабочих стройка", "en": "construction labour shortage"},
+    {"cluster": "Risk", "priority": "A", "signal": "News", "lv": "būvfirma maksātnespēja", "ru": "банкротство строительной компании", "en": "construction company insolvency"},
+    {"cluster": "Risk", "priority": "B", "signal": "News", "lv": "nelegālā nodarbinātība būvniecībā", "ru": "нелегальная работа стройка", "en": "undeclared work construction"},
+    {"cluster": "Market", "priority": "B", "signal": "Competitor", "lv": "ģenerāluzņēmējs", "ru": "генподрядчик", "en": "general contractor"},
+    {"cluster": "Events", "priority": "B", "signal": "Event", "lv": "būvniecības izstāde", "ru": "строительная выставка", "en": "construction fair"}
+  ],
+  "city_keyword": {"lv": "{city} būvniecība", "ru": "{city} строительство", "en": "{city} construction"},
+  "sources": [
+    ["Tenders", "EU/EEA", "TED — construction works (CPV 45000000)", "Construction tenders by CPV 45 and keywords", "Weekly", "https://api.ted.europa.eu/v3/notices/search", "Public API (POST), CPV 45*", "OK"],
+    ["Registry", "LV", "BIS — Būvniecības informācijas sistēma", "Building permits and construction cases (public part)", "Weekly", "https://bis.gov.lv", "Browser", "check"],
+    ["Statistics", "LV", "CSP — construction cost index, construction output", "Monthly / quarterly figures", "Monthly", "https://stat.gov.lv", "Browser / open data", "check"],
+    ["Statistics", "EU", "Eurostat — production in construction", "Monthly index by country", "Monthly", "https://ec.europa.eu/eurostat", "Open data API", "check"],
+    ["Rules", "LV", "Valsts darba inspekcija — news", "Site safety, inspections, undeclared work", "Weekly", "https://www.vdi.gov.lv", "Browser", "check"],
+    ["Rules", "LV", "Ekonomikas ministrija — construction policy", "Construction law, building regulations", "Weekly", "https://www.em.gov.lv", "Browser", "check"]
+  ],
+  "registry_queries": [
+    {"words": "būv;celtn;renov;remont;apdar", "goal": "Competitor", "exclude": "", "types": "SIA;IK;AS"},
+    {"words": "nekustam;attīstīb;development;property", "goal": "Client", "exclude": "", "types": "SIA;AS"}
+  ],
+  "watch": [
+    ["Producer", "A big listed cement producer (example)", "", "sets cement and concrete prices", "cement prices Europe", "en", "HEI.DE", "", "5", "10", "weekly", "No", "PUBLIC", "example from the construction pack — Active = Yes if it matters to you"],
+    ["Price", "Steel (rebar) — reference", "", "reinforcement cost", "rebar prices Europe", "en", "—", "", "", "", "weekly", "No", "PUBLIC", "example from the construction pack"]
+  ],
+  "questions": [
+    "Which industry? (construction, logistics, wholesale…)",
+    "Which country and city do you work in?",
+    "Name 3–5 competitors (company names as people write them)."
+  ]
+}
