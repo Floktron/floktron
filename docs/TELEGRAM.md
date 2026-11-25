@@ -18,6 +18,26 @@ Two optional parts. Both run on your own computer; nothing goes through the auth
 8. **Autostart:** `4_autostart_on.command` (Mac) — see "macOS and iCloud" below.
 9. **Channels:** forward the bot any post from a public channel → it is added to the watch list (`/channels` shows the list). Times: `telegram.watch_times`, e.g. `["07:05", "18:40"]`.
 
+## Tasks: yes / no
+Your own chat with the bot is a work chat. The manager (`manager_chat_ids`), the team (`team_chat_ids`) and voice users
+**never get the client dialog**: free text and `/start` give a short help, no lead is made. `/client` shows the dialog to try it.
+
+One task = one message with two buttons — mail waiting for you ([Mail watch](MAIL_WATCH.md)), a new prospect
+([Prospects](PROSPECTS.md), top 3 only), a card payment without a document ([Gateways](GATEWAYS.md)):
+
+```
+📬 Mail · Demo Partner SIA
+«Offer for site 7?» · 19.11
+waiting 6 d.
+[✅ Answered] [⛔ Not needed]
+```
+
+- A press → the message turns into `✅ Closed · 25.11 10:31` (buttons gone); the bot writes one line to
+  `data/task_actions.jsonl`; the script of that task moves it into its sheet on its next run.
+- **Reply** to a task message with text (swipe → Reply) → ✅ with your comment.
+- No text about sheets or columns; summaries with nothing to do come without buttons.
+- Your own words: `telegram.team_texts` (help, closed_y, closed_n, toast, reply_closed, already).
+
 ## Security
 | Risk | What happens | Protection in FLOKTRON |
 |---|---|---|

@@ -12,6 +12,8 @@ Usage:
     python3 scripts/send_morning.py --only L1,L3        # some rays only
     python3 scripts/send_morning.py --test me@mail.com  # send to a test address, base is not changed
 Options: --config <file>  --base <file>
+The manager's ray (tasks_tidy.rays, default: the ray with mail.manager_address) gets a task on its first day and then
+on day 3, 7 and 14 only, not every morning (column "Shown", scripts/tasks_tidy.py) — no old resolved things.
 """
 import argparse
 import datetime
@@ -36,7 +38,7 @@ except ImportError:
 from i18n import texts  # noqa: E402
 from calendar_days import is_working  # noqa: E402
 
-DONE = {"Done", "Cancelled", "Moved"}
+DONE = {"Done", "Cancelled", "Moved", "Archive"}
 NL = "\r\n"  # mobile mail apps keep line breaks better with CRLF
 DEFAULT_COLORS = {"main": "#1A365D", "ok": "#4A9928", "neutral": "#717171", "background": "#f3f3f3"}
 
@@ -148,13 +150,19 @@ def main():
     wb = openpyxl.load_workbook(a.base)
     rays = [r for r in wb["Rays"].iter_rows(min_row=2, values_only=True)
             if r[0] and str(r[6]).strip().lower() in ("yes", "да", "jā")]
+    import tasks_tidy
+    tidy = tasks_tidy.tidy_rays(cfg, wb)
+    sc = tasks_tidy.shown_col(wb["Tasks"]) if tidy else 0
     tasks = {}
-    for row in wb["Tasks"].iter_rows(min_row=2, max_col=10):
+    for row in wb["Tasks"].iter_rows(min_row=2, max_col=max(10, sc)):
         tid, dt, ray, text, _src, due, st = [c.value for c in row[:7]]
         if not (tid and text):
             continue
         if a.evening:
-            if as_date(dt, today) == today and st in ("Sent", "Accepted", "Question"):
+            if as_date(dt, today) == today and st in ("Sent", "Accepted", "Question") and str(ray) not in tidy:
+                tasks.setdefault(ray, []).append(row)
+        elif str(ray) in tidy:   # the manager: first day, then day 3, 7, 14
+            if tasks_tidy.should_show(dt, st, row[sc - 1].value, today):
                 tasks.setdefault(ray, []).append(row)
         elif as_date(dt, today) <= today and st not in DONE:
             tasks.setdefault(ray, []).append(row)
@@ -235,6 +243,8 @@ def main():
                                     r[6].value = "Sent"
                                 r[8].value = now.strftime("%Y-%m-%d %H:%M")
                                 r[9].value = lid
+                                if str(rid) in tidy:
+                                    r[sc - 1].value = tasks_tidy.mark_shown(r[sc - 1].value, today)
             except MailError as e:
                 print("MAIL ERROR:", e)
             pending = [j for j in pending if j not in done]

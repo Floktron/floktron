@@ -16,6 +16,10 @@
      (publish by hand or cancel) — no silent moving from day to day.
 4. A short message with today's posts (text ready to copy) and what needs a person goes to
    content.notify (or the manager).
+5. A friendly letter to the people of content.engage (the team who like / comment / share): only posts that are
+   really on — status Scheduled or Published today — with time · platform · topic · first words → link; and in the
+   morning "yesterday also out": posts published yesterday they were not told about. No post → no letter.
+   Never an order: "if you have a minute — have a look, like or comment if you want". No deadline, no escalation.
 
 Usage:
     python3 scripts/content_check.py           # check, update, send
@@ -123,6 +127,94 @@ def match_links(rows, path, today):
     return matched, unmatched, notes
 
 
+ENGAGE_TX = {  # the friendly letter (content.engage), by the person's language
+    "en": dict(subj="Our posts today 📣", hi="Hi, {n}! 👋", ask="If you have a minute — have a look at our posts. A like or a comment helps a lot, if you want 🙂",
+               today="Today:", yday="Yesterday also out:", end="Thank you for being with us!"),
+    "lv": dict(subj="Mūsu šodienas ieraksti 📣", hi="Sveiki, {n}! 👋", ask="Ja ir brīdis — ieskaties mūsu ierakstos. Ja gribas, “patīk” vai komentārs ļoti palīdz 🙂",
+               today="Šodien:", yday="Vakar vēl iznāca:", end="Paldies, ka esi ar mums!"),
+    "ru": dict(subj="Наши посты сегодня 📣", hi="Привет, {n}! 👋", ask="Будет минутка — загляни в наши посты. Лайк или комментарий очень помогают, если захочешь 🙂",
+               today="Сегодня:", yday="Вчера ещё вышло:", end="Спасибо, что ты с нами!"),
+    "de": dict(subj="Unsere Beiträge heute 📣", hi="Hallo {n}! 👋", ask="Wenn du eine Minute hast — schau dir unsere Beiträge an. Ein Like oder Kommentar hilft sehr, wenn du magst 🙂",
+               today="Heute:", yday="Gestern auch erschienen:", end="Danke, dass du dabei bist!"),
+    "et": dict(subj="Meie postitused täna 📣", hi="Tere, {n}! 👋", ask="Kui on hetk — vaata meie postitusi. Meeldimine või kommentaar aitab väga, kui soovid 🙂",
+               today="Täna:", yday="Eile ilmus veel:", end="Aitäh, et oled meiega!"),
+    "lt": dict(subj="Mūsų šiandienos įrašai 📣", hi="Labas, {n}! 👋", ask="Jei turi minutę — pažiūrėk mūsų įrašus. Patiktukas ar komentaras labai padeda, jei nori 🙂",
+               today="Šiandien:", yday="Vakar dar išėjo:", end="Ačiū, kad esi su mumis!"),
+}
+
+
+def post_key(v):
+    return f"{as_date(v[DATE])}|{v[TIME] or ''}|{v[PLAT]}|{str(v[HOOK] or v[TEXT] or '')[:30]}"
+
+
+def post_line(v):
+    first = re.split(r"(?<=[.!?])\s", str(v[HOOK] or v[TEXT] or "").strip())[0][:90]
+    return (f"• {v[TIME] or ''} · {v[PLAT]}" + (f" · {v[RUB]}" if v[RUB] else "") + (f" — «{first}»" if first else "")
+            + (f" → {v[LINK]}" if v[LINK] else "")).replace("•  · ", "• ")
+
+
+def engage_posts(rows, today, told):
+    """(today's posts that are really on, yesterday's published ones not told yet). rows: lists of plan values."""
+    yday = today - datetime.timedelta(days=1)
+    on = sorted([v for v in rows if as_date(v[DATE]) == today and v[ST] in ("Scheduled", "Published")], key=lambda x: str(x[TIME] or ""))
+    old = set(told.get(yday.isoformat(), []))
+    extra = sorted([v for v in rows if as_date(v[DATE]) == yday and v[ST] == "Published" and post_key(v) not in old],
+                   key=lambda x: str(x[TIME] or ""))
+    return on, extra
+
+
+def engage_letter(name, lang, on, extra):
+    T = ENGAGE_TX.get(lang, ENGAGE_TX["en"])
+    parts = [T["hi"].format(n=name or ""), "", T["ask"]]
+    if on:
+        parts += ["", T["today"]] + [post_line(v) for v in on]
+    if extra:
+        parts += ["", T["yday"]] + [post_line(v) for v in extra]
+    return T["subj"], "\n".join(parts + ["", T["end"]]).replace("Hi, ! ", "Hi! ").replace("Привет, ! ", "Привет! ")
+
+
+def send_engage(cfg, rows, today, state_path, dry=False):
+    """content.engage: [{name, email, language}] — the friendly letter. Returns the number of letters."""
+    people = (cfg.get("content") or {}).get("engage") or []
+    if not people:
+        return 0
+    import json
+    told = {}
+    if os.path.exists(state_path):
+        try:
+            with open(state_path, encoding="utf-8") as f:
+                told = json.load(f)
+        except ValueError:
+            told = {}
+    on, extra = engage_posts(rows, today, told)
+    if not (on or extra):
+        print("engage: no post scheduled or published today — no letter")
+        return 0
+    mail = cfg.get("mail") or {}
+    n = 0
+    for p in people:
+        subj, body = engage_letter(str(p.get("name") or "").split(" ")[0], p.get("language") or (cfg.get("company") or {}).get("language", "en"), on, extra)
+        print(f"engage → {p.get('name')}: {len(on)} today, {len(extra)} from yesterday" + (" (dry)" if dry else ""))
+        if dry or not p.get("email"):
+            continue
+        from mail.send import MailError, Sender
+        msg = EmailMessage()
+        msg["From"], msg["To"], msg["Subject"] = mail.get("from") or mail.get("user"), p["email"], subj
+        msg.set_content(body)
+        try:
+            with Sender(mail) as s:
+                s.send(msg)
+            n += 1
+        except MailError as e:
+            print("MAIL ERROR:", e)
+    if not dry:
+        told[today.isoformat()] = sorted(set(told.get(today.isoformat(), [])) | {post_key(v) for v in on})
+        told = {k: v for k, v in told.items() if k >= (today - datetime.timedelta(days=7)).isoformat()}
+        with open(state_path, "w", encoding="utf-8") as f:
+            json.dump(told, f, ensure_ascii=False)
+    return n
+
+
 def main():
     ap = argparse.ArgumentParser(description="FLOKTRON morning content check.")
     ap.add_argument("--config", default=os.path.join(ROOT, "config", "config.yaml"))
@@ -222,6 +314,10 @@ def main():
                           f"today {len(todays)}, links {linked}, duplicates {dup}, moved {moved}, marked {marked}, "
                           f"waiting {len(waiting)}, twice {len(twice)}", f"unmatched links {unmatched}" if unmatched else ""])
     wb.save(a.content)
+    try:   # 5. the friendly letter to the team — never stops the rest
+        send_engage(cfg, [[c.value for c in r] for r in rows], today, os.path.join(ROOT, "data", ".engage_state.json"))
+    except Exception as e:  # noqa: BLE001
+        print(f"engage: ⚠ {str(e)[:120]}")
     to = (cfg.get("content") or {}).get("notify") or mail.get("manager_address")
     if not (to and (todays or attention)):
         return

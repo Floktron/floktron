@@ -12,6 +12,7 @@
     python3 scripts/run.py gaps        # weekly list of what FLOKTRON could not do
     python3 scripts/run.py registry    # new companies in the registry (LV)
     python3 scripts/run.py content     # posts of the day, missed posts, duplicate pictures
+    python3 scripts/run.py tidy        # the manager's tasks: event happened → Done, tests out, 3/7/14 days (after every collect too)
     python3 scripts/run.py mail        # mail watch by hand (it also runs after every collect, docs/MAIL_WATCH.md)
     python3 scripts/run.py gateways    # payment gateways by hand (it also runs after every collect, docs/GATEWAYS.md)
     python3 scripts/run.py prospects   # new customers like your best ones, with a reason to write now (once a day)
@@ -47,6 +48,7 @@ JOBS = {
     "registry": ["registry_lv.py"],
     "content": ["content_check.py"],
     "mail": ["mail_watch.py"],
+    "tidy": ["tasks_tidy.py"],
     "gateways": ["gateways.py"],
     "prospects": ["prospects.py"],
     "backup": ["move.py", "backup"],
@@ -95,6 +97,11 @@ def main():
                 m = subprocess.run([sys.executable, os.path.join(HERE, "mail_watch.py")], cwd=ROOT, stdout=f,
                                    stderr=subprocess.STDOUT, timeout=900)
                 f.write(f"--- exit {m.returncode}\n")
+                f.write(f"=== {datetime.datetime.now():%Y-%m-%d %H:%M} tidy\n")   # the manager's tasks: event happened → Done
+                f.flush()
+                t = subprocess.run([sys.executable, os.path.join(HERE, "tasks_tidy.py")], cwd=ROOT, stdout=f,
+                                   stderr=subprocess.STDOUT, timeout=300)
+                f.write(f"--- exit {t.returncode}\n")
                 f.write(f"=== {datetime.datetime.now():%Y-%m-%d %H:%M} gateways\n")   # card payments → documents (nothing while gateways.enabled is false)
                 f.flush()
                 try:

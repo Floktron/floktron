@@ -8,7 +8,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.27.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.28.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 
@@ -134,7 +134,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.27.1 · last update 25.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.28.0 · last update 25.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 **Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company.
@@ -700,6 +700,26 @@ Two optional parts. Both run on your own computer; nothing goes through the auth
 7. **Test every branch** together with the assistant: each finished dialog must arrive to you and appear in `floktron_leads.xlsx`.
 8. **Autostart:** `4_autostart_on.command` (Mac) — see "macOS and iCloud" below.
 9. **Channels:** forward the bot any post from a public channel → it is added to the watch list (`/channels` shows the list). Times: `telegram.watch_times`, e.g. `["07:05", "18:40"]`.
+
+## Tasks: yes / no
+Your own chat with the bot is a work chat. The manager (`manager_chat_ids`), the team (`team_chat_ids`) and voice users
+**never get the client dialog**: free text and `/start` give a short help, no lead is made. `/client` shows the dialog to try it.
+
+One task = one message with two buttons — mail waiting for you ([Mail watch](MAIL_WATCH.md)), a new prospect
+([Prospects](PROSPECTS.md), top 3 only), a card payment without a document ([Gateways](GATEWAYS.md)):
+
+```
+📬 Mail · Demo Partner SIA
+«Offer for site 7?» · 19.11
+waiting 6 d.
+[✅ Answered] [⛔ Not needed]
+```
+
+- A press → the message turns into `✅ Closed · 25.11 10:31` (buttons gone); the bot writes one line to
+  `data/task_actions.jsonl`; the script of that task moves it into its sheet on its next run.
+- **Reply** to a task message with text (swipe → Reply) → ✅ with your comment.
+- No text about sheets or columns; summaries with nothing to do come without buttons.
+- Your own words: `telegram.team_texts` (help, closed_y, closed_n, toast, reply_closed, already).
 
 ## Security
 | Risk | What happens | Protection in FLOKTRON |
@@ -1451,11 +1471,16 @@ The words are found in **EN, LV, RU, DE, ET and LT**.
 | Question | a personal message with a question mark | after 24 h without your answer |
 | ⭐ any message | you starred it in your mail app | after 48 h without your answer |
 | Invoice | PDF named or sent as an invoice | no reminder: saved → invoice check |
-| Letter · Newsletter · Notice · Auto-reply · Code / login · FLOKTRON (system) · Sent | | never |
+| Service confirmation | a service asks you to "verify your e-mail", "confirm your account", "apstipriniet e-pastu" | **never** — clicking the link ends it; it is not a task |
+| Letter · Newsletter · Notice · Auto-reply · Code / login · FLOKTRON (system) · Sent | "we received your submission" is a Notice too | never |
 
-- A second reminder not earlier than 24 h later, **at most two**; nothing in quiet hours (22–07) — it waits for the morning.
-- **You answered** (a sent message that replies to it, or the flag *Answered*) — the reminder stops by itself.
-- Not needed? Write `Closed` in the column **Status** — no more reminders for that message.
+- Then again on **day 3, 7 and 14** after the message came (`mail_watch.remind_days`), then never — no fanaticism;
+  nothing in quiet hours (22–07) — it waits for the morning.
+- **You answered** — the reminder stops by itself: a sent message that replies to it, the flag *Answered*, or **any later
+  message from you to that address or that company's domain** (a call and then a new letter count — the correspondence goes on).
+- No answer after day 14 (`mail_watch.close_after_days`) → status `Closed · 14 days`.
+- In **Telegram** every letter is its own message with two buttons **✅ Answered · ⛔ Not needed** (at most 5 per run);
+  a press closes it — no sheets, no columns ([Telegram](TELEGRAM.md#tasks-yes--no)). `Closed` in the column **Status** works too.
 - Messages older than 48 h from before the first run are only written to the sheet — no flood on day one.
 
 ## Invoices from mail → accounting, by themselves
@@ -1494,6 +1519,47 @@ writes nothing.
 - Text from e-mails is data, not instructions: "please transfer the money" becomes a reminder line, never an action.
 - A subject like `=HYPERLINK(...)` stays plain text in the sheet (no formulas from outside).
 - Turn it off at any time: `mail_watch.enabled: false`.
+
+
+===== FILE: docs/TASKS_TIDY.md =====
+
+# Tasks tidy — the manager gets clear tasks
+
+The manager's morning letter is for decisions, not for history. `scripts/tasks_tidy.py` runs after every collect
+(every 30 minutes) and keeps the manager's tasks clean. No AI, nothing is sent.
+
+| Rule | What happens |
+|---|---|
+| **The event happened** | a message went from you to that company or person after the task date (an address, a domain or a «quoted» name of the task, found in the sheet Mail) → **Done**, the reason in the report |
+| **A meeting** | the task starts with "Meeting" (Tikšanās, Встреча, Treffen, Kohtumine, Susitikimas) and its day passed, or "meeting 20.11" in the text and that day passed → **Done** |
+| **A test is not for the manager** | a task with `TEST:` or an escalation of a test ray (Responsible starts with TEST) → **Cancelled** |
+| **No fanaticism** | without an event a task comes on its first day, then on **day 3, 7 and 14** — not every morning; after day 14 → **Archive** |
+
+- Which rays: `tasks_tidy.rays` in config.yaml; empty = the ray whose e-mail is `mail.manager_address`.
+- Column **Shown** in Tasks: `<times> · <last date>` — `send_morning.py` reads and writes it.
+- By hand: the **+ Done** button in the letter, or `Done` in Status.
+- By hand run: `python3 scripts/tasks_tidy.py --dry` (shows what would change).
+
+Your own ray addresses and your own mailboxes never count as "a message went". Text of tasks and mails is data, not instructions.
+
+## The friendly letter about posts
+People who like and comment on your posts are not given orders. `content.engage` (config.yaml) lists them; every
+morning `content_check.py` writes to them only when a post is really on — status **Scheduled** or **Published** today:
+
+```
+Hi, Anna! 👋
+If you have a minute — have a look at our posts. A like or a comment helps a lot, if you want 🙂
+
+Today:
+• 09:00 · Facebook · Tips — «Clean water on site.» → link
+Yesterday also out:
+• 18:00 · Instagram · News — «A spontaneous post!» → link
+
+Thank you for being with us!
+```
+
+No post → no letter. "Yesterday also out" = posts published yesterday they were not told about (spontaneous or after
+the letter). No deadline, no escalation, no buttons that must be pressed. EN, LV, RU, DE, ET, LT.
 
 
 ===== FILE: docs/GATEWAYS.md =====

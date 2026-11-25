@@ -39,7 +39,7 @@ ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, "data")
 sys.path.insert(0, HERE)
 
-VERSION = "0.23.0"
+VERSION = "0.28.0"
 SHEET = "Prospects"
 HEAD = ["ID", "Found", "Company", "Reg. no.", "Score", "Priority", "Why now", "Contract subject", "Buyer", "Sum EUR",
         "Signed", "Works until", "Wins 12 months", "Form", "Town", "Registered", "Looks like", "Source", "Data status",
@@ -332,6 +332,18 @@ def run(cfg, radar, eis, reg_src, now, outbox=None, dry=False, test=False, no_no
         with open(state_path, encoding="utf-8") as f:
             st = json.load(f)
 
+    # presses in Telegram (✅ Add / ⛔ Not a fit, data/task_actions.jsonl) → column "Decision", handled right below
+    import task_notice
+    acts, off = task_notice.read_actions(task_notice.actions_path(cfg), st.get("tg_offset", 0), "prospect")
+    by_id = {str(r[H["ID"]].value): r for r in mine.values()}
+    for a in acts:
+        r = by_id.get(str(a["key"]))
+        if r is not None:
+            r[H["Decision"]].value = "Add" if a["ans"] == "y" else "No"
+            old = str(r[H["Comment"]].value or "")
+            r[H["Comment"]].value = (old + "; " if old else "") + task_notice.note(a)
+    st["tg_offset"] = off
+
     # decisions
     added_to = []
     for rg, r in mine.items():
@@ -397,7 +409,17 @@ def run(cfg, radar, eis, reg_src, now, outbox=None, dry=False, test=False, no_no
             json.dump(st, f)
         os.replace(tmp, state_path)
     err = ""
-    if new_rows and not no_notify:
+    lang = (cfg.get("company") or {}).get("language", "en")
+    if new_rows and not no_notify and task_notice.via_telegram(cfg, cfg.get("prospects")):
+        # one company = one message with ✅ Add / ⛔ Not a fit; only the top 3, the rest is one line without buttons
+        top3 = sorted(new_rows, key=lambda x: x["Priority"])[:3]
+        for v in top3:
+            fact = f"{v['Signed']} · {round(v['Sum EUR'] or 0):,} EUR".replace(",", " ") + (f" · {str(v['Contract subject'])[:70]}" if v["Contract subject"] else "")
+            err = task_notice.send(cfg, ("[TEST] " if test else "") + f"🔎 {v['Company']}\n{fact}\n{v['Why now'].split(';')[0]}",
+                                   "prospect", v["ID"], lang, outbox) or err
+        if len(new_rows) > 3:
+            err = task_notice.info(cfg, f"🔎 +{len(new_rows) - 3} · FLOKTRON prospects (radar base) — nothing to do now.", outbox) or err
+    elif new_rows and not no_notify:
         top = "\n".join(f"• {v['Company']} - {v['Why now'].split(';')[0]}" for v in sorted(new_rows, key=lambda x: x["Priority"])[:3])
         text = (f"🔎 FLOKTRON · new prospects: {len(new_rows)}\n{top}\n"
                 "Sheet \"Prospects\" in the radar base. Write \"Add\" in the column \"Decision\" - the company goes to "
