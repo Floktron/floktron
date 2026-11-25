@@ -3,6 +3,10 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.26.3 — 25.11.2026 · crypto support
+- README "Support the project": crypto (BTC, ETH/USDC/USDT on Ethereum ERC-20, USDT on Tron TRC-20, SOL) straight to the project's own
+  wallet; addresses and QR codes are kept in one place — the support page (koagu.com/en/floktron/support/). PayPal still coming soon.
+
 ## 0.26.2 — 25.11.2026 · support the project
 - README: new section "Support the project" — voluntary support via koagu.com/en/floktron/support/ (card or Apple Pay
   through Stripe, any amount; PayPal and crypto coming soon). Not charity; nothing is sold in return.
