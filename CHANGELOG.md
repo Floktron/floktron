@@ -3,6 +3,14 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.31.0 — 26.11.2026 · industry packs: logistics and wholesale
+- Two more ready radar starts, same format as construction: `templates/industry/logistics.json` (haulage, forwarding,
+  warehousing — tenders, Mobility Package, tolls, border queues, fuel and freight rates, driver shortage, Rail Baltica)
+  and `templates/industry/wholesale.json` (distributors — supply tenders, VAT, deposit scheme, packaging rules,
+  recalls, supply-chain disruption, producer prices, late payments). 24 keywords each in LV, RU, EN, public sources,
+  registry queries, two supply-chain examples (off until switched on).
+- Two packs can go into one radar (a company that builds and transports): every pack has its own IDs.
+
 ## 0.30.1 — 26.11.2026 · overview PDF 1.21
 - `docs/FLOKTRON_overview.pdf` = overview 1.21 (19 pages): new page 17 "The radar ready on day one — a keyword set
   for your industry"; every address now floktron.com, github.com/floktron/floktron, support@floktron.com.

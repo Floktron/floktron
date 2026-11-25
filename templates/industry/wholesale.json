@@ -1,0 +1,326 @@
+{
+  "id": "wholesale",
+  "title": {
+    "en": "Wholesale",
+    "lv": "Vairumtirdzniecība",
+    "ru": "Оптовая торговля"
+  },
+  "for": "Wholesalers and distributors: food, building materials, equipment, consumables",
+  "version": "1.0",
+  "note": "A neutral starting set of public keywords and sources. The company adds and removes its own words — nothing here is secret. Write whole words; other endings are found automatically.",
+  "prefix": "WH",
+  "keywords": [
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Tender",
+      "lv": "piegādes iepirkums",
+      "ru": "тендер на поставку",
+      "en": "supply tender"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Demand",
+      "lv": "mazumtirdzniecības apgrozījums",
+      "ru": "оборот розничной торговли",
+      "en": "retail sales"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "jauns veikals",
+      "ru": "открытие магазина",
+      "en": "new store opening"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "patēriņa cenas",
+      "ru": "потребительские цены",
+      "en": "consumer prices"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "eksports",
+      "ru": "экспорт",
+      "en": "exports"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "Consultation",
+      "lv": "PVN likme",
+      "ru": "ставка НДС",
+      "en": "VAT rate"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "Consultation",
+      "lv": "depozīta sistēma",
+      "ru": "депозитная система",
+      "en": "deposit return scheme"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "iepakojuma regula",
+      "ru": "регламент об упаковке",
+      "en": "packaging regulation"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "ražotāja atbildība",
+      "ru": "расширенная ответственность производителя",
+      "en": "extended producer responsibility"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "News",
+      "lv": "sankcijas importam",
+      "ru": "санкции импорт",
+      "en": "import sanctions"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "News",
+      "lv": "produktu atsaukšana",
+      "ru": "отзыв продукции",
+      "en": "product recall"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "muitas tarifs",
+      "ru": "таможенный тариф",
+      "en": "customs tariff"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "A",
+      "signal": "News",
+      "lv": "piegādes ķēdes traucējumi",
+      "ru": "сбои цепочки поставок",
+      "en": "supply chain disruption"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "A",
+      "signal": "News",
+      "lv": "ražotāju cenas",
+      "ru": "цены производителей",
+      "en": "producer prices"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "B",
+      "signal": "News",
+      "lv": "valūtas kurss",
+      "ru": "курс валют",
+      "en": "exchange rate euro"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "B",
+      "signal": "News",
+      "lv": "elektroenerģijas cena",
+      "ru": "цена электроэнергии",
+      "en": "electricity price"
+    },
+    {
+      "cluster": "People",
+      "priority": "B",
+      "signal": "News",
+      "lv": "noliktavas darbinieki",
+      "ru": "работники склада",
+      "en": "warehouse workers"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "A",
+      "signal": "News",
+      "lv": "vairumtirgotājs maksātnespēja",
+      "ru": "банкротство оптовика",
+      "en": "wholesaler insolvency"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "B",
+      "signal": "News",
+      "lv": "kavēti maksājumi",
+      "ru": "просроченные платежи",
+      "en": "late payments"
+    },
+    {
+      "cluster": "Market",
+      "priority": "A",
+      "signal": "Competitor",
+      "lv": "izplatītājs",
+      "ru": "дистрибьютор",
+      "en": "distributor"
+    },
+    {
+      "cluster": "Market",
+      "priority": "B",
+      "signal": "Competitor",
+      "lv": "tirdzniecības ķēde",
+      "ru": "торговая сеть",
+      "en": "retail chain"
+    },
+    {
+      "cluster": "Market",
+      "priority": "B",
+      "signal": "Competitor",
+      "lv": "e-komercija",
+      "ru": "электронная коммерция",
+      "en": "e-commerce"
+    },
+    {
+      "cluster": "Funding",
+      "priority": "B",
+      "signal": "Funding",
+      "lv": "eksporta atbalsts",
+      "ru": "поддержка экспорта",
+      "en": "export support"
+    },
+    {
+      "cluster": "Events",
+      "priority": "B",
+      "signal": "Event",
+      "lv": "tirdzniecības izstāde",
+      "ru": "торговая выставка",
+      "en": "trade fair"
+    }
+  ],
+  "city_keyword": {
+    "lv": "{city} vairumtirdzniecība",
+    "ru": "{city} оптовая торговля",
+    "en": "{city} wholesale"
+  },
+  "sources": [
+    [
+      "Tenders",
+      "EU/EEA",
+      "TED — supplies",
+      "Supply tenders by keywords",
+      "Weekly",
+      "https://api.ted.europa.eu/v3/notices/search",
+      "Public API (POST), contract type supplies",
+      "OK"
+    ],
+    [
+      "Statistics",
+      "LV",
+      "CSP — retail and wholesale trade, prices",
+      "Monthly turnover, consumer and producer prices",
+      "Monthly",
+      "https://stat.gov.lv",
+      "Browser / open data",
+      "check"
+    ],
+    [
+      "Statistics",
+      "EU",
+      "Eurostat — retail trade and producer prices",
+      "Monthly indices by country",
+      "Monthly",
+      "https://ec.europa.eu/eurostat",
+      "Open data API",
+      "check"
+    ],
+    [
+      "Rules",
+      "LV",
+      "PTAC — product recalls",
+      "Unsafe products, recalls",
+      "Weekly",
+      "https://www.ptac.gov.lv",
+      "Browser",
+      "check"
+    ],
+    [
+      "Rules",
+      "EU",
+      "Safety Gate (EU rapid alert)",
+      "Dangerous non-food products",
+      "Weekly",
+      "https://ec.europa.eu/safety-gate",
+      "Browser",
+      "check"
+    ],
+    [
+      "Rules",
+      "LV",
+      "VID — VAT and customs news",
+      "VAT rates, customs, excise",
+      "Weekly",
+      "https://www.vid.gov.lv",
+      "Browser",
+      "check"
+    ]
+  ],
+  "registry_queries": [
+    {
+      "words": "vairum;tirdzn;trade;wholesale;distrib;import",
+      "goal": "Competitor",
+      "exclude": "",
+      "types": "SIA;AS"
+    },
+    {
+      "words": "veikal;shop;store;horeca;restorān;kafejn",
+      "goal": "Client",
+      "exclude": "",
+      "types": "SIA;IK"
+    }
+  ],
+  "watch": [
+    [
+      "Currency",
+      "EUR/PLN",
+      "",
+      "purchases from Polish suppliers",
+      "—",
+      "",
+      "EURPLN=X",
+      "",
+      "2",
+      "4",
+      "daily",
+      "No",
+      "PUBLIC",
+      "example from the wholesale pack"
+    ],
+    [
+      "Price",
+      "EU producer price index (reference)",
+      "",
+      "purchase prices go up before shelf prices",
+      "producer prices euro area",
+      "en",
+      "—",
+      "",
+      "",
+      "",
+      "weekly",
+      "No",
+      "PUBLIC",
+      "example from the wholesale pack"
+    ]
+  ],
+  "questions": [
+    "Which industry? (construction, logistics, wholesale…)",
+    "Which country and city do you work in?",
+    "Name 3–5 competitors (company names as people write them)."
+  ]
+}
