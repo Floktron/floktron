@@ -189,7 +189,7 @@ prospects:                 # optional: new customers like your best ones, with a
   exclude_words: ["projektēš", "būvprojekt", "būvuzraudz", "autoruzraudz", "ekspertīz", "konsultāc", "piegāde", "noma"]
 
 updates:                   # new FLOKTRON versions: once a day, one anonymous request to api.github.com (docs/UPDATES.md)
-  check: true              # false = never ask GitHub; you follow github.com/koagu-element/floktron/releases yourself
+  check: true              # false = never ask GitHub; you follow github.com/floktron/floktron/releases yourself
   mail: true               # tell mail.manager_address once per new version — only what was fixed and added, no advertising
   telegram: true           # also in the bot to telegram.manager_chat_ids (if the bot is on)
   language: ""             # empty = company.language

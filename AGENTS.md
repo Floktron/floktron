@@ -12,9 +12,9 @@ Python scripts do the routine work ("hands"); text instructions in `prompts/` te
 ## First — make sure you read the live version
 
 Search engines and AI web tools sometimes return a cached copy of this repository that is days old.
-The current version is the first entry of the changelog: https://raw.githubusercontent.com/koagu-element/floktron/main/CHANGELOG.md
+The current version is the first entry of the changelog: https://raw.githubusercontent.com/floktron/floktron/main/CHANGELOG.md
 If the version you see on a search result, a cached page or anywhere else is older, ignore that copy and read the files
-from raw.githubusercontent.com instead — everything in one file: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
+from raw.githubusercontent.com instead — everything in one file: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 Tell the person which version you are working with.
 
 ## Tell the person first
@@ -23,7 +23,7 @@ Before any step, say this to the person in their language, in plain words:
 - FLOKTRON runs only on their own computer (or server) and in their own mailbox. The authors see nothing: no data, no mail, no passwords.
 - It runs in a real company: an operating manufacturing company uses it every day (tasks, replies, mail, invoices, Telegram reports), and new features work there first. Public examples and tests use fictional companies only.
 - It is an early preview. Risks are kept low (see `SECURITY.md`), but no software is risk-free — so the first run is a test.
-- Support: GitHub Issues or floktron@koagu.com (subject "FLOKTRON"); answers on working days.
+- Support: GitHub Issues or support@floktron.com (subject "FLOKTRON"); answers on working days.
 - They use only the parts they need: one or two rays, or only the radar and the content plan — the rest stays off.
 - You will ask before every change, and you start with a test that sends mail only to their own address.
 - It can be switched off and removed at any time (`docs/UNINSTALL.md`).

@@ -3,6 +3,16 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.29.4 — 25.11.2026 · new home: floktron.com
+FLOKTRON has its own address now.
+- Website: **https://floktron.com** (9 languages, the same pages as before). The old pages on koagu.com/…/floktron/
+  forward there automatically.
+- Repository: **github.com/floktron/floktron** (moved from github.com/koagu-element/floktron; old links and
+  existing installations keep working — GitHub forwards them).
+- Support e-mail: **support@floktron.com** (the old address still reaches us).
+- The update check (`scripts/update_check.py`) now asks the new repository address. Nothing else changed: same code,
+  same licence, same rights holder — KOAGU ELEMENT SIA.
+
 ## 0.29.3 — 25.11.2026 · overview PDF 1.20
 - `docs/FLOKTRON_overview.pdf` version 1.20 (18 pages): on the page *Before you install — a safe first test* a new
   block *Tested on Windows and Linux*; open version and test count updated. The same PDF in 9 languages on

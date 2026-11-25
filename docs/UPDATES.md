@@ -7,7 +7,7 @@ collecting your contact details**.
 ## How it works
 | What | How |
 |---|---|
-| The check | Once a day, together with the morning run (`scripts/run.py morning` → `scripts/update_check.py`), FLOKTRON asks GitHub for the list of its own releases: one HTTPS request to `api.github.com/repos/koagu-element/floktron/releases`. No account, no ID, no data about you, your company or your computer is sent — only the standard request (GitHub sees an IP address, as with any web page). |
+| The check | Once a day, together with the morning run (`scripts/run.py morning` → `scripts/update_check.py`), FLOKTRON asks GitHub for the list of its own releases: one HTTPS request to `api.github.com/repos/floktron/floktron/releases`. No account, no ID, no data about you, your company or your computer is sent — only the standard request (GitHub sees an IP address, as with any web page). |
 | The message | If a release is newer than the version on your computer (the first `## X.Y.Z` of `CHANGELOG.md`), the manager gets **one** message per new version: by e-mail to `mail.manager_address` and, if the Telegram bot is on, in the bot to `telegram.manager_chat_ids`. It says: you have X, newer is Y, what was fixed and added (from the release notes), how to update. |
 | Only release news | No advertising, no newsletters, no support or partner links — never. At most one message per version. |
 | Offline | No internet or GitHub not answering → nothing happens, the morning run is not affected; the next try is tomorrow. |
@@ -22,8 +22,8 @@ Tell your AI assistant: **"update FLOKTRON"**. It follows `prompts/58_update.md`
 - `updates.check: false` in `config/config.yaml` — FLOKTRON never asks GitHub. `updates.mail: false` / `updates.telegram: false`
   switch off one of the two messages.
 - Follow the releases without FLOKTRON: on GitHub press **Watch → Custom → Releases** on
-  github.com/koagu-element/floktron (needs a GitHub account), or subscribe to the feed
-  `https://github.com/koagu-element/floktron/releases.atom` in any RSS reader (no account).
+  github.com/floktron/floktron (needs a GitHub account), or subscribe to the feed
+  `https://github.com/floktron/floktron/releases.atom` in any RSS reader (no account).
 
 ## Files
 | File | What |

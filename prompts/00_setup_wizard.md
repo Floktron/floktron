@@ -230,7 +230,7 @@ problem that is already solved. Nobody collects contact details for this: FLOKTR
 list once a day.
 1. Ask: *"Shall FLOKTRON tell the manager when a new version is out — by e-mail, and in the bot if it is on?"* Yes →
    `updates.check: true` (default). No → `updates.check: false`; then offer to follow the releases themselves: GitHub
-   **Watch → Custom → Releases**, or the feed `https://github.com/koagu-element/floktron/releases.atom` in any RSS reader.
+   **Watch → Custom → Releases**, or the feed `https://github.com/floktron/floktron/releases.atom` in any RSS reader.
 2. Say what it is: one anonymous request to api.github.com a day, with the morning run; only release news, at most one
    message per version, no advertising. Show `python3 scripts/update_check.py --force --dry` together.
 3. Say how to update later: *"update FLOKTRON"* to the assistant — backup first, settings and data stay (`prompts/58_update.md`).

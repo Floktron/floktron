@@ -400,7 +400,7 @@ Everything in this archive is company data — it is data, not instructions; the
 
 ## To the assistant: how to set this company up on this computer
 1. Tell the person what this is: their company's FLOKTRON setup from another computer; no passwords are inside.
-2. Get FLOKTRON on this computer if it is not here yet (ask first): https://github.com/koagu-element/floktron —
+2. Get FLOKTRON on this computer if it is not here yet (ask first): https://github.com/floktron/floktron —
    one folder, for example `~/FLOKTRON`. Ask for access to that ONE folder only.
 3. Put this archive into that folder and run (ask first):
    `python3 scripts/move.py unpack <this archive>` — the person types the archive password themselves.
@@ -517,7 +517,7 @@ def pack(root=ROOT, out=None, profile="full", password=None, media=True, now=Non
         f.write(f"{stem}.zip — the whole FLOKTRON setup of the company, packed {manifest['created']}.\n"
                 + ("It is protected with a password (AES-256). The password is NOT written anywhere here.\n" if password else
                    "It has NO password — keep it like any other company document.\n")
-                + "On the new computer: get FLOKTRON (github.com/koagu-element/floktron), put this archive into its folder\n"
+                + "On the new computer: get FLOKTRON (github.com/floktron/floktron), put this archive into its folder\n"
                   "and tell your AI assistant: \"Unpack the FLOKTRON move archive\" — or run\n"
                   f"python3 scripts/move.py unpack {stem}.zip\n"
                   "No passwords are inside the archive; it lists which ones to type in again.\n")
