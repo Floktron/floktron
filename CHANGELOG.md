@@ -3,6 +3,10 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.29.1 — 25.11.2026 · overview PDF 1.19
+- `docs/FLOKTRON_overview.pdf` version 1.19 (18 pages): new pages *Order — yes / no in Telegram* (0.28.0) and
+  *New versions — you know the same day what was fixed* (0.29.0). The same PDF in 9 languages on koagu.com/floktron.
+
 ## 0.29.0 — 25.11.2026 · new versions: know the same day what was fixed
 A tester fights a bug for an evening — and the fix was already out that morning. Now FLOKTRON tells the manager itself.
 Nobody collects contact details for this.
