@@ -3,6 +3,9 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.31.1 — 26.11.2026 · overview PDF 1.22
+- `docs/FLOKTRON_overview.pdf` = overview 1.22: page 17 now names all three industry packs; versions and tests updated.
+
 ## 0.31.0 — 26.11.2026 · industry packs: logistics and wholesale
 - Two more ready radar starts, same format as construction: `templates/industry/logistics.json` (haulage, forwarding,
   warehousing — tenders, Mobility Package, tolls, border queues, fuel and freight rates, driver shortage, Rail Baltica)
