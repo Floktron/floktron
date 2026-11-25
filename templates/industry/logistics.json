@@ -1,0 +1,326 @@
+{
+  "id": "logistics",
+  "title": {
+    "en": "Logistics",
+    "lv": "Loģistika",
+    "ru": "Логистика"
+  },
+  "for": "Road haulage, freight forwarding, warehousing, courier and last-mile companies",
+  "version": "1.0",
+  "note": "A neutral starting set of public keywords and sources. The company adds and removes its own words — nothing here is secret. Write whole words; other endings are found automatically.",
+  "prefix": "LO",
+  "keywords": [
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Tender",
+      "lv": "pārvadājumu iepirkums",
+      "ru": "тендер на перевозки",
+      "en": "transport services tender"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Demand",
+      "lv": "kravu pārvadājumi",
+      "ru": "грузоперевозки",
+      "en": "freight transport"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "noliktavu noma",
+      "ru": "аренда склада",
+      "en": "warehouse rental"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "loģistikas centrs",
+      "ru": "логистический центр",
+      "en": "logistics centre"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "kravu apgrozījums ostā",
+      "ru": "грузооборот порта",
+      "en": "port cargo turnover"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "Consultation",
+      "lv": "mobilitātes pakete",
+      "ru": "пакет мобильности",
+      "en": "Mobility Package"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "Consultation",
+      "lv": "autoceļu nodeva",
+      "ru": "дорожный сбор",
+      "en": "road toll"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "News",
+      "lv": "robežšķērsošanas rindas",
+      "ru": "очереди на границе",
+      "en": "border crossing queues"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "News",
+      "lv": "sankcijas tranzīts",
+      "ru": "санкции транзит",
+      "en": "sanctions transit"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "News",
+      "lv": "tahogrāfs",
+      "ru": "тахограф",
+      "en": "tachograph"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "e-CMR",
+      "ru": "e-CMR",
+      "en": "e-CMR"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "emisiju kvotas transports",
+      "ru": "квоты выбросов транспорт",
+      "en": "ETS2 road transport"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "A",
+      "signal": "News",
+      "lv": "degvielas cenas",
+      "ru": "цены на топливо",
+      "en": "diesel prices"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "B",
+      "signal": "News",
+      "lv": "kravu likmes",
+      "ru": "ставки фрахта",
+      "en": "freight rates"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "B",
+      "signal": "News",
+      "lv": "konteineru pārvadājumu cena",
+      "ru": "стоимость контейнерных перевозок",
+      "en": "container shipping rates"
+    },
+    {
+      "cluster": "People",
+      "priority": "A",
+      "signal": "News",
+      "lv": "autovadītāju trūkums",
+      "ru": "нехватка водителей",
+      "en": "truck driver shortage"
+    },
+    {
+      "cluster": "People",
+      "priority": "B",
+      "signal": "News",
+      "lv": "95. koda apmācība",
+      "ru": "обучение код 95",
+      "en": "driver CPC training"
+    },
+    {
+      "cluster": "Infrastructure",
+      "priority": "A",
+      "signal": "News",
+      "lv": "Rail Baltica",
+      "ru": "Rail Baltica",
+      "en": "Rail Baltica"
+    },
+    {
+      "cluster": "Infrastructure",
+      "priority": "B",
+      "signal": "News",
+      "lv": "ceļu remonts",
+      "ru": "ремонт дорог",
+      "en": "road works"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "A",
+      "signal": "News",
+      "lv": "pārvadātājs maksātnespēja",
+      "ru": "банкротство перевозчика",
+      "en": "haulier insolvency"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "B",
+      "signal": "News",
+      "lv": "kravu zādzība",
+      "ru": "кража грузов",
+      "en": "cargo theft"
+    },
+    {
+      "cluster": "Funding",
+      "priority": "B",
+      "signal": "Funding",
+      "lv": "ES fondi transports",
+      "ru": "фонды ЕС транспорт",
+      "en": "EU funds transport"
+    },
+    {
+      "cluster": "Market",
+      "priority": "B",
+      "signal": "Competitor",
+      "lv": "ekspeditors",
+      "ru": "экспедитор",
+      "en": "freight forwarder"
+    },
+    {
+      "cluster": "Events",
+      "priority": "B",
+      "signal": "Event",
+      "lv": "loģistikas izstāde",
+      "ru": "логистическая выставка",
+      "en": "logistics fair"
+    }
+  ],
+  "city_keyword": {
+    "lv": "{city} loģistika",
+    "ru": "{city} логистика",
+    "en": "{city} logistics"
+  },
+  "sources": [
+    [
+      "Tenders",
+      "EU/EEA",
+      "TED — transport services (CPV 60000000)",
+      "Transport tenders by CPV 60 and keywords",
+      "Weekly",
+      "https://api.ted.europa.eu/v3/notices/search",
+      "Public API (POST), CPV 60*",
+      "OK"
+    ],
+    [
+      "Statistics",
+      "LV",
+      "CSP — freight transport",
+      "Freight by road, rail and ports",
+      "Monthly",
+      "https://stat.gov.lv",
+      "Browser / open data",
+      "check"
+    ],
+    [
+      "Statistics",
+      "EU",
+      "Eurostat — road freight transport",
+      "Quarterly tonne-km by country",
+      "Quarterly",
+      "https://ec.europa.eu/eurostat",
+      "Open data API",
+      "check"
+    ],
+    [
+      "Rules",
+      "LV",
+      "Satiksmes ministrija — news",
+      "Road charges, rail, ports policy",
+      "Weekly",
+      "https://www.sam.gov.lv",
+      "Browser",
+      "check"
+    ],
+    [
+      "Rules",
+      "LV",
+      "VID — customs news",
+      "Customs, transit, sanctions controls",
+      "Weekly",
+      "https://www.vid.gov.lv",
+      "Browser",
+      "check"
+    ],
+    [
+      "Rules",
+      "EU",
+      "European Commission — transport",
+      "Mobility Package, tolls, emissions",
+      "Monthly",
+      "https://transport.ec.europa.eu",
+      "Browser",
+      "check"
+    ]
+  ],
+  "registry_queries": [
+    {
+      "words": "loģist;pārvad;transport;kravu;ekspedīc;cargo;logistic",
+      "goal": "Competitor",
+      "exclude": "",
+      "types": "SIA;AS"
+    },
+    {
+      "words": "tirdzn;trade;ražoš;production;noliktav",
+      "goal": "Client",
+      "exclude": "",
+      "types": "SIA;AS"
+    }
+  ],
+  "watch": [
+    [
+      "Price",
+      "Diesel — EU weekly price (reference)",
+      "",
+      "fuel is the biggest variable cost",
+      "diesel price Europe",
+      "en",
+      "—",
+      "",
+      "5",
+      "10",
+      "weekly",
+      "No",
+      "PUBLIC",
+      "example from the logistics pack"
+    ],
+    [
+      "Logistics",
+      "Asia–Europe container rates (reference)",
+      "",
+      "sea freight cost",
+      "container freight rates Asia Europe",
+      "en",
+      "—",
+      "",
+      "",
+      "",
+      "weekly",
+      "No",
+      "PUBLIC",
+      "example from the logistics pack"
+    ]
+  ],
+  "questions": [
+    "Which industry? (construction, logistics, wholesale…)",
+    "Which country and city do you work in?",
+    "Name 3–5 competitors (company names as people write them)."
+  ]
+}

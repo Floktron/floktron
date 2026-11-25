@@ -39,7 +39,8 @@ def test_every_pack_is_complete():
 
 
 def test_pack_has_no_secrets_or_client_terms():
-    text = open(os.path.join(ROOT, "templates", "industry", "construction.json"), encoding="utf-8").read().lower()
+    text = "".join(open(os.path.join(ROOT, "templates", "industry", f), encoding="utf-8").read().lower()
+                   for f in os.listdir(os.path.join(ROOT, "templates", "industry")))
     for bad in ("семантическ", "semantic core", "koagu", "floki", "@", "pilot"):
         assert bad not in text, bad
 
@@ -109,3 +110,13 @@ def test_cli_list_and_show():
                        capture_output=True, text=True, encoding="utf-8", env={**os.environ, "PYTHONIOENCODING": "utf-8"})
     assert r.returncode == 0 and "būvatļauja" in r.stdout
     assert json.load(open(os.path.join(ROOT, "templates", "industry", "construction.json"), encoding="utf-8"))["id"] == "construction"
+
+
+def test_all_packs_apply_to_one_radar(tmp_path):
+    out = radar(tmp_path)
+    wb = openpyxl.load_workbook(out)
+    for p in ip.list_packs():
+        got = ip.apply(wb, p, "LV", "Rīga")
+        assert got["keywords"] >= 20, (p["id"], got)
+    ids = [r[0] for r in wb["Keywords"].iter_rows(min_row=4, values_only=True) if r[0]]
+    assert len(ids) == len(set(ids))                          # every pack has its own prefix
