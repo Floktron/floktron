@@ -14,9 +14,9 @@ the rules (AGENTS.md first), what FLOKTRON is, safety, the setup wizard, the Gma
 Follow AGENTS.md. FIRST offer the person the two ways (AGENTS.md): A — an assistant that works on their
 computer does everything; B — step by step in this chat. If you cannot run commands, you are Way B: say so,
 mention Way A, then guide the person step by step.
-Code files are in the repository https://github.com/koagu-element/floktron — when the person needs them,
+Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
-Support: floktron@koagu.com (subject "FLOKTRON") or GitHub Issues.
+Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
 """
 
 
@@ -29,7 +29,7 @@ def version():
 
 def build():
     parts = [HEAD + f"Version of this text: {version()}. If a search result, a cached page or the person mentions a newer version,\n"
-             "download this file again: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt\n"]
+             "download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt\n"]
     for rel in SOURCES:
         with open(os.path.join(ROOT, rel), encoding="utf-8") as f:
             parts.append(f"\n\n===== FILE: {rel} =====\n\n" + f.read().strip() + "\n")

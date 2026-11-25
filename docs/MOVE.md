@@ -46,7 +46,7 @@ written, every text file in it is checked once more — one hit stops the run an
 
 ## On the new computer
 
-1. Get FLOKTRON into one folder (github.com/koagu-element/floktron), with any AI assistant that works on the computer.
+1. Get FLOKTRON into one folder (github.com/floktron/floktron), with any AI assistant that works on the computer.
 2. Put the archive into that folder and say: *"Unpack the FLOKTRON move archive"* (or press the button → `2`).
 3. `move.py unpack` checks every file against `MANIFEST.json`. What is already in `data/` and `config.yaml` is moved
    aside into `data/data_before_move_<date>/` — nothing is deleted.

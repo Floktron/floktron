@@ -1,8 +1,8 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.29.3 · last update 25.11.2026 · see [CHANGELOG](CHANGELOG.md)
-> AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
+> Version 0.29.4 · last update 25.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 **Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company.
 
@@ -34,7 +34,7 @@ checks disk encryption, firewall, updates, open network doors, passwords and bac
 and shows where to click — you make each change. At the end the system works and is protected with what your computer
 already has; your own antivirus can be added on top ([SECURITY_CHECKUP](docs/SECURITY_CHECKUP.md)).
 
-**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 16 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, breath and ready roles, move in one click, a safe first test, what else can be plugged in. Other languages: [koagu.com/floktron](https://koagu.com/en/floktron/).
+**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 16 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, breath and ready roles, move in one click, a safe first test, what else can be plugged in. Other languages: [floktron.com](https://floktron.com/en/).
 
 ## Before you install — a safe first test
 
@@ -61,7 +61,7 @@ The head makes it smart (what to look for, what it means, what to do next).
 
 ## Start here — with any AI assistant
 
-**Fastest — one tap:** [Open in ChatGPT](https://chatgpt.com/?q=Help%20me%20test%20FLOKTRON.%20Read%20https%3A//raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt%20and%20follow%20the%20AGENTS.md%20part%20in%20it.%20If%20you%20cannot%20open%20the%20link%2C%20tell%20me%20to%20open%20START.md%20in%20the%20repository%20and%20paste%20its%20text%20here.) · [Open in Claude](https://claude.ai/new?q=Help%20me%20test%20FLOKTRON.%20Read%20https%3A//raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt%20and%20follow%20the%20AGENTS.md%20part%20in%20it.%20If%20you%20cannot%20open%20the%20link%2C%20tell%20me%20to%20open%20START.md%20in%20the%20repository%20and%20paste%20its%20text%20here.) · [Open in Perplexity](https://www.perplexity.ai/search?q=Help%20me%20test%20FLOKTRON.%20Read%20https%3A//raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt%20and%20follow%20the%20AGENTS.md%20part%20in%20it.%20If%20you%20cannot%20open%20the%20link%2C%20tell%20me%20to%20open%20START.md%20in%20the%20repository%20and%20paste%20its%20text%20here.)
+**Fastest — one tap:** [Open in ChatGPT](https://chatgpt.com/?q=Help%20me%20test%20FLOKTRON.%20Read%20https%3A//raw.githubusercontent.com/floktron/floktron/main/llms-full.txt%20and%20follow%20the%20AGENTS.md%20part%20in%20it.%20If%20you%20cannot%20open%20the%20link%2C%20tell%20me%20to%20open%20START.md%20in%20the%20repository%20and%20paste%20its%20text%20here.) · [Open in Claude](https://claude.ai/new?q=Help%20me%20test%20FLOKTRON.%20Read%20https%3A//raw.githubusercontent.com/floktron/floktron/main/llms-full.txt%20and%20follow%20the%20AGENTS.md%20part%20in%20it.%20If%20you%20cannot%20open%20the%20link%2C%20tell%20me%20to%20open%20START.md%20in%20the%20repository%20and%20paste%20its%20text%20here.) · [Open in Perplexity](https://www.perplexity.ai/search?q=Help%20me%20test%20FLOKTRON.%20Read%20https%3A//raw.githubusercontent.com/floktron/floktron/main/llms-full.txt%20and%20follow%20the%20AGENTS.md%20part%20in%20it.%20If%20you%20cannot%20open%20the%20link%2C%20tell%20me%20to%20open%20START.md%20in%20the%20repository%20and%20paste%20its%20text%20here.)
 
 **Any other assistant (Gemini, Leo, Copilot…) or on the phone:** open **[START.md](START.md)**, press the copy icon
 in the grey box, paste it into your assistant and send.
@@ -70,7 +70,7 @@ in the grey box, paste it into your assistant and send.
 it already sees this repository.
 
 > **Your assistant says it cannot open this page?** Some chat assistants cannot read GitHub pages.
-> Give it this link instead: **https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt**
+> Give it this link instead: **https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt**
 > — one plain-text file with everything it needs. If that does not work either, open the link yourself,
 > select all, copy, paste it into the chat and write *"Help me test FLOKTRON"*.
 
@@ -115,14 +115,14 @@ then `python3 scripts/base_create.py`.
 | Channel | For |
 |---|---|
 | GitHub → **Issues** | questions, problems, wishes (templates: feedback / bug) |
-| **floktron@koagu.com**, subject "FLOKTRON" | anything, also without a GitHub account |
+| **support@floktron.com**, subject "FLOKTRON" | anything, also without a GitHub account |
 | GitHub → Security → **Report a vulnerability** | security problems — not in public issues |
 
 We answer on working days (Latvia), usually within two working days. Never send passwords or personal data.
 
 ## Support the project
 FLOKTRON is free and has no ads. If it saves your team time, you can support its development:
-**[koagu.com/en/floktron/support](https://koagu.com/en/floktron/support/)** — card or Apple Pay via Stripe, any amount.
+**[floktron.com/en/support](https://floktron.com/en/support/)** — card or Apple Pay via Stripe, any amount.
 Crypto: BTC, ETH / USDC / USDT (Ethereum ERC-20), USDT (Tron TRC-20), SOL — addresses and QR codes
 are on the support page only; send only on the network shown there. The recipient is SIA KOAGU ELEMENT, a commercial company: this is not charity,
 nothing is sold in return, and FLOKTRON is the same for everyone. Free ways to help: a star, an issue with feedback,

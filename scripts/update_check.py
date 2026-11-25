@@ -30,7 +30,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
-REPO = "koagu-element/floktron"
+REPO = "floktron/floktron"
 API = f"https://api.github.com/repos/{REPO}/releases?per_page=30"
 RELEASES_PAGE = f"https://github.com/{REPO}/releases"
 UA = "FLOKTRON-update-check"          # the only header sent besides Accept; nothing about the user
