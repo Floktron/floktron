@@ -24,7 +24,8 @@ Voice (telegram.voice, optional): a team member sends a voice message → it is 
 voice.pulse_dir/pulse_<YYYY-MM-DD>.txt appears (written by the morning AI run), the bot reads it aloud and sends the audio
 to the managers — to listen in the car. See docs/VOICE.md.
 Manager commands (only from manager_chat_ids): /leads — last 10 leads · /funnel — how many reached each step · /pulse — audio summary now ·
-/channels — watched channels; forward a post from a public channel to add it (telegram.channels_file)
+/channels — watched channels; forward a post from a public channel to add it (telegram.channels_file) ·
+/backup — password-protected backup of the whole setup now, kept on the computer (docs/MOVE.md)
 Anyone: /start (optionally /start <source>, e.g. t.me/<bot>?start=qr_bucket) · /menu · /privacy · /forget · /id
 """
 import argparse
@@ -438,6 +439,8 @@ class Bot:
             return self.send(chat_id, say(self.flow.get("forgotten", "Done — your data is deleted."), lang))
         if str(chat_id) in self.managers and text == "/pulse":
             return self.send_pulse(force=True, only=chat_id)
+        if str(chat_id) in self.managers and text == "/backup":
+            return self.backup_now(chat_id)
         if str(chat_id) in self.managers and text in ("/leads", "/funnel", "/channels"):
             return self.manager(chat_id, text)
         if str(chat_id) in self.managers and self.cfg.get("channels_file"):
@@ -508,6 +511,18 @@ class Bot:
         with open(path, "a", encoding="utf-8") as f:
             f.write(f"{name}  # {str(ch.get('title', ''))[:60]} · added {now_str()}\n")
         return self.send(chat_id, f"✅ @{name} added to channel monitoring ({str(ch.get('title', ''))[:60]}).")
+
+    def backup_now(self, chat_id):
+        """/backup: the password-protected archive of the whole setup, made on this computer (docs/MOVE.md).
+        The archive is NOT sent to Telegram — it stays on the computer / in the company cloud."""
+        self.send(chat_id, "⏳ Backup is being made on the computer…")
+        try:
+            r = subprocess.run([sys.executable, os.path.join(SCRIPTS, "move.py"), "backup"], cwd=ROOT,
+                               capture_output=True, text=True, timeout=1800)
+            line = (r.stdout.strip().splitlines() or ["❌ no answer"])[-1]
+        except subprocess.TimeoutExpired:
+            line = "❌ backup took longer than 30 minutes — see data/run.log"
+        return self.send(chat_id, line.replace(ROOT, "FLOKTRON") + "\nThe archive stays on the computer; it is not sent here.")
 
     def manager(self, chat_id, cmd):
         if cmd == "/channels":

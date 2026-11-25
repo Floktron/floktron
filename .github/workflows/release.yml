@@ -24,7 +24,7 @@ jobs:
         run: |
           if gh release view "v${{ steps.v.outputs.v }}" >/dev/null 2>&1; then echo "yes=1" >> "$GITHUB_OUTPUT"; fi
       - if: steps.has.outputs.yes != '1'
-        run: pip install -r requirements.txt pytest && pytest -q
+        run: pip install -r requirements.txt pytest pyzipper && pytest -q
       - if: steps.has.outputs.yes != '1'
         name: Release notes from CHANGELOG.md
         run: |

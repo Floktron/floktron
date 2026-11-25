@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.26.3 · last update 25.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.27.0 · last update 25.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 **Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company.
@@ -25,6 +25,7 @@ Your team can **report by voice** — the bot turns a voice message into text on
 **Payment gateways — every card payment finds its document**: Stripe, Paddle, Lemon Squeezy, Apple, Google Play receipts from the mailbox (spam folder too), every card payment of the bank statement — foreign currency included — matched to its document; where the business invoice with your company details is downloaded, a draft request to the seller, a draft internal act when nothing comes. Read-only, no link is opened ([GATEWAYS](docs/GATEWAYS.md)).
 **Breath — your computer does the routine, the AI does the thinking**: news slices, monitoring, mail, invoices, documents and the dashboard run as scripts on your own computer; your AI assistant reads one short summary instead of every page. Setup starts with a read-only **capacity check** of the computer (cores, memory, disk, Python) and ends with the list of what now runs by itself ([BREATH](docs/BREATH.md)).
 **Company library**: the company profile and ready templates (invoice, advance invoice, acceptance act, offer) are made once and kept in one folder on your computer — open them offline or give them to any AI assistant; no document is built from nothing again ([LIBRARY](docs/LIBRARY.md)).
+**Move in one archive — to another computer or another AI assistant**: one button packs the whole setup — settings without passwords, bases, company library, your own prompts and roles, the schedule, a one-page company context for any assistant — into one AES-256 password-protected file; on the new computer any AI assistant unpacks it, checks every file and walks you through the passwords to type again. From Gemini to Claude, from Mac to Windows, or a handover to a new manager without people's contacts. The same archive every week is your backup ([MOVE](docs/MOVE.md)).
 **Ready AI roles**: set FLOKTRON up as the **AI secretary** (mail, calendar, follow-ups, documents, invoices) or the **AI operations director** (morning tasks, escalation, radar, supply chain, dashboard) — the same parts, switched on together with the instructions for your assistant; procurement and project coordinator come next ([agents](agents/README.md)).
 **One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
@@ -88,6 +89,7 @@ it already sees this repository.
 
 Before you start, read [SECURITY.md](SECURITY.md) — what FLOKTRON protects against and what it cannot.
 What FLOKTRON connects to and what it never does: [docs/TRANSPARENCY.md](docs/TRANSPARENCY.md).
+To move everything to another computer or AI assistant, or keep a weekly backup: [docs/MOVE.md](docs/MOVE.md).
 To switch it off and remove everything: [docs/UNINSTALL.md](docs/UNINSTALL.md).
 Technical users can do it by hand: `pip install -r requirements.txt`, `config/config.example.yaml` → `config/config.yaml`,
 then `python3 scripts/base_create.py`.
@@ -100,7 +102,7 @@ then `python3 scripts/base_create.py`.
 | `prompts/` | The head (instructions for the AI agent) |
 | `templates/` | Empty base (xlsx), letter and report templates |
 | `config/` | `config.example.yaml` — copy to `config.yaml` (never committed) |
-| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [reminders after an offer](docs/FOLLOWUPS.md), [mail watch](docs/MAIL_WATCH.md), [payment gateways](docs/GATEWAYS.md), [new customers](docs/PROSPECTS.md), [company snapshot](docs/SNAPSHOT.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
+| `docs/` | Requirements, [install / automatic runs](docs/INSTALL.md), [security checkup](docs/SECURITY_CHECKUP.md), [support](docs/SUPPORT.md), [Telegram bot and channels](docs/TELEGRAM.md), [calendar](docs/CALENDAR.md), [supply chain watch](docs/SUPPLY_CHAIN.md), [voice](docs/VOICE.md), [dashboard](docs/DASHBOARD.md), [website](docs/WEBSITE.md), [invoices → accounting](docs/INVOICES.md), [documents: invoices, acts, offers](docs/DOCUMENTS.md), [reminders after an offer](docs/FOLLOWUPS.md), [mail watch](docs/MAIL_WATCH.md), [payment gateways](docs/GATEWAYS.md), [new customers](docs/PROSPECTS.md), [company snapshot](docs/SNAPSHOT.md), [move and backup](docs/MOVE.md), storage layout, site module, roadmap, [Gmail test](docs/GMAIL_TEST.md) |
 | `tests/` | Automatic checks incl. safety checks — GitHub runs them on every change |
 | `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `llms.txt` | Entry point for AI assistants (one source: `AGENTS.md`) |
 | `SECURITY.md` | What is protected and how; how to report a problem |

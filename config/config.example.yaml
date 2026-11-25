@@ -111,6 +111,14 @@ snapshot:                  # optional: company snapshot → PDF + JSON (docs/SNA
   out: data/snapshot/out
   locked_words: []         # words that must never leave the company, e.g. ["our secret ingredient"]
 
+move:                      # move to another computer / AI assistant + weekly backup (docs/MOVE.md, prompts/57_move.md)
+  backup: false            # true = every Sunday 19:30 one password-protected archive of the whole setup (schedule → backup)
+  backup_dir: ""           # empty = <storage.root>/FLOKTRON_backup if that folder exists, else data/backups
+  keep: 4                  # how many weekly archives to keep; older ones are removed
+  include_media: true      # false = leave audio, video and photos out of the backup
+  password_env: "FLOKTRON_MOVE_PASSWORD"   # backup password from this environment variable...
+  keychain_service: ""                     # ...or from macOS Keychain, e.g. "FLOKTRON_MOVE" (never in this file)
+
 documents:                 # optional: branded invoices, advance invoices, acts, offers (docs/DOCUMENTS.md, prompts/52_documents.md)
   legal_name: ""           # as in the register; empty = company.name
   reg_no: ""

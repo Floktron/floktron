@@ -17,3 +17,8 @@ def test_llms_full_is_current():
 def test_start_is_current():
     with open(os.path.join(ROOT, "START.md"), encoding="utf-8") as f:
         assert f.read() == build_llms_full.build_start(), "run: python3 scripts/build_llms_full.py"
+
+
+def test_shipped_prompt_hashes_are_current():
+    with open(os.path.join(ROOT, "templates", "shipped_prompts.json"), encoding="utf-8") as f:
+        assert f.read() == build_llms_full.build_shipped(), "run: python3 scripts/build_llms_full.py"

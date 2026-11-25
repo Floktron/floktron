@@ -6,7 +6,7 @@ import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCES = ["AGENTS.md", "README.md", "SECURITY.md", "docs/TRANSPARENCY.md", "prompts/00_setup_wizard.md",
-           "docs/GMAIL_TEST.md", "docs/TELEGRAM.md", "docs/CALENDAR.md", "docs/SUPPLY_CHAIN.md", "docs/WEBSITE.md", "docs/INVOICES.md", "docs/SNAPSHOT.md", "docs/DOCUMENTS.md", "docs/FOLLOWUPS.md", "docs/MAIL_WATCH.md", "docs/GATEWAYS.md", "docs/PROSPECTS.md", "docs/VOICE.md", "docs/DASHBOARD.md", "docs/BREATH.md", "docs/LIBRARY.md", "agents/README.md", "docs/INSTALL.md", "docs/SECURITY_CHECKUP.md", "docs/UNINSTALL.md", "docs/FEEDBACK.md", "LICENSING.md"]
+           "docs/GMAIL_TEST.md", "docs/TELEGRAM.md", "docs/CALENDAR.md", "docs/SUPPLY_CHAIN.md", "docs/WEBSITE.md", "docs/INVOICES.md", "docs/SNAPSHOT.md", "docs/DOCUMENTS.md", "docs/FOLLOWUPS.md", "docs/MAIL_WATCH.md", "docs/GATEWAYS.md", "docs/PROSPECTS.md", "docs/VOICE.md", "docs/DASHBOARD.md", "docs/BREATH.md", "docs/LIBRARY.md", "docs/MOVE.md", "agents/README.md", "docs/INSTALL.md", "docs/SECURITY_CHECKUP.md", "docs/UNINSTALL.md", "docs/FEEDBACK.md", "LICENSING.md"]
 HEAD = """# FLOKTRON — full text for AI assistants (one file)
 
 You are an AI assistant. A person wants to test or set up FLOKTRON. This single file contains everything you need:
@@ -45,6 +45,21 @@ START_HEAD = """# Start FLOKTRON with any AI assistant
 """
 
 
+def build_shipped():
+    """SHA-256 of every shipped file in prompts/ and agents/ — scripts/move.py packs only the company's own changes."""
+    import hashlib
+    import json
+    out = {}
+    for top in ("prompts", "agents"):
+        for d, dirs, files in os.walk(os.path.join(ROOT, top)):
+            dirs[:] = sorted(x for x in dirs if x != "__pycache__")
+            for f in sorted(files):
+                p = os.path.join(d, f)
+                with open(p, "rb") as fh:
+                    out[os.path.relpath(p, ROOT).replace(os.sep, "/")] = hashlib.sha256(fh.read()).hexdigest()
+    return json.dumps(dict(sorted(out.items())), indent=1) + "\n"
+
+
 def build_start():
     return START_HEAD + "~~~~text\n" + build() + "~~~~\n"
 
@@ -54,4 +69,6 @@ if __name__ == "__main__":
         f.write(build())
     with open(os.path.join(ROOT, "START.md"), "w", encoding="utf-8") as f:
         f.write(build_start())
-    print("llms-full.txt and START.md written")
+    with open(os.path.join(ROOT, "templates", "shipped_prompts.json"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(build_shipped())
+    print("llms-full.txt, START.md and templates/shipped_prompts.json written")
