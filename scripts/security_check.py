@@ -54,7 +54,7 @@ def run(cmd, timeout=15):
     if name.lower().removesuffix(".exe") not in READ_ONLY_COMMANDS:
         raise ValueError(f"not a read-only command: {name}")
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        r = subprocess.run(cmd, capture_output=True, text=True, errors="replace", timeout=timeout)
         return r.returncode, (r.stdout or "") + (r.stderr or "")
     except (OSError, subprocess.SubprocessError):
         return None, ""

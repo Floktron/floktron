@@ -103,7 +103,15 @@ def main():
             print(f"\n----- FAILED: {name} (exit {p.returncode}) -----\n{out[-4000:]}\n-----")
         return good
 
+    try:
+        import reportlab  # noqa: F401 — optional: PDF documents (docs/DOCUMENTS.md)
+        has_pdf = True
+    except ImportError:
+        has_pdf = False
     for name, args, ok in steps:
+        if name.startswith("document") and not has_pdf:
+            results.append((name + " — skipped, reportlab not installed", True, "-"))
+            continue
         run(name, args, ok)
 
     zips = sorted(f for f in os.listdir(archive_dir) if f.endswith(".zip"))

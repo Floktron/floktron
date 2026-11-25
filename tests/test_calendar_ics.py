@@ -106,7 +106,7 @@ def test_morning_letter_survives_broken_calendar_and_attaches_due_dates(tmp_path
     env = dict(os.environ)
     env.pop("FLOKTRON_NO_SUCH_VAR", None)
     r = subprocess.run([sys.executable, os.path.join(S, "send_morning.py"), "--config", str(cfg), "--base", str(base),
-                        "--dry", "--force"], cwd=ROOT, capture_output=True, text=True, env=env)
+                        "--dry", "--force"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", env=env)
     assert r.returncode == 0, r.stdout + r.stderr
     assert "calendar: not read" in r.stdout and "L1: built" in r.stdout
     folder = os.path.join(ROOT, "data", "letters", today)

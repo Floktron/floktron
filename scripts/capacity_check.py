@@ -39,7 +39,7 @@ BREATH = [
 
 def run(cmd):
     try:
-        return subprocess.run(cmd, capture_output=True, text=True, timeout=10).stdout.strip()
+        return subprocess.run(cmd, capture_output=True, text=True, errors="replace", timeout=10).stdout.strip()
     except Exception:
         return ""
 
