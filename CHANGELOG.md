@@ -3,6 +3,10 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.27.1 — 25.11.2026 · overview PDF 1.17
+- `docs/FLOKTRON_overview.pdf` version 1.17 (16 pages): new page *Move in one click — to another computer or another
+  AI assistant*; open version 0.27.0. The same PDF in 8 languages on koagu.com/floktron.
+
 ## 0.27.0 — 25.11.2026 · move: the whole setup in one archive
 A company changes its computer, moves from one AI assistant to another (Gemini to Claude, ChatGPT to Copilot…) or hands
 the work to a new manager. Now one button packs everything the company set up into one password-protected file, and
