@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.26.2 · last update 25.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.26.3 · last update 25.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 **Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company.
@@ -118,7 +118,8 @@ We answer on working days (Latvia), usually within two working days. Never send 
 ## Support the project
 FLOKTRON is free and has no ads. If it saves your team time, you can support its development:
 **[koagu.com/en/floktron/support](https://koagu.com/en/floktron/support/)** — card or Apple Pay via Stripe, any amount.
-PayPal and crypto are coming soon. The recipient is SIA KOAGU ELEMENT, a commercial company: this is not charity,
+Crypto goes straight to our own wallet: BTC, ETH / USDC / USDT (Ethereum ERC-20), USDT (Tron TRC-20), SOL — addresses and QR codes
+are on the support page only; send only on the network shown there. PayPal is coming soon. The recipient is SIA KOAGU ELEMENT, a commercial company: this is not charity,
 nothing is sold in return, and FLOKTRON is the same for everyone. Free ways to help: a star, an issue with feedback,
 telling colleagues.
 
