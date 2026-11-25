@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.30.0 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.30.1 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 **Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company.
@@ -34,7 +34,7 @@ checks disk encryption, firewall, updates, open network doors, passwords and bac
 and shows where to click — you make each change. At the end the system works and is protected with what your computer
 already has; your own antivirus can be added on top ([SECURITY_CHECKUP](docs/SECURITY_CHECKUP.md)).
 
-**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 16 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, breath and ready roles, move in one click, a safe first test, what else can be plugged in. Other languages: [floktron.com](https://floktron.com/en/).
+**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 19 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, breath and ready roles, move in one click, new versions, industry keyword packs, a safe first test, what else can be plugged in. Other languages: [floktron.com](https://floktron.com/en/).
 
 ## Before you install — a safe first test
 
