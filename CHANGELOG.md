@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.26.2 — 25.11.2026 · support the project
+- README: new section "Support the project" — voluntary support via koagu.com/en/floktron/support/ (card or Apple Pay
+  through Stripe, any amount; PayPal and crypto coming soon). Not charity; nothing is sold in return.
+- `.github/FUNDING.yml`: the GitHub "Sponsor" button links to the support page and the Stripe link.
+
 ## 0.26.1 — 24.11.2026 · runs in a real company
 - README, AGENTS.md, llms.txt: FLOKTRON runs the daily work of an operating manufacturing company; new features work there
   first, on real everyday actions. Public examples, tests and screenshots use fictional companies only; real company data
