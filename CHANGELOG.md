@@ -3,6 +3,11 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.29.3 — 25.11.2026 · overview PDF 1.20
+- `docs/FLOKTRON_overview.pdf` version 1.20 (18 pages): on the page *Before you install — a safe first test* a new
+  block *Tested on Windows and Linux*; open version and test count updated. The same PDF in 9 languages on
+  koagu.com/floktron.
+
 ## 0.29.2 — 25.11.2026 · tested on Windows and Linux
 FLOKTRON now runs the safe first test itself, on clean Windows and Linux, on every change — and the first Windows run
 found real bugs, now fixed.
