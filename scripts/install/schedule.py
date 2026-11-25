@@ -13,6 +13,7 @@ config.yaml → schedule (defaults shown):
     registry: "Mon 07:00"
     supply:      "19:10"   # optional, every day — only if you add it (supply chain watch)
     supply_week: "Mon 19:20" # optional, weekly
+    backup:   "Sun 19:30"  # added by itself when move.backup is true (docs/MOVE.md)
     collect_every_minutes: 30
 """
 import os
@@ -32,6 +33,8 @@ def load(root):
         with open(p, encoding="utf-8") as f:
             cfg = yaml.safe_load(f) or {}
     s = dict(DEFAULTS, **(cfg.get("schedule") or {}))
+    if (cfg.get("move") or {}).get("backup") is True:
+        s.setdefault("backup", "Sun 19:30")       # weekly backup of the whole setup (docs/MOVE.md)
     return s
 
 

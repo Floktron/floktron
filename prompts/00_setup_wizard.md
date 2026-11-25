@@ -20,7 +20,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
 | IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups · 8f Mail watch · 8g New customers · 8h Payment gateways | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
-| VI. Autopilot | 11 Switch on · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected; who to call |
+| VI. Autopilot | 11 Switch on · 11a Move and backup · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected, backed up; who to call |
 
 Rules of the path:
 - Every step starts with *"Do you need this?"* — no → skip it, say it can be added later, go to the next step. Never jump back and forth.
@@ -211,6 +211,19 @@ person's own profile if they post or repost as a person — and write them into 
 server). Times in `config.yaml → schedule`. Explain: weekends and holidays are skipped; the computer must be on at
 run times.
 
+## 11a. Move and backup — the whole setup in one archive — follow `docs/MOVE.md` and `prompts/57_move.md`
+Say: everything set up so far (settings without passwords, bases, library, the company's own prompts and roles, the
+schedule) fits into ONE password-protected archive — to move to another computer or another AI assistant, to hand the
+work to a new manager, or as a weekly backup. Nothing is sent anywhere.
+1. Ask: switch the weekly backup on (`move.backup: true`)? Where to keep it (empty `backup_dir` = the company cloud
+   folder of `storage.root`)? The person saves the backup password in the keychain (Mac:
+   `security add-generic-password -s FLOKTRON_MOVE -a floktron -w`) or the environment variable — never in the chat or a file.
+2. **First a test on fictional data**: `python3 -m pytest tests/test_move.py`, then `python3 scripts/move.py backup`
+   together and `python3 scripts/move.py check <archive>` — show what is inside and which passwords it lists to type again.
+3. Offer `data/context/`: what the company wants any future assistant to know (rules, habits) as plain text — it
+   travels in every archive. With `move.backup: true` switch the schedule on again (step 11).
+4. Say clearly: the password is not stored anywhere — without it nobody can open the archive, also not the authors.
+
 ## 12. Security checkup — always, never skipped — follow `docs/SECURITY_CHECKUP.md`
 Say why first: *"Your data stays with you, so you protect it — let us check how well this computer does that."*
 1. Run `python3 scripts/security_check.py --manual` (mode A), or have the person run it and paste the text or a screenshot (mode B).
@@ -223,7 +236,8 @@ Say why first: *"Your data stays with you, so you protect it — let us check ho
 5. Offer the free extra tools for their system (in the report) and say that their own antivirus can be added on top.
    Suggest a monthly re-check — e.g. one monthly task in their own ray.
 6. Close with breath: show which scripts now run on this computer by themselves (`capacity_check.py` table) and that
-   the company library in `data/library/` can be opened offline or given to any other AI assistant.
+   the company library in `data/library/` can be opened offline or given to any other AI assistant — and that one archive
+   (`scripts/move.py`, step 11a) takes the whole setup to another computer or assistant.
 
 ## 13. Hand over
 Short summary in the order of the path (I–V): what is set up, what each person will receive and when, what costs money (AI plan, mail plan,

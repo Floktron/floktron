@@ -26,6 +26,7 @@ Two optional parts. Both run on your own computer; nothing goes through the auth
 | Fake BotFather | look-alike names ask for the token or money | only @BotFather with the blue check mark |
 | Bot added to strange groups | spam, data collection | works only in private chats; `/setjoingroups` → Disable |
 | Someone pretends to be the manager | wants to see leads | manager commands work only from `manager_chat_ids` |
+| Someone wants the company's backup | `/backup` | only from `manager_chat_ids`; the archive is made on the computer and never sent through Telegram (docs/MOVE.md) |
 | Harmful text in answers | a formula or link trap in Excel | every saved text is plain text; length limit; flood guard; old buttons ignored |
 | Third-party bot builders | your leads on someone else's server | your own code, your own computer |
 | Open server port | attack from outside | none: the bot fetches messages itself (long polling) |

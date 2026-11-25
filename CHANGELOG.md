@@ -3,6 +3,33 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.27.0 — 25.11.2026 · move: the whole setup in one archive
+A company changes its computer, moves from one AI assistant to another (Gemini to Claude, ChatGPT to Copilot…) or hands
+the work to a new manager. Now one button packs everything the company set up into one password-protected file, and
+any AI assistant sets it up again on the other computer. The same archive, made every week by itself, is the backup.
+- New [MOVE](docs/MOVE.md) and `scripts/move.py` (`pack`, `check`, `unpack`, `backup`, `secrets`): config.yaml without
+  passwords, everything in `data/` (bases, company library, documents, reports, `data/context/` — the company's notes
+  for its assistant), only the company's own changes in `prompts/` and `agents/` (against the new
+  `templates/shipped_prompts.json`), the schedule as a plain table, `SECRETS_TO_ENTER.md` (names of the passwords to
+  type again, never values), `COMPANY_CONTEXT.md` (the company in one page for any assistant), `MANIFEST.json`
+  (SHA-256 of every file) and `MOVE.md` + `AGENTS.md`/`CLAUDE.md`/`GEMINI.md` for any agent that opens the folder.
+- Password: AES-256 zip (optional package `pyzipper`, the buttons install it), at least 10 characters, never stored.
+  Passwords, tokens, keys and private calendar links never go in: fields and files that look like one are emptied or
+  left out and listed; every text file is checked once more before the archive is written.
+- Unpack checks every file against the manifest, refuses unsafe paths, moves what is already there aside (nothing is
+  deleted) and writes `data/move/AFTER_MOVE.md`: passwords again, old paths, schedule on here and off on the old
+  computer, capacity check, security checkup, test message. Mac → Windows → Linux works the same.
+- Profile `handover` for a new manager: people's e-mails and phones out of the config, personal sheets out of the
+  bases, contact columns emptied, letters, replies and voice left out.
+- Weekly backup: `move.backup: true` → every Sunday 19:30 (`run.py backup`), password from the keychain or an
+  environment variable, into the company cloud folder, the last 4 kept; the dashboard shows when it fails or is late.
+- Buttons: `scripts/install/move_mac.command`, `move_windows.bat`, `move_linux.sh`; `/backup` to the Telegram bot
+  (managers only; the archive is never sent through Telegram).
+- Setup wizard: new step 11a; `prompts/57_move.md`; the AI operations director role includes it.
+- Chats and memory inside an AI vendor's app stay with the vendor; MOVE says how to bring what matters into
+  `data/context/`.
+- Tests: `test_move.py` (fictional TEST · FICTIONAL Demo SIA only).
+
 ## 0.26.3 — 25.11.2026 · crypto support
 - README "Support the project": crypto (BTC, ETH/USDC/USDT on Ethereum ERC-20, USDT on Tron TRC-20, SOL);
   addresses and QR codes are kept in one place — the support page (koagu.com/en/floktron/support/). PayPal still coming soon.

@@ -25,9 +25,11 @@ in any other file, or if the model download is missing from this list.
 - sends anything to the authors (KOAGU ELEMENT SIA) or anyone else — no telemetry, no statistics, no "phone home";
 - reads files outside its own folder and the storage folder you named in `config.yaml` — the one exception is the security
   checkup you start yourself: it reads system settings and the *names* of programs that start by themselves, never your files;
+  and the move archive you point `scripts/move.py unpack` to (docs/MOVE.md) — the weekly backup is written only to
+  `move.backup_dir`, the storage folder or `data/backups`;
 - stores passwords in files — only the environment variable or the system keychain;
 - runs hidden commands. The only programs it starts are its own scripts (`scripts/run.py`) and, on a Mac,
-  the system keychain tool `security` to read the mail password and the calendar link (`scripts/mail/send.py`) and the bot token
+  the system keychain tool `security` to read the mail password, the calendar link and the backup password (`scripts/mail/send.py`) and the bot token
   (`scripts/bot/telegram_bot.py`); for voice (only if you switch it on) `scripts/voice.py` starts the system speech tools `say` and `afconvert` (Mac)
   or `espeak-ng` / `ffmpeg` (Linux) — the local speech model itself runs inside Python; the security checkup starts only the system's own read-only settings tools
   (the list `READ_ONLY_COMMANDS` in `scripts/security_check.py`, guarded by a test) and connects to nothing; the capacity
