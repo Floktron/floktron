@@ -3,6 +3,23 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.29.2 — 25.11.2026 · tested on Windows and Linux
+FLOKTRON now runs the safe first test itself, on clean Windows and Linux, on every change — and the first Windows run
+found real bugs, now fixed.
+- Fixed on Windows: scripts stopped with an encoding error when their output went to a pipe, the Task Scheduler log or
+  an AI assistant (arrows, ✅ and Latvian letters). Every script now writes UTF-8 (`scripts/utf8_console.py`).
+- Fixed on Windows: time zones (Europe/Riga and others) were unknown — `tzdata` is now installed on Windows
+  (`requirements.txt`, the Windows buttons).
+- Fixed on Windows: branded PDF documents found no font — Arial / Segoe UI from Windows are used.
+- Fixed on Windows: supplier invoices and mail watch did not match documents in sub-folders with the extraction file.
+- Fixed on Windows: after a git download every shipped prompt looked like the company's own change in the move archive.
+- Fixed on Windows: the security check-up stopped when FLOKTRON lives on another drive than the temp folder (C: / D:).
+- Without reportlab `documents.py` says in one sentence what to install, instead of an error trace.
+- New `tests/first_run_smoke.py`: the safe first test as one script — config, base, radar, library, documents,
+  invoices, snapshot, dashboard, check-ups, scheduler entries (printed only), move pack → check → unpack, update
+  check. Fictional data only; changes nothing outside a temporary folder. CI runs it with the tests on Windows
+  (Windows Server 2025, Python 3.12) and Linux (Ubuntu, Python 3.10 and 3.12).
+
 ## 0.29.1 — 25.11.2026 · overview PDF 1.19
 - `docs/FLOKTRON_overview.pdf` version 1.19 (18 pages): new pages *Order — yes / no in Telegram* (0.28.0) and
   *New versions — you know the same day what was fixed* (0.29.0). The same PDF in 9 languages on koagu.com/floktron.

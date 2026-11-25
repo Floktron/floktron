@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.29.1 · last update 25.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.29.2 · last update 25.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/koagu-element/floktron/main/llms-full.txt
 
 **Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company.
@@ -46,6 +46,7 @@ FLOKTRON works with your mail and your files, so try it safely first. Each point
 | **A separate mailbox** | Make a mailbox only for FLOKTRON, with an app password — not your main work account. For the first look, the [15-minute Gmail test](docs/GMAIL_TEST.md) |
 | **A separate place for the first run** | Your AI assistant downloads and runs code from this repository and asks before each step. For the first run use a separate user account on your computer or a virtual machine, with test data only |
 | **Every connection is listed** | What FLOKTRON connects to — and the one-time download of the voice model, if you switch voice on — is in [TRANSPARENCY](docs/TRANSPARENCY.md); a test fails if network code appears anywhere else |
+| **Tested on Windows and Linux** | On every change GitHub runs all automated tests and the safe first test (18 steps on a fictional company, no mailbox, no internet) on clean Windows (Windows Server 2025, Python 3.12) and Linux (Ubuntu, Python 3.10 and 3.12) — [tests.yml](.github/workflows/tests.yml), [first_run_smoke.py](tests/first_run_smoke.py). macOS: runs every day in a real company; no automatic macOS test yet. A hand test on a Windows 10/11 desktop is not done yet |
 | **Latvia first** | The new-customer search uses Latvia's open data. In other countries bring the same columns as your own CSV ([PROSPECTS](docs/PROSPECTS.md)); everything else works anywhere |
 
 ## How it works — two layers

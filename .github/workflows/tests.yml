@@ -1,12 +1,12 @@
 name: tests
+# Every change: all automated tests + the first-run smoke test (tests/first_run_smoke.py) on Linux and Windows.
+# No macOS job: GitHub gave this repository no macOS runner (0.24.3).
 on: [push, pull_request]
 permissions:
   contents: read
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-    # discovery run for Windows: report, do not fail the workflow yet
-    continue-on-error: ${{ matrix.os == 'windows-latest' }}
     strategy:
       fail-fast: false
       matrix:
