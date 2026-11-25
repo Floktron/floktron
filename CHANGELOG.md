@@ -3,6 +3,12 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.29.5 — 25.11.2026 · safe first test on a clean install
+- `tests/first_run_smoke.py`: on a computer with only `requirements.txt` installed, the two move-archive steps
+  showed FAIL, because the password archive needs the optional package `pyzipper`. They are now marked
+  "skipped, pyzipper not installed (the move buttons install it)", like the PDF steps without `reportlab`.
+  Clean install: 16 of 16 passed; with `pyzipper`: 18 of 18.
+
 ## 0.29.4 — 25.11.2026 · new home: floktron.com
 FLOKTRON has its own address now.
 - Website: **https://floktron.com** (9 languages, the same pages as before). The old pages on koagu.com/…/floktron/

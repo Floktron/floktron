@@ -108,14 +108,24 @@ def main():
         has_pdf = True
     except ImportError:
         has_pdf = False
+    try:
+        import pyzipper  # noqa: F401 — optional: password-protected move archive (docs/MOVE.md)
+        has_zip = True
+    except ImportError:
+        has_zip = False
     for name, args, ok in steps:
         if name.startswith("document") and not has_pdf:
             results.append((name + " — skipped, reportlab not installed", True, "-"))
             continue
+        if name == "move pack" and not has_zip:
+            results.append((name + " — skipped, pyzipper not installed (the move buttons install it)", True, "-"))
+            continue
         run(name, args, ok)
 
     zips = sorted(f for f in os.listdir(archive_dir) if f.endswith(".zip"))
-    if zips:
+    if not has_zip:
+        pass
+    elif zips:
         arc = os.path.join(archive_dir, zips[-1])
         run("move check", ["scripts/move.py", "check", arc], (0,))
         root2 = os.path.join(tmp, "floktron_new_computer")
