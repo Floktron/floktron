@@ -20,7 +20,7 @@ Lead the person along the same order every time, like a form that goes name → 
 | III. Your work | 4 Departments · 5 Bases and first tasks · 6 First messages | Who does what, and the first morning message |
 | IV. Around you | 7 Radar · 8 Supply chain watch · 8b Invoices → accounting · 8c Company snapshot · 8d Documents · 8e Follow-ups · 8f Mail watch · 8g New customers · 8h Payment gateways | What happens in your market, your supply chain and your payments — and where does the company stand? |
 | V. Your voice | 8a Website · 9 Content plan · 10 Telegram bot and channels | What do you say to the outside world, and how do people reach you? |
-| VI. Autopilot | 11 Switch on · 11a Move and backup · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected, backed up; who to call |
+| VI. Autopilot | 11 Switch on · 11a Move and backup · 11b New versions · 12 Security checkup · 13 Hand over · 14 Feedback | Runs by itself, protected, backed up; who to call |
 
 Rules of the path:
 - Every step starts with *"Do you need this?"* — no → skip it, say it can be added later, go to the next step. Never jump back and forth.
@@ -223,6 +223,17 @@ work to a new manager, or as a weekly backup. Nothing is sent anywhere.
 3. Offer `data/context/`: what the company wants any future assistant to know (rules, habits) as plain text — it
    travels in every archive. With `move.backup: true` switch the schedule on again (step 11).
 4. Say clearly: the password is not stored anywhere — without it nobody can open the archive, also not the authors.
+
+## 11b. New versions — know the same day that something was fixed — follow `docs/UPDATES.md`
+Say: FLOKTRON is a living project — when something is fixed, the manager should know the same day, so nobody fights a
+problem that is already solved. Nobody collects contact details for this: FLOKTRON itself looks at its public release
+list once a day.
+1. Ask: *"Shall FLOKTRON tell the manager when a new version is out — by e-mail, and in the bot if it is on?"* Yes →
+   `updates.check: true` (default). No → `updates.check: false`; then offer to follow the releases themselves: GitHub
+   **Watch → Custom → Releases**, or the feed `https://github.com/koagu-element/floktron/releases.atom` in any RSS reader.
+2. Say what it is: one anonymous request to api.github.com a day, with the morning run; only release news, at most one
+   message per version, no advertising. Show `python3 scripts/update_check.py --force --dry` together.
+3. Say how to update later: *"update FLOKTRON"* to the assistant — backup first, settings and data stay (`prompts/58_update.md`).
 
 ## 12. Security checkup — always, never skipped — follow `docs/SECURITY_CHECKUP.md`
 Say why first: *"Your data stays with you, so you protect it — let us check how well this computer does that."*

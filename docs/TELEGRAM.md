@@ -46,6 +46,7 @@ waiting 6 d.
 | Fake BotFather | look-alike names ask for the token or money | only @BotFather with the blue check mark |
 | Bot added to strange groups | spam, data collection | works only in private chats; `/setjoingroups` → Disable |
 | Someone pretends to be the manager | wants to see leads | manager commands work only from `manager_chat_ids` |
+| A manager wants to know the FLOKTRON version | `/version` | only from `manager_chat_ids`; a newer version is also told to them once by itself (docs/UPDATES.md) |
 | Someone wants the company's backup | `/backup` | only from `manager_chat_ids`; the archive is made on the computer and never sent through Telegram (docs/MOVE.md) |
 | Harmful text in answers | a formula or link trap in Excel | every saved text is plain text; length limit; flood guard; old buttons ignored |
 | Third-party bot builders | your leads on someone else's server | your own code, your own computer |

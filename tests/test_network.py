@@ -8,7 +8,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 S = os.path.join(ROOT, "scripts")
 NET = re.compile(r"^\s*(import|from)\s+(urllib(?!\.parse)|http|socket|smtplib|imaplib|poplib|ftplib|telnetlib|requests|httpx|aiohttp|websocket|webbrowser)\b", re.M)
 PROC = re.compile(r"^\s*(import|from)\s+subprocess\b", re.M)
-ALLOWED_NET = {"mail/read.py", "mail/send.py", "news_slice.py", "registry_lv.py", "bot/telegram_bot.py", "tg_watch.py", "supply_watch.py", "calendar_read.py", "voice.py"}
+ALLOWED_NET = {"mail/read.py", "mail/send.py", "news_slice.py", "registry_lv.py", "bot/telegram_bot.py", "tg_watch.py", "supply_watch.py", "calendar_read.py", "voice.py", "update_check.py"}
 ALLOWED_PROC = {"run.py", "mail/send.py", "bot/telegram_bot.py", "security_check.py", "voice.py", "capacity_check.py"}
 
 
@@ -37,3 +37,9 @@ def test_model_download_is_listed():
     for rel in ("docs/TRANSPARENCY.md", "docs/VOICE.md"):
         text = open(os.path.join(ROOT, rel), encoding="utf-8").read()
         assert "huggingface.co" in text, f"{rel} must name huggingface.co (one-time speech model download)"
+
+
+def test_update_check_is_listed():
+    """The release check is a network call — it must stay listed in TRANSPARENCY, with how to switch it off."""
+    text = open(os.path.join(ROOT, "docs/TRANSPARENCY.md"), encoding="utf-8").read()
+    assert "api.github.com" in text and "update_check.py" in text and "updates.check" in text

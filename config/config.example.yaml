@@ -188,6 +188,12 @@ prospects:                 # optional: new customers like your best ones, with a
     - {name: building, weight: 2, words: ["būvdarb", "būvniecīb", "pārbūv", "rekonstrukc", "izbūv", "atjaunoš", "jumta", "ēkas"]}
   exclude_words: ["projektēš", "būvprojekt", "būvuzraudz", "autoruzraudz", "ekspertīz", "konsultāc", "piegāde", "noma"]
 
+updates:                   # new FLOKTRON versions: once a day, one anonymous request to api.github.com (docs/UPDATES.md)
+  check: true              # false = never ask GitHub; you follow github.com/koagu-element/floktron/releases yourself
+  mail: true               # tell mail.manager_address once per new version — only what was fixed and added, no advertising
+  telegram: true           # also in the bot to telegram.manager_chat_ids (if the bot is on)
+  language: ""             # empty = company.language
+
 telegram:                  # optional bot: dialog → leads (scripts/bot/telegram_bot.py); off until a token exists
   enabled: false
   token_env: "FLOKTRON_TG_TOKEN"   # bot token from @BotFather comes from this environment variable...

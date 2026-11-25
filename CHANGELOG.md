@@ -3,6 +3,24 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.29.0 — 25.11.2026 · new versions: know the same day what was fixed
+A tester fights a bug for an evening — and the fix was already out that morning. Now FLOKTRON tells the manager itself.
+Nobody collects contact details for this.
+- `scripts/update_check.py`: once a day, with the morning run, one anonymous request to api.github.com for the list of
+  FLOKTRON releases. A newer version than the one in `CHANGELOG.md` → ONE message per version to `mail.manager_address`
+  and, if the bot is on, to `telegram.manager_chat_ids`: you have X, newer is Y, what was fixed and added (from the
+  release notes, short), how to update. Only release news — no advertising, no support or partner links (a test checks).
+  Offline or GitHub not answering → nothing happens, the morning run is not affected.
+- `prompts/58_update.md` — *"update FLOKTRON"*: backup first (`scripts/move.py backup`), then `git pull --ff-only` or the
+  release ZIP over the folder without `config.yaml`, `data/` and the company's own prompts, then the tests; red → back
+  to the backup.
+- Telegram bot: `/version` for managers; the new-version notice is passed on once (`data/update_notice.json`).
+- Setup wizard step 11b *New versions*; `config.example.yaml` section `updates` (`check`, `mail`, `telegram`,
+  `language`); `scripts/run.py update`. Messages in 9 languages (EN LV RU DE LT ET ES IT FR).
+- `docs/UPDATES.md`; `docs/TRANSPARENCY.md` lists api.github.com — `tests/test_network.py` checks it. Without FLOKTRON:
+  GitHub *Watch → Custom → Releases* or the feed `releases.atom`.
+- `tests/test_updates.py` on TEST · FICTIONAL releases (Demo SIA), offline.
+
 ## 0.28.0 — 25.11.2026 · tidy: yes / no in Telegram, mail and tasks without old things
 From a real company's first days: the manager got old resolved tasks every morning, mail-confirmation letters as
 "unanswered", test messages, and Telegram notices that asked to write into sheets — and the bot greeted the manager
