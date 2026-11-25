@@ -119,7 +119,7 @@ We answer on working days (Latvia), usually within two working days. Never send 
 FLOKTRON is free and has no ads. If it saves your team time, you can support its development:
 **[koagu.com/en/floktron/support](https://koagu.com/en/floktron/support/)** — card or Apple Pay via Stripe, any amount.
 Crypto: BTC, ETH / USDC / USDT (Ethereum ERC-20), USDT (Tron TRC-20), SOL — addresses and QR codes
-are on the support page only; send only on the network shown there. PayPal is coming soon. The recipient is SIA KOAGU ELEMENT, a commercial company: this is not charity,
+are on the support page only; send only on the network shown there. The recipient is SIA KOAGU ELEMENT, a commercial company: this is not charity,
 nothing is sold in return, and FLOKTRON is the same for everyone. Free ways to help: a star, an issue with feedback,
 telling colleagues.
 
