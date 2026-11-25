@@ -4,10 +4,16 @@ permissions:
   contents: read
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    # discovery run for Windows: report, do not fail the workflow yet
+    continue-on-error: ${{ matrix.os == 'windows-latest' }}
     strategy:
+      fail-fast: false
       matrix:
-        python: ["3.10", "3.12"]
+        include:
+          - { os: ubuntu-latest, python: "3.10" }
+          - { os: ubuntu-latest, python: "3.12" }
+          - { os: windows-latest, python: "3.12" }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -15,3 +21,6 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: pip install -r requirements.txt pytest pyzipper
       - run: pytest -q
+      - name: First-run smoke test (the safe first test, fictional data)
+        if: always()
+        run: python tests/first_run_smoke.py
