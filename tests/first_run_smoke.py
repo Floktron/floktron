@@ -60,6 +60,8 @@ def main():
     steps = [
         ("base", ["scripts/base_create.py"], (0,)),
         ("radar", ["scripts/radar_create.py"], (0,)),
+        ("industry pack (construction)", ["scripts/industry_pack.py", "apply", "construction", "--country", "LV",
+                                          "--city", "Rīga", "--competitor", "Demo Būve SIA"], (0,)),
         ("library", ["scripts/library.py", "init"], (0,)),
         ("library check", ["scripts/library.py", "check"], (0, 1)),  # 1 = "fill in your company" — expected on a new setup
         ("document invoice LV", ["scripts/documents.py", "--doc", os.path.join(fx, "documents", "invoice_lv.json"),

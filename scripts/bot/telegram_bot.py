@@ -30,6 +30,7 @@ Manager commands (only from manager_chat_ids): /leads — last 10 leads · /funn
 /channels — watched channels; forward a post from a public channel to add it (telegram.channels_file) ·
 /backup — password-protected backup of the whole setup now, kept on the computer (docs/MOVE.md) ·
 /version — this FLOKTRON version and the newest one (docs/UPDATES.md); a new version is told to the managers once
+/words — radar keywords now searched · /addword <words> — add one · /delword <words> — pause one (docs/INDUSTRY_PACKS.md)
 Anyone: /start (optionally /start <source>, e.g. t.me/<bot>?start=qr_bucket) · /menu · /privacy · /forget · /id
 """
 import argparse
@@ -466,6 +467,8 @@ class Bot:
             return self.backup_now(chat_id)
         if str(chat_id) in self.managers and text == "/version":
             return self.version_info(chat_id)
+        if str(chat_id) in self.managers and re.match(r"/(words|addword|delword)(@\w+)?(\s|$)", text):
+            return self.keywords_cmd(chat_id, text)
         if str(chat_id) in self.managers and text in ("/leads", "/funnel", "/channels"):
             return self.manager(chat_id, text)
         if str(chat_id) in self.managers and self.cfg.get("channels_file"):
@@ -608,6 +611,34 @@ class Bot:
         with open(path, "a", encoding="utf-8") as f:
             f.write(f"{name}  # {str(ch.get('title', ''))[:60]} · added {now_str()}\n")
         return self.send(chat_id, f"✅ @{name} added to channel monitoring ({str(ch.get('title', ''))[:60]}).")
+
+    def keywords_cmd(self, chat_id, text):
+        """/words · /addword <words> · /delword <words> — the radar keywords, edited from the phone (docs/INDUSTRY_PACKS.md)."""
+        import industry_pack as ip
+        cmd, _, arg = text.partition(" ")
+        cmd, arg = cmd.split("@")[0], re.sub(r"[\x00-\x1f]", " ", arg).strip()[:80]
+        path = self.cfg.get("radar_file") or os.path.join(DATA, "floktron_radar.xlsx")
+        if not os.path.exists(path):
+            return self.send(chat_id, "ℹ️ No radar yet — ask your AI assistant to set up the radar (step 7 of the wizard).")
+        import openpyxl
+        wb = openpyxl.load_workbook(path)
+        if cmd == "/words":
+            rows = ip.words(wb)
+            lines = [f"{t}" for _, _, t in rows[:60]]
+            more = f"\n… and {len(rows) - 60} more" if len(rows) > 60 else ""
+            return self.send(chat_id, f"🔎 Searched every run ({len(rows)}):\n" + ("\n".join(lines) or "— none") + more +
+                             "\n\n/addword <words> — add · /delword <words> — pause")
+        if not arg:
+            return self.send(chat_id, f"Write the words after the command, e.g. {cmd} facade insulation")
+        kid = ip.add_word(wb, arg) if cmd == "/addword" else ip.switch_off(wb, arg)
+        if not kid:
+            return self.send(chat_id, "ℹ️ Already in the radar." if cmd == "/addword" else f"ℹ️ Not found: {arg} — see /words")
+        try:
+            wb.save(path)
+        except PermissionError:
+            return self.send(chat_id, "❌ The radar file is open on the computer (Excel?) — close it and try again.")
+        return self.send(chat_id, (f"✅ Added: {arg}" if cmd == "/addword" else f"⏸ Paused: {arg}") +
+                         " — from the next news run.")
 
     def backup_now(self, chat_id):
         """/backup: the password-protected archive of the whole setup, made on this computer (docs/MOVE.md).

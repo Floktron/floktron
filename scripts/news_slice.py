@@ -162,8 +162,12 @@ def matches(keyword, text):
     return all(stem(part) in t for part in keyword.split())
 
 
+QUERY_WORDS = 8   # keywords in one Google News query
+MAX_QUERIES = 4   # queries per feed and run (up to 32 priority-A keywords per language)
+
+
 def google_query(words):
-    q = " OR ".join(f'"{w}"' if " " in w else w for w in words[:8])
+    q = " OR ".join(f'"{w}"' if " " in w else w for w in words[:QUERY_WORDS])
     return urllib.parse.quote(f"({q})").replace("%20", "+") if words else ""
 
 
@@ -193,15 +197,21 @@ def main():
             continue
         lang = str(lang or "").lower()
         words = kw.get(lang) or all_kw
+        urls = [url]
         if ftype == "N":
             if not words:
                 continue
-            url = url.replace("{q}", google_query(words)).replace("when:7d", f"when:{max(a.days, 1)}d")
+            # Google News takes ~8 words per query: more keywords → several queries (an industry pack has 15–30)
+            urls = [url.replace("{q}", google_query(words[i:i + QUERY_WORDS])).replace("when:7d", f"when:{max(a.days, 1)}d")
+                    for i in range(0, min(len(words), QUERY_WORDS * MAX_QUERIES), QUERY_WORDS)]
+            url = urls[0]
         try:
-            raw = fetch(url)
-            items = parse_tg_preview(raw) if ftype == "T" else parse_feed(raw)
+            items = []
+            for u in urls:
+                raw = fetch(u)
+                items += parse_tg_preview(raw) if ftype == "T" else parse_feed(raw)
             answered += 1
-            result = f"{len(items)} items"
+            result = f"{len(items)} items" + (f" ({len(urls)} queries)" if len(urls) > 1 else "")
         except Exception as e:  # noqa: BLE001 — any network/parse problem is a gap, not a crash
             failed += 1
             result = f"error: {str(e)[:80]}"
