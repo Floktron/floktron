@@ -756,7 +756,7 @@ def run(cfg, a):
                     with open(p, "wb") as f:
                         f.write(data)
                 hashes.add(h)
-                saved.append(os.path.relpath(p, inbox))
+                saved.append(os.path.relpath(p, inbox).replace(os.sep, "/"))
                 files.append(p)
             doc, fpath, status = "PDF from the message", "; ".join(saved), "PDF → invoice check (your AI assistant reads it)"
         else:
@@ -905,4 +905,5 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
+    import utf8_console  # noqa: F401 — UTF-8 output on any console (Windows code pages)
     sys.exit(main())

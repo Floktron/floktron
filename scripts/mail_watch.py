@@ -410,7 +410,7 @@ def save_invoice(i, inbox, known):
         with open(p, "wb") as f:
             f.write(data)
         known.add(h)
-        out.append(nfc(os.path.relpath(p, inbox)))
+        out.append(nfc(os.path.relpath(p, inbox).replace(os.sep, "/")))
     return "; ".join(out)
 
 
@@ -425,7 +425,7 @@ def unread_invoices(inbox, extraction):
             continue
         for f in sorted(fs):
             if f.lower().endswith(".pdf"):
-                rel = nfc(os.path.relpath(os.path.join(d, f), inbox))
+                rel = nfc(os.path.relpath(os.path.join(d, f), inbox).replace(os.sep, "/"))  # "/" as in the extraction file
                 if rel not in known:
                     out.append(rel)
     return sorted(out), known
@@ -827,4 +827,5 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
+    import utf8_console  # noqa: F401 — UTF-8 output on any console (Windows code pages)
     sys.exit(main())

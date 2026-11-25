@@ -39,7 +39,7 @@ BREATH = [
 
 def run(cmd):
     try:
-        return subprocess.run(cmd, capture_output=True, text=True, timeout=10).stdout.strip()
+        return subprocess.run(cmd, capture_output=True, text=True, errors="replace", timeout=10).stdout.strip()
     except Exception:
         return ""
 
@@ -135,4 +135,5 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
+    import utf8_console  # noqa: F401 — UTF-8 output on any console (Windows code pages)
     sys.exit(main())

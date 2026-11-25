@@ -19,6 +19,14 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+
+
+def shown(p):
+    """Path relative to FLOKTRON for the report; the full path if it is on another drive (Windows C: / D:)."""
+    try:
+        return os.path.relpath(p, ROOT)
+    except ValueError:
+        return p
 DATA = os.path.join(ROOT, "data")
 
 OK, WARN, BAD, UNK, INFO = "✅", "⚠️", "❌", "❔", "ℹ️"
@@ -46,7 +54,7 @@ def run(cmd, timeout=15):
     if name.lower().removesuffix(".exe") not in READ_ONLY_COMMANDS:
         raise ValueError(f"not a read-only command: {name}")
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        r = subprocess.run(cmd, capture_output=True, text=True, errors="replace", timeout=timeout)
         return r.returncode, (r.stdout or "") + (r.stderr or "")
     except (OSError, subprocess.SubprocessError):
         return None, ""
@@ -143,14 +151,14 @@ def check_floktron(rep):
         for d in (ROOT, os.path.join(ROOT, "config"), DATA):
             p = os.path.join(d, name)
             if os.path.isfile(p) and secret_in_text(open(p, encoding="utf-8", errors="ignore").read()):
-                rep.add(WARN, a, f"Passwords in a plain file ({os.path.relpath(p, ROOT)})",
+                rep.add(WARN, a, f"Passwords in a plain file ({shown(p)})",
                         "a plain text file is copied by backups and cloud sync together with everything else",
                         "move them to the system keychain / environment variable and delete the file")
     if os.name == "posix":
         loose = []
         for p in (cfg, DATA):
             if os.path.exists(p) and os.stat(p).st_mode & (stat.S_IRWXG | stat.S_IRWXO):
-                loose.append(os.path.relpath(p, ROOT))
+                loose.append(shown(p))
         if loose:
             rep.add(WARN, a, "Other users of this computer can read " + ", ".join(loose),
                     "settings and the base are only for you",
@@ -487,9 +495,10 @@ def main():
         f.write(text)
     if os.name == "posix":
         os.chmod(out, 0o600)
-    print(f"Saved: {os.path.relpath(out, ROOT)} (only on this computer)")
+    print(f"Saved: {shown(out)} (only on this computer)")
     return 0
 
 
 if __name__ == "__main__":
+    import utf8_console  # noqa: F401 — UTF-8 output on any console (Windows code pages)
     sys.exit(main())

@@ -37,7 +37,7 @@ def world(tmp_path):
                "000000000000", "", "no", "TEST"])
     wb.save(base)
     cfg = tmp_path / "config.yaml"
-    cfg.write_text(CFG.replace("INBOX_DIR", str(tmp_path / "inbox")).replace("OUT_DIR", str(tmp_path / "gw")).replace("IBAN", make_fixtures.IBAN),
+    cfg.write_text(CFG.replace("INBOX_DIR", (tmp_path / "inbox").as_posix()).replace("OUT_DIR", (tmp_path / "gw").as_posix()).replace("IBAN", make_fixtures.IBAN),
                    encoding="utf-8")
 
     def run(statements="statements_csv", *extra):

@@ -22,13 +22,16 @@ Needs: reportlab (pip install reportlab) and a TTF font with Latvian letters (Li
 import argparse, datetime as dt, json, os, re, sys
 from decimal import Decimal, ROUND_HALF_UP
 
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
-from reportlab.lib.colors import HexColor, white
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.utils import ImageReader
+try:
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import mm
+    from reportlab.lib.colors import HexColor, white
+    from reportlab.pdfgen import canvas
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.lib.utils import ImageReader
+except ImportError:  # a clear sentence instead of a traceback on a new computer
+    sys.exit("documents.py needs the reportlab package for PDF. Install it once:  python -m pip install --user reportlab")
 
 VERSION = "0.21.0"
 
@@ -52,6 +55,11 @@ FONT_CANDIDATES = [
     ("/Library/Fonts/Arial.ttf", "/Library/Fonts/Arial Bold.ttf"),
     ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
      "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
+    # Windows: Arial (or Segoe UI) ships with every Windows 10/11
+    (os.path.join(os.environ.get("WINDIR", "C:\\Windows"), "Fonts", "arial.ttf"),
+     os.path.join(os.environ.get("WINDIR", "C:\\Windows"), "Fonts", "arialbd.ttf")),
+    (os.path.join(os.environ.get("WINDIR", "C:\\Windows"), "Fonts", "segoeui.ttf"),
+     os.path.join(os.environ.get("WINDIR", "C:\\Windows"), "Fonts", "segoeuib.ttf")),
 ]
 
 
@@ -775,4 +783,5 @@ def main():
 
 
 if __name__ == "__main__":
+    import utf8_console  # noqa: F401 — UTF-8 output on any console (Windows code pages)
     main()

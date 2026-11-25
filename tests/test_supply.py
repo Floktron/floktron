@@ -69,7 +69,7 @@ def test_radar_has_watch_sheets_and_add_watch(tmp_path):
     wb = openpyxl.load_workbook(out)
     assert "Watchlist" in wb.sheetnames
     again = subprocess.run([sys.executable, os.path.join(S, "radar_create.py"), "--config", none, "--out", str(out),
-                            "--add-watch"], capture_output=True, text=True)
+                            "--add-watch"], capture_output=True, text=True, encoding="utf-8")
     assert "already exists" in (again.stdout + again.stderr)
 
 

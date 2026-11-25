@@ -206,7 +206,7 @@ def read_statements(folder, our_iban="", gaps=None):
                     gaps.append(f"{fn}: PDF statements need 'pip install pypdf' — or download the statement as CSV")
                 continue
             if got:
-                used.append(os.path.relpath(p, folder))
+                used.append(os.path.relpath(p, folder).replace(os.sep, "/"))
             for t in got:
                 txns[(t["arch"], t["code"], round(t["amount"], 2))] = t
     return list(txns.values()), used
@@ -383,7 +383,7 @@ def run(a):
     for root, dirs, files in os.walk(folder):
         dirs[:] = [x for x in dirs if x not in SKIP_DIRS]
         for fn in files:
-            rel = nfc(os.path.relpath(os.path.join(root, fn), folder))
+            rel = nfc(os.path.relpath(os.path.join(root, fn), folder).replace(os.sep, "/"))  # "/" as in the extraction file, on Windows too
             if fn.lower().endswith((".pdf", ".jpg", ".jpeg", ".png", ".heic")) and rel not in recs:
                 unread.append(rel)
 
@@ -481,4 +481,5 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
+    import utf8_console  # noqa: F401 — UTF-8 output on any console (Windows code pages)
     sys.exit(main())

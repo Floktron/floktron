@@ -25,7 +25,7 @@ D = TODAY.strftime("%Y%m%d")
 
 
 def run(*args, cwd=ROOT):
-    r = subprocess.run([sys.executable] + list(args), cwd=cwd, capture_output=True, text=True)
+    r = subprocess.run([sys.executable] + list(args), cwd=cwd, capture_output=True, text=True, encoding="utf-8")
     assert r.returncode == 0, r.stdout + r.stderr
     return r.stdout
 

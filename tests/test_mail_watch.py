@@ -34,7 +34,7 @@ def world(tmp_path):
 
     def cfg(lang="en"):
         p = tmp_path / f"cfg_{lang}.yaml"
-        p.write_text(CFG.replace("LANG", lang).replace("INBOX", str(tmp_path / "inbox")).replace("EXTR", str(tmp_path / "extraction.json")),
+        p.write_text(CFG.replace("LANG", lang).replace("INBOX", (tmp_path / "inbox").as_posix()).replace("EXTR", (tmp_path / "extraction.json").as_posix()),
                      encoding="utf-8")
         return str(p)
 
@@ -236,7 +236,7 @@ def test_imap_path_read_only(world, monkeypatch):
     monkeypatch.setattr(mr.imaplib, "IMAP4", FakeIMAP)
     monkeypatch.setattr(mr, "_password", lambda cfg: "x")
     cfgp = world["tmp"] / "cfg_imap.yaml"
-    cfgp.write_text(CFG.replace("LANG", "en").replace("INBOX", str(world["tmp"] / "inbox")).replace("EXTR", str(world["tmp"] / "e.json"))
+    cfgp.write_text(CFG.replace("LANG", "en").replace("INBOX", (world["tmp"] / "inbox").as_posix()).replace("EXTR", (world["tmp"] / "e.json").as_posix())
                     + "  inbox_folders: [INBOX]\n", encoding="utf-8")
     cfgp.write_text(cfgp.read_text(encoding="utf-8").replace("mail: {", "mail: {provider: proton_bridge, "), encoding="utf-8")
     args = ["--config", str(cfgp), "--base", str(world["base"]), "--outbox", str(world["tmp"] / "out"), "--now", "2026-11-23 10:00", "--test"]
@@ -286,8 +286,8 @@ def test_telegram_one_message_per_letter_and_press_closes(world, tmp_path):
     tg = tmp_path / "tg"
     tg.mkdir()
     p = tmp_path / "cfg_tg.yaml"
-    p.write_text(CFG.replace("LANG", "ru").replace("notify: mail", "notify: telegram").replace("INBOX", str(tmp_path / "inbox"))
-                 .replace("EXTR", str(tmp_path / "extraction.json")) + f"telegram: {{enabled: true, data_dir: '{tg}'}}\n", encoding="utf-8")
+    p.write_text(CFG.replace("LANG", "ru").replace("notify: mail", "notify: telegram").replace("INBOX", (tmp_path / "inbox").as_posix())
+                 .replace("EXTR", (tmp_path / "extraction.json").as_posix()) + f"telegram: {{enabled: true, data_dir: '{tg}'}}\n", encoding="utf-8")
     out = tmp_path / "out_tg"
     args = ["--config", str(p), "--base", str(world["base"]), "--mail-folder", os.path.join(world["tmp"], "mail"),
             "--outbox", str(out), "--now", "2026-11-23 10:00", "--test"]

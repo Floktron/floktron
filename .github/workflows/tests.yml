@@ -1,17 +1,29 @@
 name: tests
+# Every change: all automated tests + the first-run smoke test (tests/first_run_smoke.py) on Linux and Windows.
+# No macOS job: GitHub gave this repository no macOS runner (0.24.3).
 on: [push, pull_request]
 permissions:
   contents: read
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        python: ["3.10", "3.12"]
+        include:
+          - { os: ubuntu-latest, python: "3.10" }
+          - { os: ubuntu-latest, python: "3.12" }
+          - { os: windows-latest, python: "3.12" }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - run: pip install -r requirements.txt pytest pyzipper
+      - name: Optional packages a full setup uses (PDF documents, PDF statements)
+        if: matrix.python == '3.12'
+        run: pip install reportlab pypdf
       - run: pytest -q
+      - name: First-run smoke test (the safe first test, fictional data)
+        if: always()
+        run: python tests/first_run_smoke.py

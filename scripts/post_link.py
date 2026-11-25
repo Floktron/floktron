@@ -70,6 +70,7 @@ def date_in_text(text, year):
 
 
 if __name__ == "__main__":
+    import utf8_console  # noqa: F401 — UTF-8 output on any console (Windows code pages)
     for arg in sys.argv[1:]:
         t = time_of(arg)
         print(f"{platform_of(arg) or '?'}\t{t:%Y-%m-%d %H:%M} UTC" if t else f"{platform_of(arg) or '?'}\ttime not in link")
