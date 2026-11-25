@@ -28,7 +28,8 @@ tasks come one per message with two buttons ✅ / ⛔ (scripts/task_notice.py) �
 and the message turns into «✅ Closed · dd.mm hh:mm»; a text reply to a task message closes it with the comment. /client — try the dialog.
 Manager commands (only from manager_chat_ids): /leads — last 10 leads · /funnel — how many reached each step · /pulse — audio summary now ·
 /channels — watched channels; forward a post from a public channel to add it (telegram.channels_file) ·
-/backup — password-protected backup of the whole setup now, kept on the computer (docs/MOVE.md)
+/backup — password-protected backup of the whole setup now, kept on the computer (docs/MOVE.md) ·
+/version — this FLOKTRON version and the newest one (docs/UPDATES.md); a new version is told to the managers once
 Anyone: /start (optionally /start <source>, e.g. t.me/<bot>?start=qr_bucket) · /menu · /privacy · /forget · /id
 """
 import argparse
@@ -463,6 +464,8 @@ class Bot:
             return self.send_pulse(force=True, only=chat_id)
         if str(chat_id) in self.managers and text == "/backup":
             return self.backup_now(chat_id)
+        if str(chat_id) in self.managers and text == "/version":
+            return self.version_info(chat_id)
         if str(chat_id) in self.managers and text in ("/leads", "/funnel", "/channels"):
             return self.manager(chat_id, text)
         if str(chat_id) in self.managers and self.cfg.get("channels_file"):
@@ -618,6 +621,42 @@ class Bot:
             line = "❌ backup took longer than 30 minutes — see data/run.log"
         return self.send(chat_id, line.replace(ROOT, "FLOKTRON") + "\nThe archive stays on the computer; it is not sent here.")
 
+    # ---- new FLOKTRON versions (scripts/update_check.py writes the notice; the bot only passes it on)
+    def update_paths(self):
+        dirs = [os.path.dirname(self.store.state_path), DATA]
+        return [os.path.join(d, n) for d in dict.fromkeys(dirs) for n in ("update_notice.json", "update_state.json")]
+
+    def _read_json(self, p):
+        try:
+            with open(p, encoding="utf-8") as f:
+                return json.load(f)
+        except (OSError, ValueError):
+            return None
+
+    def version_info(self, chat_id):
+        from update_check import local_version
+        st = next((x for x in map(self._read_json, self.update_paths()[1::2]) if x), {}) or {}
+        cur = local_version() or "?"
+        latest, checked = st.get("latest") or "—", st.get("checked") or "—"
+        tail = ("\nNewer version available — tell your AI assistant: \"update FLOKTRON\"."
+                if latest not in ("—", cur) else "")
+        return self.send(chat_id, f"FLOKTRON {cur}\nNewest on GitHub: {latest} (checked {checked}){tail}")
+
+    def update_due(self):
+        """Pass a new-version notice to the managers once (only release news; no links besides the releases page)."""
+        for p in self.update_paths()[0::2]:
+            n = self._read_json(p)
+            if not n or n.get("sent") or not self.managers:
+                continue
+            for m in self.managers:
+                try:
+                    self.send(m, str(n.get("text") or "")[:3500])
+                except Exception as e:  # noqa: BLE001 — never stop the bot
+                    print(f"{now_str()} update notice: {e}")
+            n["sent"] = True
+            with open(p, "w", encoding="utf-8") as f:
+                json.dump(n, f, ensure_ascii=False)
+
     def manager(self, chat_id, cmd):
         if cmd == "/channels":
             path = self.cfg.get("channels_file") or ""
@@ -748,6 +787,7 @@ class Bot:
         while True:
             self.watch_due()
             self.pulse_due()
+            self.update_due()
             try:
                 ups = self.api.call("getUpdates", offset=self.store.state["offset"], timeout=timeout,
                                     allowed_updates=["message", "callback_query"])

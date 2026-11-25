@@ -15,6 +15,7 @@ check every point below.
 | Yahoo Finance public chart data (query1.finance.yahoo.com), Google News RSS and the supplier pages you put into your own Watchlist (only if you use the supply chain watch) | end-of-day prices of the tickers you listed; news about your suppliers, routes and rules; a fingerprint of the supplier page text | `scripts/supply_watch.py` |
 | api.elevenlabs.io — ONLY if you set `telegram.voice.stt_engine` or `tts_engine` to `elevenlabs`, with your own API key. By default voice stays on your computer (local Whisper model, the system voice) | turn a voice report into text / read the audio summary aloud | `scripts/voice.py` |
 | huggingface.co — ONCE, only if you switch voice on with the local engine `faster-whisper` (or openaipublic.azureedge.net with `openai-whisper`) | the speech model is downloaded one time ("small" ≈ 460 MB) and kept on your computer; after that speech → text works offline. No voice, text or data is sent | the `faster-whisper` / `openai-whisper` package, called from `scripts/voice.py` |
+| api.github.com — once a day with the morning run, unless you set `updates.check: false` (docs/UPDATES.md) | ask for the list of FLOKTRON releases to tell the manager that a newer version is out; one anonymous request — no account, no ID, nothing about you or your company is sent | `scripts/update_check.py` |
 | Latvian open data portal data.gov.lv (only if you switch the registry on) | new companies by words in the name | `scripts/registry_lv.py` |
 | data.gov.lv public procurement results (EIS) and the register (only if you switch prospects on) | who has just signed a contract of the kind you serve; form, town, registration date of those companies | `scripts/registry_lv.py` (used by `scripts/prospects.py`) |
 
@@ -22,7 +23,8 @@ There are no other network calls. An automatic test (`tests/test_network.py`) fa
 in any other file, or if the model download is missing from this list.
 
 ## FLOKTRON never
-- sends anything to the authors (KOAGU ELEMENT SIA) or anyone else — no telemetry, no statistics, no "phone home";
+- sends anything to the authors (KOAGU ELEMENT SIA) or anyone else — no telemetry, no statistics, no "phone home"; the
+  daily release check only reads the public release list on GitHub, and nobody collects your contact details to tell you about new versions;
 - reads files outside its own folder and the storage folder you named in `config.yaml` — the one exception is the security
   checkup you start yourself: it reads system settings and the *names* of programs that start by themselves, never your files;
   and the move archive you point `scripts/move.py unpack` to (docs/MOVE.md) — the weekly backup is written only to

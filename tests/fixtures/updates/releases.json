@@ -1,0 +1,8 @@
+[
+ {"tag_name": "v0.29.0", "name": "FLOKTRON 0.29.0 — TEST · FICTIONAL release check", "draft": false, "prerelease": false,
+  "body": "## 0.29.0 — TEST · FICTIONAL (2026-11-25)\n- **New version message**: the manager of Demo SIA learns about a new version the same day.\n- Fixed: a [link](https://example.com) in the notes becomes plain text.\n- Third point.\n- Fourth point — not shown."},
+ {"tag_name": "v0.28.0", "name": "FLOKTRON 0.28.0 — TEST · FICTIONAL fixes", "draft": false, "prerelease": false,
+  "body": "## 0.28.0\n- Fixed: old tasks no longer return in the morning message."},
+ {"tag_name": "v0.30.0", "name": "FLOKTRON 0.30.0 draft", "draft": true, "prerelease": false, "body": "- not released"},
+ {"tag_name": "v0.27.2", "name": "FLOKTRON 0.27.2", "draft": false, "prerelease": false, "body": "- older"}
+]

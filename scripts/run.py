@@ -16,6 +16,7 @@
     python3 scripts/run.py mail        # mail watch by hand (it also runs after every collect, docs/MAIL_WATCH.md)
     python3 scripts/run.py gateways    # payment gateways by hand (it also runs after every collect, docs/GATEWAYS.md)
     python3 scripts/run.py prospects   # new customers like your best ones, with a reason to write now (once a day)
+    python3 scripts/run.py update      # is there a newer FLOKTRON? (also runs after every morning run, once a day, docs/UPDATES.md)
     python3 scripts/run.py backup      # weekly backup of the whole setup, password-protected (docs/MOVE.md)
     python3 scripts/run.py dashboard   # rebuild data/dashboard.html (also done after every other run)
     python3 scripts/run.py status      # last lines of the log
@@ -52,6 +53,7 @@ JOBS = {
     "gateways": ["gateways.py"],
     "prospects": ["prospects.py"],
     "backup": ["move.py", "backup"],
+    "update": ["update_check.py"],
     "dashboard": ["dashboard.py"],
 }
 
@@ -110,6 +112,15 @@ def main():
                     f.write(f"--- exit {g.returncode}\n")
                 except subprocess.TimeoutExpired:
                     f.write("--- gateways: timeout\n")
+            if job == "morning":        # new FLOKTRON version? once a day; offline or off = nothing happens
+                f.write(f"=== {datetime.datetime.now():%Y-%m-%d %H:%M} update\n")
+                f.flush()
+                try:
+                    u = subprocess.run([sys.executable, os.path.join(HERE, "update_check.py")], cwd=ROOT, stdout=f,
+                                       stderr=subprocess.STDOUT, timeout=120)
+                    f.write(f"--- exit {u.returncode}\n")
+                except subprocess.TimeoutExpired:
+                    f.write("--- update: timeout\n")
             if job != "dashboard":      # the one-page overview follows every run; a failure here never fails the job
                 subprocess.run([sys.executable, os.path.join(HERE, "dashboard.py")], cwd=ROOT,
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=300)
