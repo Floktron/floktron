@@ -856,4 +856,6 @@ def main():
 
 
 if __name__ == "__main__":
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    import utf8_console  # noqa: F401 — UTF-8 output on any console (Windows code pages)
     main()

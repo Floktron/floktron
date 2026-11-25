@@ -55,8 +55,9 @@ def build_shipped():
             dirs[:] = sorted(x for x in dirs if x != "__pycache__")
             for f in sorted(files):
                 p = os.path.join(d, f)
-                with open(p, "rb") as fh:
-                    out[os.path.relpath(p, ROOT).replace(os.sep, "/")] = hashlib.sha256(fh.read()).hexdigest()
+                with open(p, "rb") as fh:  # line ends as in the repository: a Windows checkout (CRLF) is not "changed"
+                    out[os.path.relpath(p, ROOT).replace(os.sep, "/")] = hashlib.sha256(
+                        fh.read().replace(b"\r\n", b"\n")).hexdigest()
     return json.dumps(dict(sorted(out.items())), indent=1) + "\n"
 
 
@@ -65,6 +66,7 @@ def build_start():
 
 
 if __name__ == "__main__":
+    import utf8_console  # noqa: F401 — UTF-8 output on any console (Windows code pages)
     with open(os.path.join(ROOT, "llms-full.txt"), "w", encoding="utf-8") as f:
         f.write(build())
     with open(os.path.join(ROOT, "START.md"), "w", encoding="utf-8") as f:

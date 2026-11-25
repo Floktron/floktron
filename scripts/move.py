@@ -221,8 +221,8 @@ def changed_prompts(root, shipped=None):
                     continue
                 p = os.path.join(d, f)
                 rel = os.path.relpath(p, root).replace(os.sep, "/")
-                with open(p, "rb") as fh:
-                    h = sha(fh.read())
+                with open(p, "rb") as fh:  # CRLF from a Windows checkout is not an own change
+                    h = sha(fh.read().replace(b"\r\n", b"\n"))
                 if shipped is None or shipped.get(rel) != h:
                     res.append(rel)
     return sorted(res)
@@ -789,4 +789,5 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
+    import utf8_console  # noqa: F401 — UTF-8 output on any console (Windows code pages)
     sys.exit(main())
