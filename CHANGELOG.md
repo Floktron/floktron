@@ -17,6 +17,7 @@ Every change in this repository is also a git commit with date and description �
 - `docs/REQUIREMENTS.md` also gives our security recommendations (separate mailbox, two-factor sign-in, keys in the
   keychain, disk encryption, weekly backup).
 - Website: new page floktron.com/en/about/ in 9 languages — why FLOKTRON was made, what it costs a month, security.
+- `docs/FLOKTRON_overview.pdf` = overview 1.23 (20 pages): new page 19 "What your computer needs and what a month costs".
 
 ## 0.31.1 — 26.11.2026 · overview PDF 1.22
 - `docs/FLOKTRON_overview.pdf` = overview 1.22: page 17 now names all three industry packs; versions and tests updated.
