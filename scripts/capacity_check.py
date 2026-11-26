@@ -108,9 +108,35 @@ def judge(f):
     return rows
 
 
+# What each way of using FLOKTRON asks of the computer (estimates, docs/REQUIREMENTS.md). Cloud voice needs no more
+# than text only — the work is done by the voice service, which is a paid subscription.
+VARIANTS = [
+    ("Text only (letters, Telegram, tasks, radar, invoices)", {"cores": 2, "ram_gb": 4, "disk_free_gb": 2}),
+    ("+ computer voice (system voice, free)", {"cores": 2, "ram_gb": 4, "disk_free_gb": 2}),
+    ("+ voice reports turned into text on this computer", {"cores": 4, "ram_gb": 8, "disk_free_gb": 5}),
+    ("+ live cloud voice (ElevenLabs, paid)", {"cores": 2, "ram_gb": 4, "disk_free_gb": 2}),
+]
+
+
+def variants(f):
+    """[(variant, mark)] — ✅ fits, ⚠️ works but slower or tight, ❌ Python too old for anything."""
+    py = tuple(int(x) for x in f["python"].split(".")[:2])
+    out = []
+    for name, need in VARIANTS:
+        if py < (3, 10):
+            mark = BAD
+        else:
+            short = [k for k, v in need.items() if f.get(k) is not None and f[k] < v]
+            mark = OK if not short else WARN
+        out.append((name, mark))
+    return out
+
+
 def report(f, rows):
     out = ["FLOKTRON computer check-up — capacity and breath", f"{datetime.date.today().isoformat()} · {f['system']} · {f['machine']}", ""]
     out += [f"{m} {w:<16} {v:<10} {why}" for m, w, v, why in rows]
+    out += ["", "What this computer can carry (monthly costs of each: docs/REQUIREMENTS.md):"]
+    out += [f"  {m} {name}" for name, m in variants(f)]
     out += ["", "Breath — what runs here and what is left for the AI:"]
     out += [f"  · {task}: {scripts} → AI: {ai}" for task, scripts, ai in BREATH]
     out += ["", "The library (company profile + templates) lives in data/library/ — offline, readable by any assistant.",
@@ -124,6 +150,7 @@ def main(argv=None):
     rows = judge(f)
     if "--json" in argv:
         print(json.dumps({"facts": f, "rows": [dict(zip(("mark", "what", "value", "meaning"), r)) for r in rows],
+                          "variants": [{"variant": n, "mark": m} for n, m in variants(f)],
                           "breath": [dict(zip(("task", "scripts", "ai"), b)) for b in BREATH]}, ensure_ascii=False, indent=1))
         return 0
     text = report(f, rows)

@@ -128,3 +128,30 @@ def test_engine_listing_runs_without_engines(monkeypatch):
     assert isinstance(voice.engines_stt(), list) and isinstance(voice.engines_tts("ru"), list)
     with pytest.raises(voice.VoiceError):
         voice.tts("", "/tmp/x.m4a")
+
+
+def test_speech_text_reads_by_meaning():
+    t = voice.speech_text("✅ Пульс 26.11: бот /pulse и /addword · возврат 1 800 € + PVN 21 % · 12,50 € · "
+                          "встреча 09:30–11:00 · «Было / сделано» (L0) · FLOKTRON® · LinkedIn и X · "
+                          "файл 7_Golos.command · demo@example.com · https://example.com", "ru")
+    for bad in ("/", "€", "%", "«", "(", "®", "http", "@", ".command", "✅", "+"):
+        assert bad not in t, (bad, t)
+    for good in ("26 ноября", "1800 евро", "плюс П-В-Н 21 процент", "12 евро 50 центов", "с 9:30 до 11:00",
+                 "Было или сделано", "Флоктрон", "Линкедин и Икс"):
+        assert good in t, (good, t)
+    assert "22 процента" in voice.speech_text("22 %", "ru") and "5 процентов" in voice.speech_text("5%", "ru")
+    assert "20, 00, 00, 00" in voice.speech_text("тел. 20000000", "ru")
+    assert "40 euros" in voice.speech_text("€40", "en") and "/" not in voice.speech_text("a / b /start", "en")
+
+
+def test_cloud_voice_falls_back_to_system_voice(monkeypatch, tmp_path):
+    calls = []
+    def one(e, text, out, lang, v):
+        calls.append(e)
+        if e == "elevenlabs":
+            raise voice.VoiceError("no credits")
+        return out
+    monkeypatch.setattr(voice, "_tts_one", one)
+    monkeypatch.setattr(voice, "say_voice", lambda lang: "Milena")
+    assert voice.tts("Доброе утро.", str(tmp_path / "p.m4a"), "ru", engine="elevenlabs", voice="abc") == str(tmp_path / "p.m4a")
+    assert calls == ["elevenlabs", "say"]
