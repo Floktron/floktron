@@ -112,4 +112,4 @@ available in an assistant that works on their computer. Do not skip Way A. Then 
 | `tests/` | Automatic checks incl. safety checks — `pip install -r requirements.txt pytest && pytest -q` |
 | `data/` | The company's local data — never committed |
 
-Status: in daily use in an operating company since October 2026, public since November 2026. Licence: AGPL-3.0-only, with a commercial licence available (dual licensing; see LICENSE.md, LICENSING.md); versions up to 0.33.4 were FSL-1.1-ALv2; rights holder KOAGU ELEMENT SIA. Do not remove copyright notices.
+Status: in daily use in an operating company since October 2026, public since November 2026. Licence: FSL-1.1-ALv2 (see LICENSE.md, LICENSING.md); rights holder KOAGU ELEMENT SIA. Do not remove copyright notices.

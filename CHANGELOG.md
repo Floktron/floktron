@@ -4,13 +4,7 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
-## 0.34.0 — 26.11.2026 · open-source licence and automated security checks
-- **Licence: FLOKTRON is now open source under the GNU AGPL-3.0** (OSI- and FSF-approved), with a commercial licence
-  from KOAGU ELEMENT SIA for those who do not want the AGPL condition (dual licensing). Free for any use, also in a
-  commercial company and for integrators; whoever gives FLOKTRON to others or runs a changed version as a network
-  service offers its full source code under the AGPL. Versions up to 0.33.4 stay under FSL-1.1-ALv2 (each also becomes
-  Apache 2.0 two years after its release). LICENSE.md, LICENSING.md, NOTICE (optional packages listed), README,
-  AGENTS, CONTRIBUTING (why contributors grant the right to license under both).
+## 0.34.0 — 26.11.2026 · automated security checks
 - Free, widely used scanners now run on every change and once a week: OpenSSF Scorecard (public result and badge in
   README), GitHub CodeQL (`security-extended`, Python and workflow files), Bandit, pip-audit (required and optional
   packages) and Dependabot (packages and GitHub Actions). These are automated scans, not an independent audit.

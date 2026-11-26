@@ -13,10 +13,6 @@ By sending a contribution (pull request, patch, text, prompt, template or file) 
    contains no code under a licence that conflicts with [LICENSE.md](LICENSE.md).
 4. You remove passwords, personal data and client names before sending.
 
-Why point 1 is needed: FLOKTRON is offered both under the AGPL-3.0 and under a commercial licence. KOAGU ELEMENT SIA
-can do that only if it may license every part of the code, including yours, under both. Your contribution itself is
-published under the AGPL-3.0 like the rest of the code.
-
 Add this line to the pull request description:
 `I agree to the contribution terms in CONTRIBUTING.md.`
 

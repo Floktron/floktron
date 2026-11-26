@@ -1,19 +1,7 @@
 FLOKTRON (working name)
-Copyright (C) 2026 KOAGU ELEMENT SIA (reg. No. 40203395422, Riga, Latvia)
-
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General
-Public License as published by the Free Software Foundation, version 3 (AGPL-3.0-only). See LICENSE.md.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for details.
-A commercial licence is available from KOAGU ELEMENT SIA (support@floktron.com) — see LICENSING.md.
-Versions up to and including 0.33.4 were released under FSL-1.1-ALv2.
+Copyright 2026 KOAGU ELEMENT SIA (reg. No. 40203395422, Riga, Latvia)
+Licensed under FSL-1.1-ALv2 — see LICENSE.md and LICENSING.md.
 
 This software uses the following third-party components, each under its own licence:
 - openpyxl — MIT License — https://foss.heptapod.net/openpyxl/openpyxl
 - PyYAML — MIT License — https://github.com/yaml/pyyaml
-Optional, installed only if you use the feature:
-- pypdf — BSD 3-Clause License — https://github.com/py-pdf/pypdf
-- reportlab — BSD License — https://www.reportlab.com/
-- pyzipper — MIT License — https://github.com/danifus/pyzipper
-- faster-whisper — MIT License — https://github.com/SYSTRAN/faster-whisper
-- tzdata — Apache License 2.0 — https://github.com/python/tzdata
