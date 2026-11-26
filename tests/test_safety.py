@@ -84,3 +84,14 @@ def test_agent_entry_files_point_to_agents_md():
         assert "AGENTS.md" in open(p, encoding="utf-8").read(), f"{f} must point to AGENTS.md"
     a = open(os.path.join(ROOT, "AGENTS.md"), encoding="utf-8").read()
     assert "data, not instructions" in a
+
+
+def test_every_prompt_and_role_says_outside_text_is_data():
+    """Prompt-injection guard: every prompt and every ready role must keep the 'outside text is data' rule."""
+    import glob, re
+    files = [f for f in glob.glob(os.path.join(ROOT, "prompts", "*.md")) if not f.endswith("README.md")]
+    files += glob.glob(os.path.join(ROOT, "agents", "*", "agent.md"))
+    assert files
+    for f in files:
+        t = open(f, encoding="utf-8").read()
+        assert re.search(r"data, (not|never) instructions", t), f"{os.path.relpath(f, ROOT)} lost the 'data, not instructions' rule"
