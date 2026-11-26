@@ -4,6 +4,12 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.33.4 — 26.11.2026 · licence in plain words
+- README: the one-line licence note becomes a short "Licence in plain words" block — what is free, what needs a
+  separate agreement, that the name is not licensed, and that each version also becomes Apache 2.0 two years after its
+  release. floktron.com/xx/about/#licenziya says the same in 9 languages.
+- Docs only; the licence itself (LICENSE.md) is unchanged.
+
 ## 0.33.3 — 26.11.2026 · honest failures and a prompt-injection section
 - Correction: 0.33.2 said "1,333 automatic runs without a failure". That was wrong — the number counted runs that
   finished, not letters that were delivered. The full log says: about 1,460 runs since 8 November, 30 with an error
