@@ -222,6 +222,8 @@ person's own profile if they post or repost as a person — and write them into 
 `docs/INSTALL.md` for the person's computer (ask before switching on), or the hosted option (support runs it on a
 server). Times in `config.yaml → schedule`. Explain: weekends and holidays are skipped; the computer must be on at
 run times.
+Then offer the **FLOKTRON icon on the desktop**: `python3 scripts/desktop_icon.py` — one double-click refreshes the
+dashboard and opens it in the browser (Mac app, Windows shortcut, Linux entry; `--remove` takes it away; docs/DASHBOARD.md).
 
 ## 11a. Move and backup — the whole setup in one archive — follow `docs/MOVE.md` and `prompts/57_move.md`
 Say: everything set up so far (settings without passwords, bases, library, the company's own prompts and roles, the

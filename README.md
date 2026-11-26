@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.34.0 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.35.0 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
@@ -29,7 +29,7 @@ Your team can **report by voice** — the bot turns a voice message into text on
 **Move in one archive — to another computer or another AI assistant**: one button packs the whole setup — settings without passwords, bases, company library, your own prompts and roles, the schedule, a one-page company context for any assistant — into one AES-256 password-protected file; on the new computer any AI assistant unpacks it, checks every file and walks you through the passwords to type again. From Gemini to Claude, from Mac to Windows, or a handover to a new manager without people's contacts. The same archive every week is your backup ([MOVE](docs/MOVE.md)).
 **New versions — you know the same day what was fixed**: once a day FLOKTRON looks at its own public release list on GitHub and tells the manager — by e-mail and in the bot — when a newer version is out and what it fixes; *"update FLOKTRON"* to your assistant makes a backup first and keeps your settings and data. Nobody collects your contacts for this, no advertising, one message per version; switch it off with one line ([UPDATES](docs/UPDATES.md)).
 **Ready AI roles**: set FLOKTRON up as the **AI secretary** (mail, calendar, follow-ups, documents, invoices) or the **AI operations director** (morning tasks, escalation, radar, supply chain, dashboard) — the same parts, switched on together with the instructions for your assistant; procurement and project coordinator come next ([agents](agents/README.md)).
-**One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
+**One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone; a FLOKTRON icon on the desktop opens it with one double-click ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
 checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
 and shows where to click — you make each change. At the end the system works and is protected with what your computer

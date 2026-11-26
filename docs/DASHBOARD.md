@@ -8,6 +8,13 @@
 - **Always fresh**: `scripts/run.py` rebuilds it after every run (collect, morning, news, …); the page re-reads itself every 15 minutes.
   Build by hand: `python3 scripts/run.py dashboard` (or `python3 scripts/dashboard.py`).
 
+## Icon on the desktop — open the dashboard with one double-click
+`python3 scripts/desktop_icon.py` puts a FLOKTRON icon on the desktop: on a Mac `FLOKTRON.app`, on Windows the
+shortcut `FLOKTRON.lnk`, on Linux `floktron.desktop` (also in the applications menu). Double-click it: the dashboard is
+rebuilt from the latest data and opens in your default browser. Nothing is downloaded, nothing keeps running, no admin
+rights. `--remove` takes the icon away; moved the FLOKTRON folder — run the script again. On a Mac, the first time only:
+if the Mac asks, right-click the icon → Open → Open. The page itself also shows the FLOKTRON mark in the browser tab.
+
 ## What you see
 | Block | From |
 |---|---|

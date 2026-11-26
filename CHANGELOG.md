@@ -4,6 +4,15 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.35.0 — 26.11.2026 · the FLOKTRON mark and a desktop icon
+- FLOKTRON has a mark: a violet tile (#8B5CF6) with a white F whose middle bar is a dot. Files in `assets/brand/`:
+  mark and logo (SVG, light and dark), app icons for Mac (`.icns`), Windows (`.ico`) and Linux (PNG).
+- New `scripts/desktop_icon.py`: puts a FLOKTRON icon on the desktop (Mac app, Windows shortcut, Linux entry); one
+  double-click rebuilds the dashboard and opens it in the browser. `--remove` takes it away. Setup wizard step 11 offers it.
+- The dashboard shows the mark in its header and in the browser tab (inline, still loads nothing from the internet).
+- docs/TRANSPARENCY.md and `tests/test_network.py`: the icon script opens only the local `data/dashboard.html` and
+  starts PowerShell once on Windows to save the shortcut. New tests: `tests/test_desktop_icon.py` (6).
+
 ## 0.34.0 — 26.11.2026 · automated security checks
 - Free, widely used scanners now run on every change and once a week: OpenSSF Scorecard (public result and badge in
   README), GitHub CodeQL (`security-extended`, Python and workflow files), Bandit, pip-audit (required and optional
