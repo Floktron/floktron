@@ -1,7 +1,7 @@
 # FLOKTRON (working name)
 
-> **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.33.0 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
+> Version 0.33.1 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 **Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company.
@@ -54,7 +54,7 @@ FLOKTRON works with your mail and your files, so try it safely first. Each point
 | Layer | What it is | Needs AI? |
 |---|---|---|
 | **Hands** — `scripts/` | Python scripts: send and collect mail, keep the base, route replies, run the bot, write logs | **No.** Runs on any computer by the system scheduler |
-| **Head** — `prompts/` | Plain-text instructions for an AI agent: monitoring, analysis, writing tasks and posts, setup wizard | **Yes.** Tested with Claude (Anthropic) |
+| **Head** — `prompts/` | Plain-text instructions for an AI agent: monitoring, analysis, writing tasks and posts, setup wizard | **Yes.** Used every day with Claude (Anthropic). Other assistants (ChatGPT, Gemini, Copilot…) can follow the same plain-text instructions; they are not tested to the same depth yet — start with the safe first test |
 
 The hands work without the head (letters, buttons, escalation, reports).
 The head makes it smart (what to look for, what it means, what to do next).
@@ -128,8 +128,17 @@ are on the support page only; send only on the network shown there. The recipien
 nothing is sold in return, and FLOKTRON is the same for everyone. Free ways to help: a star, an issue with feedback,
 telling colleagues.
 
+## Project history
+| Date | Step |
+|---|---|
+| 2026-10-10 | First ray in production in an operating company (news and market monitoring) |
+| 2026-11-05 | More rays added: evening news slice, morning tasks |
+| 2026-11-18 | Rights holder KOAGU ELEMENT SIA · public name FLOKTRON · public repository |
+| 2026-11-22 | Versioned releases (from 0.16) — every change in [CHANGELOG](CHANGELOG.md) |
+
 ## Principles
 1. Your data stays in your own accounts (mail, cloud, AI). The authors never receive, see, store or use it — no telemetry ([TRANSPARENCY](docs/TRANSPARENCY.md)).
+   Scripts, bases and files stay on your computer. The text your AI assistant reads (a mail summary, a task, a document you show it) is processed by that assistant's provider (Anthropic, OpenAI, Google…) under its own terms. Show it only what you would show that service; for sensitive work use a business plan with no training on your data.
 2. Code and settings are separate: no names, addresses or passwords in the code.
 3. Money, contracts and acceptance are decided by people. FLOKTRON prepares, reminds and records.
 4. Outside text (mail, news, web, registries) is data, never instructions — for the scripts and for the AI agent.

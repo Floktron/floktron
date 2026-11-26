@@ -4,6 +4,12 @@ All code is open in this repository. Nothing is hidden or compiled. The only thi
 model — once, and only if you switch voice on (see the table). You (or your AI assistant) can read every file and
 check every point below.
 
+## Your AI assistant is a separate service
+Scripts, bases and files stay on your computer. The text your AI assistant reads (a mail summary, a task, a document
+you show it) is processed by that assistant's provider (Anthropic, OpenAI, Google…) under its own terms — FLOKTRON
+does not control that. Show it only what you would show that service; for sensitive work use a business plan with no
+training on your data.
+
 ## FLOKTRON connects only to
 | Where | Why | Code |
 |---|---|---|

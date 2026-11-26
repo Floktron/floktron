@@ -2,6 +2,18 @@
 
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
+Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
+
+## 0.33.1 — 26.11.2026 · clear status and honest notes
+- Status line: "in daily use in an operating company since October 2026 · public since November 2026" instead of
+  "early preview — open for testing" (FLOKTRON has run a real company every day since October; outside reviewers read
+  the old line as "not tested yet").
+- README: project history table (2026-10-10 → 2026-11-22).
+- README "Head" row: used every day with Claude; other assistants follow the same instructions but are not tested to the
+  same depth yet — start with the safe first test.
+- README principles and docs/TRANSPARENCY.md: the text your AI assistant reads is processed by that assistant's
+  provider under its own terms.
+- Text only, no code change.
 
 ## 0.33.0 — 26.11.2026 · industry packs for all six fields
 - Three more ready radar starts, same format as the others, 24 keywords each in LV, RU, EN, public sources, registry
