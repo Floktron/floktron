@@ -12,7 +12,8 @@ Project started 2026-10-10 (first ray in production in an operating company); pu
   from settings accept only `http(s)://` (no `file://`); supply-watch pages over 5 MB are cut; SHA-1 ids marked
   `usedforsecurity=False`; every GitHub Action pinned to a full commit hash. Bandit: 0 high, 0 medium left; pip-audit:
   no known vulnerabilities. Details and the low findings that stay on purpose: docs/SECURITY_SCANS.md.
-- New test file `tests/test_scan_fixes.py` (9 tests) keeps these fixes in place.
+- New test file `tests/test_scan_fixes.py` (9 tests) keeps these fixes in place. CONTRIBUTING.md: a test with every
+  new feature or fix, fictional data only, security checks green.
 
 ## 0.33.4 — 26.11.2026 · licence in plain words
 - README: the one-line licence note becomes a short "Licence in plain words" block — what is free, what needs a
