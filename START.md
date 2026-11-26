@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.32.0. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.32.1. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -143,7 +143,7 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.32.0 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.32.1 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 **Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company.
@@ -454,7 +454,12 @@ Name (company, team or the person), country (LV / LT / EE / other — public hol
 
 ## 2. Mailbox — a separate one for FLOKTRON
 Recommend a new mailbox only for FLOKTRON (e.g. `company.floktron@gmail.com`), not the person's main one.
-Options: Gmail · Outlook/Microsoft 365 · Proton (paid, needs Bridge on an always-on computer) · other.
+Options: Gmail (free) · Proton (paid plan only) · any other IMAP/SMTP server. Ask before anything else:
+- *Proton?* Ask whether their Proton plan is **paid**. Proton Mail Bridge comes only with paid plans (for example
+  Mail Plus) and must run on an always-on computer. A free Proton account cannot be used — say so plainly and offer Gmail.
+- *Outlook / Microsoft 365?* Not supported yet: Microsoft no longer lets outside programs sign in with a password, and
+  FLOKTRON does not have the Microsoft sign-in yet. Say so plainly and offer a separate Gmail mailbox (or paid Proton).
+Cheapest working choice: a separate Gmail mailbox, 0 €. Costs per month: `docs/REQUIREMENTS.md` §2.
 For Gmail follow `docs/GMAIL_TEST.md` (2-step verification → app password).
 The password is typed by the person into the environment variable `FLOKTRON_MAIL_PASSWORD` or the system keychain —
 never into the chat, never into a file.
@@ -1539,7 +1544,7 @@ mail_watch:
   first_days: 30            # the first run reads 30 days back; later runs 4 days
 ```
 
-It uses the mailbox of the `mail` section (Proton Mail Bridge, Gmail, Outlook or any IMAP server) — the same
+It uses the mailbox of the `mail` section (Proton Mail Bridge, Gmail or any IMAP server; Outlook not yet) — the same
 password, never stored in the file. It runs by itself after every reply collection (every 30 minutes) once
 `enabled: true`; by hand: `python3 scripts/run.py mail`. Trial run: `python3 scripts/mail_watch.py --dry-run` shows every message with its category and
 writes nothing.

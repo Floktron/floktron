@@ -67,7 +67,7 @@ mail_watch:
   first_days: 30            # the first run reads 30 days back; later runs 4 days
 ```
 
-It uses the mailbox of the `mail` section (Proton Mail Bridge, Gmail, Outlook or any IMAP server) — the same
+It uses the mailbox of the `mail` section (Proton Mail Bridge, Gmail or any IMAP server; Outlook not yet) — the same
 password, never stored in the file. It runs by itself after every reply collection (every 30 minutes) once
 `enabled: true`; by hand: `python3 scripts/run.py mail`. Trial run: `python3 scripts/mail_watch.py --dry-run` shows every message with its category and
 writes nothing.

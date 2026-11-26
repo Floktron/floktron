@@ -3,6 +3,18 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.32.1 — 26.11.2026 · honest about mail: which mailbox works and what it costs
+- Outlook / Microsoft 365 is marked **not supported yet**: Microsoft no longer lets outside programs sign in with a
+  password (Outlook.com since 16.09.2024), and FLOKTRON does not have the Microsoft sign-in yet. The setup wizard says
+  so and offers a separate Gmail mailbox. Earlier docs listed Outlook as working — that was wrong.
+- A free Proton account does not work: Proton Mail Bridge comes only with paid Proton plans. The wizard now asks
+  whether the Proton plan is paid before anything else; `docs/REQUIREMENTS.md` says it plainly and lists Proton Mail
+  Plus and Proton Unlimited with their public prices.
+- When a mailbox refuses the connection, `scripts/mail/read.py` and `send.py` add one plain sentence: why, and what to
+  take instead (`hint()` in `mail/send.py`, tests in `tests/test_mail_hints.py`).
+- Website: floktron.com/xx/about/ gets "Our recommended set" (Proton Mail, Drive, Pass, Cloudflare — any other
+  combination works too) and the cheapest working setup per month.
+
 ## 0.32.0 — 26.11.2026 · what it needs and what it costs a month
 - `docs/REQUIREMENTS.md` rewritten: the computer per variant (text only · computer voice · voice reports turned into
   text on this computer · live cloud voice) and every monthly payment to outside services with the public price and

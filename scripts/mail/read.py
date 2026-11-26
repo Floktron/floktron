@@ -4,7 +4,7 @@
 Providers (config.yaml → mail.provider), same names as mail/send.py:
     proton_bridge  127.0.0.1:1143, STARTTLS, folders "All Mail", "Spam"
     gmail          imap.gmail.com:993, SSL, folders INBOX, "[Gmail]/Spam" — needs an app password
-    outlook        outlook.office365.com:993, SSL, folders INBOX, Junk
+    outlook        outlook.office365.com:993, SSL, folders INBOX, Junk — not working yet (see mail/send.py)
     smtp           any server: set imap_host / imap_port yourself
 The password is taken the same way as for sending (environment variable or macOS Keychain).
 """
@@ -14,7 +14,7 @@ import imaplib
 import os
 import ssl
 
-from mail.send import MailError, _password
+from mail.send import MailError, _password, with_hint
 
 PRESETS = {
     "proton_bridge": {"host": "127.0.0.1", "port": 1143, "ssl": False, "self_signed": True,
@@ -49,7 +49,7 @@ def from_imap(mail_cfg, days=2, marker="FLOKTRON#"):
             M.starttls(ssl_context=ctx)
         M.login(user, _password(mail_cfg))
     except Exception as e:
-        raise MailError(f"Cannot open mailbox {host}:{port} — {e}") from e
+        raise MailError(with_hint(f"Cannot open mailbox {host}:{port} — {e}", mail_cfg)) from e
     since = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%d-%b-%Y")
     seen = set()
     try:
@@ -92,7 +92,7 @@ def all_messages(mail_cfg, folders, days=60):
             M.starttls(ssl_context=ctx)
         M.login(mail_cfg.get("user") or "", _password(mail_cfg))
     except Exception as e:
-        raise MailError(f"Cannot open mailbox {host}:{port} — {e}") from e
+        raise MailError(with_hint(f"Cannot open mailbox {host}:{port} — {e}", mail_cfg)) from e
     since = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%d-%b-%Y")
     try:
         for box in folders:
@@ -139,7 +139,7 @@ def with_flags(mail_cfg, boxes, days=4, skip_ids=()):
             M.starttls(ssl_context=ctx)
         M.login(mail_cfg.get("user") or "", _password(mail_cfg))
     except Exception as e:
-        raise MailError(f"Cannot open mailbox {host}:{port} — {e}") from e
+        raise MailError(with_hint(f"Cannot open mailbox {host}:{port} — {e}", mail_cfg)) from e
     since = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%d-%b-%Y")
     skip = set(skip_ids)
     try:

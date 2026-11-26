@@ -4,7 +4,7 @@
 |---|---|---|
 | F1 Stabilise | Nov–Dec 2026 | Button replies with context; automatic routing of replies; "no reaction" tracking; client follow-up reminders |
 | F2 Media radar | Q1 2027 | TV/radio/podcast schedules and guest announcements LV/LT/EE; parliament/committee agendas; questions for live shows |
-| F3 Mail hub | Q1 2027 | Mail adapters: Proton (Bridge), Gmail, Outlook/M365, generic IMAP |
+| F3 Mail hub | Q1 2027 | Mail adapters: Proton (Bridge), Gmail, generic IMAP — done; Outlook/M365 needs the Microsoft sign-in (OAuth), planned |
 | F4 Operations core | Q1–Q2 2027 | Stock, orders, purchase thresholds, rentals; supplier invoices from the mailbox (invoice check done in 0.18.0) |
 | F5 Test package | from Dec 2026 (closed) | Private repository, config wizard, install guide (EN), invited testers |
 | F3.5 Telegram | **done 19.11.2026 (0.11.0)** | Lead bot (YAML dialog, sources, funnel), channel watch, autostart — docs/TELEGRAM.md |
