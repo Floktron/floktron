@@ -8,7 +8,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.34.0. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.35.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -136,7 +136,7 @@ Status: in daily use in an operating company since October 2026, public since No
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.34.0 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.35.0 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
@@ -164,7 +164,7 @@ Your team can **report by voice** — the bot turns a voice message into text on
 **Move in one archive — to another computer or another AI assistant**: one button packs the whole setup — settings without passwords, bases, company library, your own prompts and roles, the schedule, a one-page company context for any assistant — into one AES-256 password-protected file; on the new computer any AI assistant unpacks it, checks every file and walks you through the passwords to type again. From Gemini to Claude, from Mac to Windows, or a handover to a new manager without people's contacts. The same archive every week is your backup ([MOVE](docs/MOVE.md)).
 **New versions — you know the same day what was fixed**: once a day FLOKTRON looks at its own public release list on GitHub and tells the manager — by e-mail and in the bot — when a newer version is out and what it fixes; *"update FLOKTRON"* to your assistant makes a backup first and keeps your settings and data. Nobody collects your contacts for this, no advertising, one message per version; switch it off with one line ([UPDATES](docs/UPDATES.md)).
 **Ready AI roles**: set FLOKTRON up as the **AI secretary** (mail, calendar, follow-ups, documents, invoices) or the **AI operations director** (morning tasks, escalation, radar, supply chain, dashboard) — the same parts, switched on together with the instructions for your assistant; procurement and project coordinator come next ([agents](agents/README.md)).
-**One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone ([DASHBOARD](docs/DASHBOARD.md)).
+**One page shows everything**: a dashboard with what works, what needs you, who confirmed, deadlines and signals — offline, on the computer or the phone; a FLOKTRON icon on the desktop opens it with one double-click ([DASHBOARD](docs/DASHBOARD.md)).
 **Setup ends with a security checkup of your own computer.** Your data stays with you, so you protect it: your assistant
 checks disk encryption, firewall, updates, open network doors, passwords and backups, explains every point in plain words
 and shows where to click — you make each change. At the end the system works and is protected with what your computer
@@ -409,6 +409,7 @@ Text from e-mails, attachments, web pages and Telegram is treated as data, never
 | api.elevenlabs.io — ONLY if you set `telegram.voice.stt_engine` or `tts_engine` to `elevenlabs`, with your own API key. By default voice stays on your computer (local Whisper model, the system voice) | turn a voice report into text / read the audio summary aloud | `scripts/voice.py` |
 | huggingface.co — ONCE, only if you switch voice on with the local engine `faster-whisper` (or openaipublic.azureedge.net with `openai-whisper`) | the speech model is downloaded one time ("small" ≈ 460 MB) and kept on your computer; after that speech → text works offline. No voice, text or data is sent | the `faster-whisper` / `openai-whisper` package, called from `scripts/voice.py` |
 | api.github.com — once a day with the morning run, unless you set `updates.check: false` (docs/UPDATES.md) | ask for the list of FLOKTRON releases to tell the manager that a newer version is out; one anonymous request — no account, no ID, nothing about you or your company is sent | `scripts/update_check.py` |
+| Nothing outside your computer: the desktop icon (only if you make it) opens your own local `data/dashboard.html` (a `file://` page) in your default browser | open the dashboard with one double-click | `scripts/desktop_icon.py` |
 | Latvian open data portal data.gov.lv (only if you switch the registry on) | new companies by words in the name | `scripts/registry_lv.py` |
 | data.gov.lv public procurement results (EIS) and the register (only if you switch prospects on) | who has just signed a contract of the kind you serve; form, town, registration date of those companies | `scripts/registry_lv.py` (used by `scripts/prospects.py`) |
 
@@ -428,7 +429,7 @@ in any other file, or if the model download is missing from this list.
   (`scripts/bot/telegram_bot.py`); for voice (only if you switch it on) `scripts/voice.py` starts the system speech tools `say` and `afconvert` (Mac)
   or `espeak-ng` / `ffmpeg` (Linux) — the local speech model itself runs inside Python; the security checkup starts only the system's own read-only settings tools
   (the list `READ_ONLY_COMMANDS` in `scripts/security_check.py`, guarded by a test) and connects to nothing; the capacity
-  check (`scripts/capacity_check.py`) starts only `sysctl -n hw.memsize` on a Mac to read the memory size.
+  check (`scripts/capacity_check.py`) starts only `sysctl -n hw.memsize` on a Mac to read the memory size. `scripts/desktop_icon.py` starts PowerShell once on Windows, only when you make the desktop icon, to save the shortcut.
 
 ## Check it yourself
 1. Ask your AI assistant: *"Read all files in scripts/ and tell me every place where FLOKTRON connects to the internet
@@ -665,6 +666,8 @@ person's own profile if they post or repost as a person — and write them into 
 `docs/INSTALL.md` for the person's computer (ask before switching on), or the hosted option (support runs it on a
 server). Times in `config.yaml → schedule`. Explain: weekends and holidays are skipped; the computer must be on at
 run times.
+Then offer the **FLOKTRON icon on the desktop**: `python3 scripts/desktop_icon.py` — one double-click refreshes the
+dashboard and opens it in the browser (Mac app, Windows shortcut, Linux entry; `--remove` takes it away; docs/DASHBOARD.md).
 
 ## 11a. Move and backup — the whole setup in one archive — follow `docs/MOVE.md` and `prompts/57_move.md`
 Say: everything set up so far (settings without passwords, bases, library, the company's own prompts and roles, the
@@ -1959,6 +1962,13 @@ no text of other people's messages.
   every text from your data is escaped.
 - **Always fresh**: `scripts/run.py` rebuilds it after every run (collect, morning, news, …); the page re-reads itself every 15 minutes.
   Build by hand: `python3 scripts/run.py dashboard` (or `python3 scripts/dashboard.py`).
+
+## Icon on the desktop — open the dashboard with one double-click
+`python3 scripts/desktop_icon.py` puts a FLOKTRON icon on the desktop: on a Mac `FLOKTRON.app`, on Windows the
+shortcut `FLOKTRON.lnk`, on Linux `floktron.desktop` (also in the applications menu). Double-click it: the dashboard is
+rebuilt from the latest data and opens in your default browser. Nothing is downloaded, nothing keeps running, no admin
+rights. `--remove` takes the icon away; moved the FLOKTRON folder — run the script again. On a Mac, the first time only:
+if the Mac asks, right-click the icon → Open → Open. The page itself also shows the FLOKTRON mark in the browser tab.
 
 ## What you see
 | Block | From |

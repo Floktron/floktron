@@ -346,7 +346,7 @@ CSS = """
 @media (prefers-color-scheme:dark){:root{--ink:#e8edf4;--mut:#9aa6b5;--bg:#0f1724;--card:#182235;--line:#26334a;--okbg:#1d3320;--warnbg:#3a2e17;--badbg:#3b1d1d;--waitbg:#1b2c45}}
 *{box-sizing:border-box}body{margin:0;font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
 a{color:inherit}header{background:var(--main);color:#fff;padding:18px 18px 54px;border-bottom:4px solid var(--acc)}
-.top{display:flex;align-items:center;gap:12px;max-width:1180px;margin:0 auto}.logo{width:38px;height:38px;border-radius:10px;background:var(--acc);display:grid;place-items:center;font-weight:800}
+.top{display:flex;align-items:center;gap:12px;max-width:1180px;margin:0 auto}.logo{width:38px;height:38px;flex:none}.logo svg{display:block;width:38px;height:38px}
 .top h1{font-size:19px;margin:0}.top small{display:block;opacity:.75;font-size:12.5px}.upd{margin-left:auto;text-align:right;font-size:12.5px;opacity:.85}
 main{max-width:1180px;margin:-40px auto 40px;padding:0 14px}
 .hero{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:var(--card);border-radius:18px;padding:18px;box-shadow:0 4px 18px rgba(16,32,64,.10)}
@@ -373,6 +373,11 @@ main{max-width:1180px;margin:-40px auto 40px;padding:0 14px}
 @media (max-width:520px){.kpis{grid-template-columns:1fr 1fr}.rays{grid-template-columns:1fr 1fr;gap:8px}.list li{flex-wrap:wrap}.act{flex-basis:100%;padding-left:19px}}
 """
 
+
+# FLOKTRON mark (assets/brand/floktron-mark.svg): violet tile, white F whose middle bar is a dot
+MARK = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#8B5CF6"/>'
+        '<path d="M17 13h31v10H28v7h-11zM17 30h11v21H17z" fill="#fff"/><circle cx="41" cy="35.5" r="6.5" fill="#fff"/></svg>')
+FAVICON = "data:image/svg+xml," + MARK.replace('"', "'").replace("#", "%23").replace("<", "%3C").replace(">", "%3E")
 
 def esc(s):
     return html.escape(str(s or ""), quote=True)
@@ -450,8 +455,8 @@ def render(D, colors=None):
                   L["today"] if x["days"] == 0 else L["tomorrow"] if x["days"] == 1 else L["days"].format(d=x["days"]) + " · " + x["t"]) for x in D["next"]], L["none_next"])
     return f"""<!DOCTYPE html><html lang="{D['lang']}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="refresh" content="900"><meta name="robots" content="noindex"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; media-src 'self' file:; img-src 'self' data:">
-<title>FLOKTRON · {esc(D['org'])}</title><style>{css}</style></head><body>
-<header><div class="top"><div class="logo">F</div><div><h1>FLOKTRON · {L['title']}</h1><small>{esc(D['org'])}</small></div><div class="upd">{L['upd']}<br><b>{esc(D['updated'])}</b></div></div></header>
+<link rel="icon" href="{FAVICON}"><title>FLOKTRON · {esc(D['org'])}</title><style>{css}</style></head><body>
+<header><div class="top"><div class="logo">{MARK}</div><div><h1>FLOKTRON · {L['title']}</h1><small>{esc(D['org'])}</small></div><div class="upd">{L['upd']}<br><b>{esc(D['updated'])}</b></div></div></header>
 <main><section class="hero">{ring}<div><h2>{head}</h2><p>{sub}</p><div class="chips">{chips}</div>{audio}</div></section><div class="grid">
 <div class="card w8"><h3>⚡ {L['att']}</h3>{lst([li(a['lvl'], esc(a['text']), '', f'<span class=act>{esc(a["act"])}</span>' if a['act'] else '') for a in att[:8]], L['none_att'])}</div>
 <div class="card w4"><h3>📅 {L['next']}</h3>{nxt}</div>
