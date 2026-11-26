@@ -1,0 +1,326 @@
+{
+  "id": "services",
+  "title": {
+    "en": "Business services",
+    "lv": "Pakalpojumi uzņēmumiem",
+    "ru": "Услуги для компаний"
+  },
+  "for": "Companies serving other companies: cleaning, facility management, security, maintenance and repair, installation",
+  "version": "1.0",
+  "note": "A neutral starting set of public keywords and sources. The company adds and removes its own words — nothing here is secret. Write whole words; other endings are found automatically.",
+  "prefix": "SE",
+  "keywords": [
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Tender",
+      "lv": "uzkopšanas pakalpojumu iepirkums",
+      "ru": "тендер на уборку",
+      "en": "cleaning services tender"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Tender",
+      "lv": "apsardzes pakalpojumu iepirkums",
+      "ru": "тендер на охрану",
+      "en": "security services tender"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Tender",
+      "lv": "ēku apsaimniekošanas iepirkums",
+      "ru": "тендер на обслуживание зданий",
+      "en": "facility management tender"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Tender",
+      "lv": "tehniskās apkopes iepirkums",
+      "ru": "тендер на техническое обслуживание",
+      "en": "maintenance services tender"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "jauns biroju centrs",
+      "ru": "новый бизнес-центр",
+      "en": "new office building"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "ārpakalpojums",
+      "ru": "аутсорсинг",
+      "en": "outsourcing"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "Consultation",
+      "lv": "darba aizsardzība",
+      "ru": "охрана труда",
+      "en": "workplace safety"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "Consultation",
+      "lv": "ēku energoefektivitāte",
+      "ru": "энергоэффективность зданий",
+      "en": "building energy efficiency"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "ugunsdrošība",
+      "ru": "пожарная безопасность",
+      "en": "fire safety"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "datu aizsardzība videonovērošana",
+      "ru": "защита данных видеонаблюдение",
+      "en": "CCTV data protection"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "publisko iepirkumu likums",
+      "ru": "закон о госзакупках",
+      "en": "public procurement law"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "A",
+      "signal": "News",
+      "lv": "minimālā alga",
+      "ru": "минимальная зарплата",
+      "en": "minimum wage"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "B",
+      "signal": "News",
+      "lv": "darbaspēka nodokļi",
+      "ru": "налоги на рабочую силу",
+      "en": "labour taxes"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "B",
+      "signal": "News",
+      "lv": "elektroenerģijas cena uzņēmumiem",
+      "ru": "цена электроэнергии для предприятий",
+      "en": "business electricity price"
+    },
+    {
+      "cluster": "People",
+      "priority": "A",
+      "signal": "News",
+      "lv": "darbinieku trūkums",
+      "ru": "нехватка работников",
+      "en": "labour shortage"
+    },
+    {
+      "cluster": "People",
+      "priority": "B",
+      "signal": "News",
+      "lv": "nelegālā nodarbinātība",
+      "ru": "нелегальная занятость",
+      "en": "undeclared work"
+    },
+    {
+      "cluster": "Technology",
+      "priority": "B",
+      "signal": "News",
+      "lv": "viedās ēkas",
+      "ru": "умные здания",
+      "en": "smart buildings"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "A",
+      "signal": "News",
+      "lv": "maksātnespēja pakalpojumu sniedzējs",
+      "ru": "банкротство поставщика услуг",
+      "en": "service provider insolvency"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "B",
+      "signal": "News",
+      "lv": "kavēti maksājumi",
+      "ru": "просроченные платежи",
+      "en": "late payments"
+    },
+    {
+      "cluster": "Funding",
+      "priority": "B",
+      "signal": "Funding",
+      "lv": "ES fondi energoefektivitātei",
+      "ru": "фонды ЕС на энергоэффективность",
+      "en": "EU funds energy efficiency"
+    },
+    {
+      "cluster": "Market",
+      "priority": "B",
+      "signal": "Competitor",
+      "lv": "apsaimniekošanas uzņēmums",
+      "ru": "управляющая компания",
+      "en": "facility management company"
+    },
+    {
+      "cluster": "Market",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "biroju vakance",
+      "ru": "вакантность офисов",
+      "en": "office vacancy"
+    },
+    {
+      "cluster": "Market",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "nekustamā īpašuma tirgus",
+      "ru": "рынок недвижимости",
+      "en": "commercial real estate"
+    },
+    {
+      "cluster": "Events",
+      "priority": "B",
+      "signal": "Event",
+      "lv": "apsaimniekošanas konference",
+      "ru": "конференция по управлению зданиями",
+      "en": "facility management conference"
+    }
+  ],
+  "city_keyword": {
+    "lv": "{city} pakalpojumi uzņēmumiem",
+    "ru": "{city} услуги для бизнеса",
+    "en": "{city} business services"
+  },
+  "sources": [
+    [
+      "Tenders",
+      "EU/EEA",
+      "TED — services",
+      "Service tenders by keywords (cleaning CPV 909, security CPV 797, repair CPV 50)",
+      "Weekly",
+      "https://api.ted.europa.eu/v3/notices/search",
+      "Public API (POST), contract type services",
+      "OK"
+    ],
+    [
+      "Tenders",
+      "LV",
+      "EIS — e-iepirkumi",
+      "Latvian public tenders for services",
+      "Weekly",
+      "https://www.eis.gov.lv",
+      "Browser / open data",
+      "check"
+    ],
+    [
+      "Statistics",
+      "LV",
+      "CSP — wages and services",
+      "Wages and service turnover",
+      "Quarterly",
+      "https://stat.gov.lv",
+      "Browser / open data",
+      "check"
+    ],
+    [
+      "Rules",
+      "LV",
+      "Valsts darba inspekcija — news",
+      "Workplace safety and undeclared work",
+      "Weekly",
+      "https://www.vdi.gov.lv",
+      "Browser",
+      "check"
+    ],
+    [
+      "Rules",
+      "LV",
+      "Iepirkumu uzraudzības birojs — news",
+      "Public procurement rules",
+      "Monthly",
+      "https://www.iub.gov.lv",
+      "Browser",
+      "check"
+    ],
+    [
+      "Statistics",
+      "EU",
+      "Eurostat — labour costs",
+      "Labour cost index by country",
+      "Quarterly",
+      "https://ec.europa.eu/eurostat",
+      "Open data API",
+      "check"
+    ]
+  ],
+  "registry_queries": [
+    {
+      "words": "uzkop;tīrīš;clean;apsaimn;apsard;security;serviss;facility",
+      "goal": "Competitor",
+      "exclude": "",
+      "types": "SIA;AS"
+    },
+    {
+      "words": "nekustam;property;biroj;office;tirdzn;ražoš",
+      "goal": "Client",
+      "exclude": "",
+      "types": "SIA;AS"
+    }
+  ],
+  "watch": [
+    [
+      "Rate",
+      "Minimum wage — country (reference)",
+      "",
+      "wages are the biggest cost of a service company",
+      "minimum wage Latvia",
+      "en",
+      "—",
+      "",
+      "",
+      "",
+      "monthly",
+      "No",
+      "PUBLIC",
+      "example from the services pack"
+    ],
+    [
+      "Price",
+      "Business electricity price (reference)",
+      "",
+      "heating, lighting and machines on contracts",
+      "electricity price business Europe",
+      "en",
+      "—",
+      "",
+      "5",
+      "10",
+      "weekly",
+      "No",
+      "PUBLIC",
+      "example from the services pack"
+    ]
+  ],
+  "questions": [
+    "Which industry? (construction, logistics, wholesale, production, rental, services…)",
+    "Which country and city do you work in?",
+    "Name 3–5 competitors (company names as people write them)."
+  ]
+}

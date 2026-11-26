@@ -1,0 +1,326 @@
+{
+  "id": "production",
+  "title": {
+    "en": "Production",
+    "lv": "Ražošana",
+    "ru": "Производство"
+  },
+  "for": "Manufacturers and workshops: metal, wood, food, plastics, building products, contract manufacturing",
+  "version": "1.0",
+  "note": "A neutral starting set of public keywords and sources. The company adds and removes its own words — nothing here is secret. Write whole words; other endings are found automatically.",
+  "prefix": "PR",
+  "keywords": [
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Tender",
+      "lv": "piegādes iepirkums ražošana",
+      "ru": "тендер на поставку продукции",
+      "en": "manufacturing supply tender"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Demand",
+      "lv": "rūpnieciskās ražošanas apjoms",
+      "ru": "объём промышленного производства",
+      "en": "industrial production"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "apstrādes rūpniecība eksports",
+      "ru": "экспорт обрабатывающей промышленности",
+      "en": "manufacturing exports"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "jauna rūpnīca",
+      "ru": "новый завод",
+      "en": "new factory"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "Consultation",
+      "lv": "darba aizsardzība ražošanā",
+      "ru": "охрана труда на производстве",
+      "en": "workplace safety manufacturing"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "Consultation",
+      "lv": "CE marķējums",
+      "ru": "маркировка CE",
+      "en": "CE marking"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "mašīnu regula",
+      "ru": "регламент о машинах",
+      "en": "Machinery Regulation"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "rūpnieciskās emisijas",
+      "ru": "промышленные выбросы",
+      "en": "industrial emissions"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "CBAM",
+      "ru": "CBAM",
+      "en": "CBAM"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "ilgtspējas ziņošana",
+      "ru": "отчётность об устойчивости",
+      "en": "sustainability reporting"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "A",
+      "signal": "News",
+      "lv": "elektroenerģijas cena uzņēmumiem",
+      "ru": "цена электроэнергии для предприятий",
+      "en": "industrial electricity price"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "A",
+      "signal": "News",
+      "lv": "izejvielu cenas",
+      "ru": "цены на сырьё",
+      "en": "raw material prices"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "B",
+      "signal": "News",
+      "lv": "tērauda cena",
+      "ru": "цена стали",
+      "en": "steel price"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "B",
+      "signal": "News",
+      "lv": "ražotāju cenas",
+      "ru": "цены производителей",
+      "en": "producer prices"
+    },
+    {
+      "cluster": "People",
+      "priority": "A",
+      "signal": "News",
+      "lv": "darbinieku trūkums ražošanā",
+      "ru": "нехватка работников на производстве",
+      "en": "factory labour shortage"
+    },
+    {
+      "cluster": "People",
+      "priority": "B",
+      "signal": "News",
+      "lv": "minimālā alga",
+      "ru": "минимальная зарплата",
+      "en": "minimum wage"
+    },
+    {
+      "cluster": "Technology",
+      "priority": "B",
+      "signal": "News",
+      "lv": "automatizācija ražošanā",
+      "ru": "автоматизация производства",
+      "en": "factory automation"
+    },
+    {
+      "cluster": "Quality",
+      "priority": "B",
+      "signal": "News",
+      "lv": "produktu atsaukšana",
+      "ru": "отзыв продукции",
+      "en": "product recall"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "A",
+      "signal": "News",
+      "lv": "piegādes ķēdes traucējumi",
+      "ru": "сбои цепочки поставок",
+      "en": "supply chain disruption"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "B",
+      "signal": "News",
+      "lv": "ražotāja maksātnespēja",
+      "ru": "банкротство производителя",
+      "en": "manufacturer insolvency"
+    },
+    {
+      "cluster": "Funding",
+      "priority": "A",
+      "signal": "Funding",
+      "lv": "ES fondi ražošanai",
+      "ru": "фонды ЕС для производства",
+      "en": "EU funds manufacturing"
+    },
+    {
+      "cluster": "Funding",
+      "priority": "B",
+      "signal": "Funding",
+      "lv": "investīciju atbalsts iekārtām",
+      "ru": "поддержка инвестиций в оборудование",
+      "en": "equipment investment grant"
+    },
+    {
+      "cluster": "Market",
+      "priority": "B",
+      "signal": "Competitor",
+      "lv": "līgumražošana",
+      "ru": "контрактное производство",
+      "en": "contract manufacturing"
+    },
+    {
+      "cluster": "Events",
+      "priority": "B",
+      "signal": "Event",
+      "lv": "rūpniecības izstāde",
+      "ru": "промышленная выставка",
+      "en": "industrial fair"
+    }
+  ],
+  "city_keyword": {
+    "lv": "{city} ražošana",
+    "ru": "{city} производство",
+    "en": "{city} manufacturing"
+  },
+  "sources": [
+    [
+      "Tenders",
+      "EU/EEA",
+      "TED — supplies",
+      "Supply tenders by keywords",
+      "Weekly",
+      "https://api.ted.europa.eu/v3/notices/search",
+      "Public API (POST), contract type supplies",
+      "OK"
+    ],
+    [
+      "Statistics",
+      "LV",
+      "CSP — industrial production",
+      "Monthly production volume and producer prices",
+      "Monthly",
+      "https://stat.gov.lv",
+      "Browser / open data",
+      "check"
+    ],
+    [
+      "Statistics",
+      "EU",
+      "Eurostat — industrial production",
+      "Monthly production index by country",
+      "Monthly",
+      "https://ec.europa.eu/eurostat",
+      "Open data API",
+      "check"
+    ],
+    [
+      "Rules",
+      "LV",
+      "Valsts darba inspekcija — news",
+      "Workplace safety checks and rules",
+      "Weekly",
+      "https://www.vdi.gov.lv",
+      "Browser",
+      "check"
+    ],
+    [
+      "Recalls",
+      "EU",
+      "Safety Gate (EU rapid alert)",
+      "Dangerous non-food products",
+      "Weekly",
+      "https://ec.europa.eu/safety-gate",
+      "Browser",
+      "check"
+    ],
+    [
+      "Funding",
+      "LV",
+      "LIAA — support programmes",
+      "Grants and programmes for companies",
+      "Weekly",
+      "https://www.liaa.gov.lv",
+      "Browser",
+      "check"
+    ]
+  ],
+  "registry_queries": [
+    {
+      "words": "ražoš;rūpn;production;manufact;metāl;kokapstr;fabrik",
+      "goal": "Competitor",
+      "exclude": "",
+      "types": "SIA;AS"
+    },
+    {
+      "words": "būv;tirdzn;trade;distrib;horeca",
+      "goal": "Client",
+      "exclude": "",
+      "types": "SIA;AS"
+    }
+  ],
+  "watch": [
+    [
+      "Price",
+      "Industrial electricity price (reference)",
+      "",
+      "energy is a big cost of every line",
+      "electricity price industry Europe",
+      "en",
+      "—",
+      "",
+      "5",
+      "10",
+      "weekly",
+      "No",
+      "PUBLIC",
+      "example from the production pack"
+    ],
+    [
+      "Price",
+      "Steel — reference price",
+      "",
+      "raw material cost",
+      "steel price Europe",
+      "en",
+      "—",
+      "",
+      "5",
+      "10",
+      "weekly",
+      "No",
+      "PUBLIC",
+      "example from the production pack"
+    ]
+  ],
+  "questions": [
+    "Which industry? (construction, logistics, wholesale, production, rental, services…)",
+    "Which country and city do you work in?",
+    "Name 3–5 competitors (company names as people write them)."
+  ]
+}

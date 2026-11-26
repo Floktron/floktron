@@ -1,0 +1,326 @@
+{
+  "id": "rental",
+  "title": {
+    "en": "Equipment rental",
+    "lv": "Tehnikas noma",
+    "ru": "Прокат техники"
+  },
+  "for": "Rental of construction machinery, tools, scaffolding, generators, cabins and vehicles",
+  "version": "1.0",
+  "note": "A neutral starting set of public keywords and sources. The company adds and removes its own words — nothing here is secret. Write whole words; other endings are found automatically.",
+  "prefix": "RE",
+  "keywords": [
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Tender",
+      "lv": "tehnikas nomas iepirkums",
+      "ru": "тендер на аренду техники",
+      "en": "equipment hire tender"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Demand",
+      "lv": "būvtehnikas noma",
+      "ru": "аренда строительной техники",
+      "en": "construction equipment rental"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "A",
+      "signal": "Demand",
+      "lv": "lielie būvprojekti",
+      "ru": "крупные стройпроекты",
+      "en": "major construction projects"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "sastatņu noma",
+      "ru": "аренда лесов",
+      "en": "scaffolding rental"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "ģeneratoru noma",
+      "ru": "аренда генераторов",
+      "en": "generator rental"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "pasākumu tehnika",
+      "ru": "техника для мероприятий",
+      "en": "event equipment"
+    },
+    {
+      "cluster": "Demand",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "ceļu būvdarbi",
+      "ru": "дорожные работы",
+      "en": "road works"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "A",
+      "signal": "Consultation",
+      "lv": "celtņu tehniskā uzraudzība",
+      "ru": "технический надзор кранов",
+      "en": "lifting equipment inspection"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "bīstamās iekārtas",
+      "ru": "опасное оборудование",
+      "en": "hazardous equipment"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "traktortehnikas reģistrācija",
+      "ru": "регистрация тракторной техники",
+      "en": "machinery registration"
+    },
+    {
+      "cluster": "Rules",
+      "priority": "B",
+      "signal": "Consultation",
+      "lv": "emisiju normas būvtehnikai",
+      "ru": "нормы выбросов для техники",
+      "en": "non-road machinery emissions"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "A",
+      "signal": "News",
+      "lv": "degvielas cenas",
+      "ru": "цены на топливо",
+      "en": "diesel prices"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "B",
+      "signal": "News",
+      "lv": "līzinga procentu likmes",
+      "ru": "ставки лизинга",
+      "en": "leasing interest rates"
+    },
+    {
+      "cluster": "Costs",
+      "priority": "B",
+      "signal": "News",
+      "lv": "lietotas tehnikas cenas",
+      "ru": "цены на б/у технику",
+      "en": "used machinery prices"
+    },
+    {
+      "cluster": "Technology",
+      "priority": "B",
+      "signal": "News",
+      "lv": "elektriskā būvtehnika",
+      "ru": "электрическая строительная техника",
+      "en": "electric construction machinery"
+    },
+    {
+      "cluster": "Technology",
+      "priority": "B",
+      "signal": "News",
+      "lv": "telemātika tehnikai",
+      "ru": "телематика для техники",
+      "en": "machine telematics"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "A",
+      "signal": "News",
+      "lv": "tehnikas zādzība",
+      "ru": "кража техники",
+      "en": "equipment theft"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "B",
+      "signal": "News",
+      "lv": "neapmaksāti nomas rēķini",
+      "ru": "неоплаченные счета за аренду",
+      "en": "unpaid rental invoices"
+    },
+    {
+      "cluster": "Risk",
+      "priority": "B",
+      "signal": "News",
+      "lv": "nelaimes gadījums ar celtni",
+      "ru": "несчастный случай с краном",
+      "en": "crane accident"
+    },
+    {
+      "cluster": "Market",
+      "priority": "A",
+      "signal": "Competitor",
+      "lv": "nomas uzņēmums",
+      "ru": "прокатная компания",
+      "en": "rental company"
+    },
+    {
+      "cluster": "Market",
+      "priority": "B",
+      "signal": "Demand",
+      "lv": "tehnikas nomas tirgus",
+      "ru": "рынок аренды техники",
+      "en": "equipment rental market"
+    },
+    {
+      "cluster": "Funding",
+      "priority": "B",
+      "signal": "Funding",
+      "lv": "ES fondi infrastruktūrai",
+      "ru": "фонды ЕС на инфраструктуру",
+      "en": "EU funds infrastructure"
+    },
+    {
+      "cluster": "Infrastructure",
+      "priority": "A",
+      "signal": "News",
+      "lv": "Rail Baltica",
+      "ru": "Rail Baltica",
+      "en": "Rail Baltica"
+    },
+    {
+      "cluster": "Events",
+      "priority": "B",
+      "signal": "Event",
+      "lv": "būvtehnikas izstāde",
+      "ru": "выставка строительной техники",
+      "en": "construction machinery fair"
+    }
+  ],
+  "city_keyword": {
+    "lv": "{city} tehnikas noma",
+    "ru": "{city} аренда техники",
+    "en": "{city} equipment rental"
+  },
+  "sources": [
+    [
+      "Tenders",
+      "EU/EEA",
+      "TED — hire of machinery (CPV 45500000)",
+      "Hire of construction machinery with operator, by keywords",
+      "Weekly",
+      "https://api.ted.europa.eu/v3/notices/search",
+      "Public API (POST), CPV 455*",
+      "OK"
+    ],
+    [
+      "Registry",
+      "LV",
+      "BIS — Būvniecības informācijas sistēma",
+      "Building permits: where machinery will be needed",
+      "Weekly",
+      "https://bis.gov.lv",
+      "Browser",
+      "check"
+    ],
+    [
+      "Statistics",
+      "LV",
+      "CSP — construction output",
+      "Construction volume by quarter",
+      "Quarterly",
+      "https://stat.gov.lv",
+      "Browser / open data",
+      "check"
+    ],
+    [
+      "Rules",
+      "LV",
+      "Patērētāju tiesību aizsardzības centrs — bīstamās iekārtas",
+      "Inspection rules for lifting equipment",
+      "Monthly",
+      "https://www.ptac.gov.lv",
+      "Browser",
+      "check"
+    ],
+    [
+      "Rules",
+      "LV",
+      "Valsts tehniskās uzraudzības aģentūra — news",
+      "Machinery registration and checks",
+      "Monthly",
+      "https://www.vtua.gov.lv",
+      "Browser",
+      "check"
+    ],
+    [
+      "Statistics",
+      "EU",
+      "Eurostat — production in construction",
+      "Monthly construction index by country",
+      "Monthly",
+      "https://ec.europa.eu/eurostat",
+      "Open data API",
+      "check"
+    ]
+  ],
+  "registry_queries": [
+    {
+      "words": "noma;rent;hire;tehnik;sastat;celtņ",
+      "goal": "Competitor",
+      "exclude": "",
+      "types": "SIA;AS"
+    },
+    {
+      "words": "būv;celtn;ceļu;renov;pasākum;event",
+      "goal": "Client",
+      "exclude": "",
+      "types": "SIA;AS"
+    }
+  ],
+  "watch": [
+    [
+      "Price",
+      "Diesel — EU weekly price (reference)",
+      "",
+      "fuel in the machines and on delivery",
+      "diesel price Europe",
+      "en",
+      "—",
+      "",
+      "5",
+      "10",
+      "weekly",
+      "No",
+      "PUBLIC",
+      "example from the rental pack"
+    ],
+    [
+      "Rate",
+      "Euro area interest rate (reference)",
+      "",
+      "leasing cost of new machines",
+      "ECB interest rate",
+      "en",
+      "—",
+      "",
+      "",
+      "",
+      "weekly",
+      "No",
+      "PUBLIC",
+      "example from the rental pack"
+    ]
+  ],
+  "questions": [
+    "Which industry? (construction, logistics, wholesale, production, rental, services…)",
+    "Which country and city do you work in?",
+    "Name 3–5 competitors (company names as people write them)."
+  ]
+}
