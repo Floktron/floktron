@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.32.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.33.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -143,14 +143,14 @@ Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, 
 # FLOKTRON (working name)
 
 > **Status: early preview — open for testing, supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.32.1 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.33.0 · last update 26.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 **Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company.
 
 AI-assisted operations system for companies. Built for the owner or manager who runs teams, production and processes — departments, crews, sites, a fleet, a workshop — and wants to see it all in one place. B2B fields: construction, logistics and haulage, production, equipment rental, wholesale, services.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
-Every morning each department gets its tasks; people answer with one button; blocked work goes up the chain to whoever decides; the manager sees progress. A radar watches news, public consultations and search demand by the company's own keywords — with a ready start for your industry (construction, logistics, wholesale), editable in the table or from Telegram ([industry packs](docs/INDUSTRY_PACKS.md)).
+Every morning each department gets its tasks; people answer with one button; blocked work goes up the chain to whoever decides; the manager sees progress. A radar watches news, public consultations and search demand by the company's own keywords — with a ready start for your industry (construction, logistics, wholesale, production, equipment rental, business services), editable in the table or from Telegram ([industry packs](docs/INDUSTRY_PACKS.md)).
 Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) shows your day in the morning message, and due dates come as a calendar file you add with one tap ([CALENDAR](docs/CALENDAR.md)).
 A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big producers, listed companies, freight routes, reference prices and currencies — it speaks up only when something moves ([SUPPLY_CHAIN](docs/SUPPLY_CHAIN.md)).
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
@@ -176,7 +176,7 @@ checks disk encryption, firewall, updates, open network doors, passwords and bac
 and shows where to click — you make each change. At the end the system works and is protected with what your computer
 already has; your own antivirus can be added on top ([SECURITY_CHECKUP](docs/SECURITY_CHECKUP.md)).
 
-**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 19 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, breath and ready roles, move in one click, new versions, industry keyword packs, a safe first test, what else can be plugged in. Other languages: [floktron.com](https://floktron.com/en/).
+**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 21 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, breath and ready roles, move in one click, new versions, industry keyword packs, FLOKTRON for each of the six industries, a safe first test, what else can be plugged in. Other languages: [floktron.com](https://floktron.com/en/).
 
 ## Before you install — a safe first test
 
@@ -1795,6 +1795,9 @@ and adds its own words. Nothing in a pack is secret and nothing is sent anywhere
 | `construction` | builders, finishing and renovation crews, building-material suppliers, construction services | 24 (10 every run, 14 first run of the month) | LV, RU, EN |
 | `logistics` | road haulage, freight forwarding, warehousing, courier and last-mile companies | 24 (9 every run, 15 first run of the month) | LV, RU, EN |
 | `wholesale` | wholesalers and distributors: food, building materials, equipment, consumables | 24 (9 every run, 15 first run of the month) | LV, RU, EN |
+| `production` | manufacturers and workshops: metal, wood, food, plastics, building products, contract manufacturing | 24 (9 every run, 15 first run of the month) | LV, RU, EN |
+| `rental` | rental of construction machinery, tools, scaffolding, generators, cabins and vehicles | 24 (8 every run, 16 first run of the month) | LV, RU, EN |
+| `services` | companies serving other companies: cleaning, facility management, security, maintenance and repair | 24 (8 every run, 16 first run of the month) | LV, RU, EN |
 
 A company in two industries can apply two packs — every pack has its own IDs, nothing is added twice. A pack for another industry: copy `construction.json`, change the words, keep the format.
 

@@ -3,6 +3,21 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.33.0 — 26.11.2026 · industry packs for all six fields
+- Three more ready radar starts, same format as the others, 24 keywords each in LV, RU, EN, public sources, registry
+  queries and two supply-chain examples (off until switched on):
+  `templates/industry/production.json` (manufacturers and workshops — supply tenders, CE marking, Machinery Regulation,
+  industrial emissions, CBAM, energy and raw material prices, labour shortage, automation, EU funds),
+  `templates/industry/rental.json` (machinery, scaffolding, generators — hire tenders, lifting-equipment inspection,
+  machinery registration, diesel and leasing rates, used machinery prices, telematics, equipment theft) and
+  `templates/industry/services.json` (cleaning, facility management, security, maintenance — service tenders,
+  workplace and fire safety, CCTV data protection, minimum wage and labour taxes, building energy efficiency).
+- Every field FLOKTRON is built for now has its own pack: construction, logistics, wholesale, production, equipment
+  rental, business services. All six apply to one radar without clashes.
+- `docs/FLOKTRON_overview.pdf` = overview 1.24 (21 pages): new page 18 "FLOKTRON in your company" — the six
+  industries side by side; the mail row now says Gmail only (Outlook is not supported yet, see 0.32.1). 9 languages on
+  floktron.com, where the home page has a switch with the same six industries.
+
 ## 0.32.1 — 26.11.2026 · honest about mail: which mailbox works and what it costs
 - Outlook / Microsoft 365 is marked **not supported yet**: Microsoft no longer lets outside programs sign in with a
   password (Outlook.com since 16.09.2024), and FLOKTRON does not have the Microsoft sign-in yet. The setup wizard says

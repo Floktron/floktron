@@ -11,6 +11,9 @@ and adds its own words. Nothing in a pack is secret and nothing is sent anywhere
 | `construction` | builders, finishing and renovation crews, building-material suppliers, construction services | 24 (10 every run, 14 first run of the month) | LV, RU, EN |
 | `logistics` | road haulage, freight forwarding, warehousing, courier and last-mile companies | 24 (9 every run, 15 first run of the month) | LV, RU, EN |
 | `wholesale` | wholesalers and distributors: food, building materials, equipment, consumables | 24 (9 every run, 15 first run of the month) | LV, RU, EN |
+| `production` | manufacturers and workshops: metal, wood, food, plastics, building products, contract manufacturing | 24 (9 every run, 15 first run of the month) | LV, RU, EN |
+| `rental` | rental of construction machinery, tools, scaffolding, generators, cabins and vehicles | 24 (8 every run, 16 first run of the month) | LV, RU, EN |
+| `services` | companies serving other companies: cleaning, facility management, security, maintenance and repair | 24 (8 every run, 16 first run of the month) | LV, RU, EN |
 
 A company in two industries can apply two packs — every pack has its own IDs, nothing is added twice. A pack for another industry: copy `construction.json`, change the words, keep the format.
 

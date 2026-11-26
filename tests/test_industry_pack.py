@@ -28,7 +28,7 @@ def radar(tmp_path, langs=("lv", "ru", "en")):
 
 def test_every_pack_is_complete():
     packs = ip.list_packs()
-    assert any(p["id"] == "construction" for p in packs)
+    assert {p["id"] for p in packs} >= {"construction", "logistics", "wholesale", "production", "rental", "services"}
     for p in packs:
         assert p["prefix"] and len(p["questions"]) == 3
         for k in p["keywords"]:

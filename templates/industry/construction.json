@@ -49,7 +49,7 @@
     ["Price", "Steel (rebar) — reference", "", "reinforcement cost", "rebar prices Europe", "en", "—", "", "", "", "weekly", "No", "PUBLIC", "example from the construction pack"]
   ],
   "questions": [
-    "Which industry? (construction, logistics, wholesale…)",
+    "Which industry? (construction, logistics, wholesale, production, rental, services…)",
     "Which country and city do you work in?",
     "Name 3–5 competitors (company names as people write them)."
   ]
