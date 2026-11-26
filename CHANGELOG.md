@@ -4,6 +4,12 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.33.2 — 26.11.2026 · a month of mail in numbers
+- README "Runs in a real company": numbers from the company where FLOKTRON runs (November 2026) — about 30–45 letters
+  a day through paid Proton Mail via Bridge (read-only), about 5 % of incoming letters needed a person, 143 staff
+  replies with one button, 1,333 automatic runs without a failure. Full case on floktron.com/xx/about/#keis-pochta.
+- Text only, no code change.
+
 ## 0.33.1 — 26.11.2026 · clear status and honest notes
 - Status line: "in daily use in an operating company since October 2026 · public since November 2026" instead of
   "early preview — open for testing" (FLOKTRON has run a real company every day since October; outside reviewers read
