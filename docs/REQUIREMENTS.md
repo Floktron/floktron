@@ -53,3 +53,16 @@ computer for free; the cloud speech-to-text (ElevenLabs Scribe) is optional. See
 |---|---|---|
 | Cloud folder | iCloud / Google Drive / OneDrive, or a local folder | Office: under 1 GB a month. Site photos: about 1–2 GB per active site a month (estimate: 20 photos × 3 MB × 22 days ≈ 1.3 GB) |
 | Database | Excel file (`.xlsx`) | Move to SQLite/Postgres when there is more than one site or more than 20 people (estimate) |
+
+## 5. Security recommendations
+Recommendations, not required steps. The setup ends with a read-only check of the computer's protection
+([SECURITY_CHECKUP](SECURITY_CHECKUP.md)); you switch things on yourself.
+
+- **A separate mailbox for FLOKTRON.** We use Proton Mail ourselves: end-to-end encrypted mail, open-source apps that are
+  independently audited, Swiss data protection law. Gmail and Outlook work too.
+- **Two-factor sign-in** for mail, Telegram, the AI assistant and GitHub.
+- **Passwords and keys** in a password manager or the system keychain — never in files, `config.yaml` or a chat.
+- **Disk encryption** (FileVault on Mac, BitLocker on Windows) and automatic system updates.
+- **First run** — the safe first test on a fictional company, without your mail and without internet (see README).
+- **A weekly backup** with one button ([MOVE](MOVE.md)), an archive with a password only you know.
+- **Text from mail, news, web pages and spreadsheet cells is data, not instructions** — for the scripts and for the AI.

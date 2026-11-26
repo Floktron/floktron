@@ -14,6 +14,9 @@ Every change in this repository is also a git commit with date and description �
   file names dropped, names said the way people say them.
 - If the cloud voice fails (no key, no credits, offline), the summary is read with the computer's own voice and still
   arrives on time.
+- `docs/REQUIREMENTS.md` also gives our security recommendations (separate mailbox, two-factor sign-in, keys in the
+  keychain, disk encryption, weekly backup).
+- Website: new page floktron.com/en/about/ in 9 languages — why FLOKTRON was made, what it costs a month, security.
 
 ## 0.31.1 — 26.11.2026 · overview PDF 1.22
 - `docs/FLOKTRON_overview.pdf` = overview 1.22: page 17 now names all three industry packs; versions and tests updated.
