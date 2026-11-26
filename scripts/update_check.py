@@ -99,7 +99,7 @@ def local_version(root=ROOT):
 
 def fetch_releases(timeout=20):
     req = urllib.request.Request(API, headers={"User-Agent": UA, "Accept": "application/vnd.github+json"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
+    with urllib.request.urlopen(req, timeout=timeout) as r:  # nosec B310 - fixed https:// address
         return json.loads(r.read().decode("utf-8"))
 
 

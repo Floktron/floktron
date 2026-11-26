@@ -4,6 +4,17 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.34.0 — 26.11.2026 · automated security checks
+- Free, widely used scanners now run on every change and once a week: OpenSSF Scorecard (public result and badge in
+  README), GitHub CodeQL (`security-extended`, Python and workflow files), Bandit, pip-audit (required and optional
+  packages) and Dependabot (packages and GitHub Actions). These are automated scans, not an independent audit.
+- Fixed what the first run found: feeds that declare XML entities are skipped before parsing; readers that take a link
+  from settings accept only `http(s)://` (no `file://`); supply-watch pages over 5 MB are cut; SHA-1 ids marked
+  `usedforsecurity=False`; every GitHub Action pinned to a full commit hash. Bandit: 0 high, 0 medium left; pip-audit:
+  no known vulnerabilities. Details and the low findings that stay on purpose: docs/SECURITY_SCANS.md.
+- New test file `tests/test_scan_fixes.py` (9 tests) keeps these fixes in place. CONTRIBUTING.md: a test with every
+  new feature or fix, fictional data only, security checks green.
+
 ## 0.33.4 — 26.11.2026 · licence in plain words
 - README: the one-line licence note becomes a short "Licence in plain words" block — what is free, what needs a
   separate agreement, that the name is not licensed, and that each version also becomes Apache 2.0 two years after its

@@ -1,0 +1,7 @@
+# Optional packages a full FLOKTRON setup may install (see requirements.txt comments and docs/).
+# Only pip-audit reads this file (.github/workflows/security.yml); nothing installs it for users.
+pypdf
+reportlab
+pyzipper
+faster-whisper
+tzdata

@@ -166,7 +166,7 @@ class Api:
         req = urllib.request.Request(API.format(token=self.token, method=method), data=data,
                                      headers={"Content-Type": "application/json"})
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as r:
+            with urllib.request.urlopen(req, timeout=self.timeout) as r:  # nosec B310 - fixed https:// address
                 out = json.loads(r.read(2_000_000).decode("utf-8"))
         except urllib.error.HTTPError as e:
             try:
@@ -182,7 +182,7 @@ class Api:
         """Telegram file → local path (voice messages are small .oga files)."""
         info = self.call("getFile", file_id=file_id)
         url = "https://api.telegram.org/file/bot{}/{}".format(self.token, info["file_path"])
-        with urllib.request.urlopen(url, timeout=self.timeout) as r, open(dest, "wb") as f:
+        with urllib.request.urlopen(url, timeout=self.timeout) as r, open(dest, "wb") as f:  # nosec B310 - fixed https:// address
             f.write(r.read(25_000_000))
         return dest
 
@@ -200,7 +200,7 @@ class Api:
         body += f"--{b}--\r\n".encode()
         req = urllib.request.Request(API.format(token=self.token, method=method), data=body,
                                      headers={"Content-Type": f"multipart/form-data; boundary={b}"})
-        with urllib.request.urlopen(req, timeout=max(self.timeout, 120)) as r:
+        with urllib.request.urlopen(req, timeout=max(self.timeout, 120)) as r:  # nosec B310 - fixed https:// address
             out = json.loads(r.read(2_000_000).decode("utf-8"))
         if not out.get("ok"):
             raise BotError(f"{method}: {out.get('description', 'error')}")

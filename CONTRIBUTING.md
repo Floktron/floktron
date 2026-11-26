@@ -15,3 +15,10 @@ By sending a contribution (pull request, patch, text, prompt, template or file) 
 
 Add this line to the pull request description:
 `I agree to the contribution terms in CONTRIBUTING.md.`
+
+## Before you send code
+- Every new feature or fixed bug comes with an automated test in `tests/`; `pytest -q` and `python tests/first_run_smoke.py` must pass.
+- Tests and examples use fictional companies and fictional data only.
+- The security checks must stay green: `pip install -r .github/security-tools.txt`, then `bandit -r scripts -ll` and
+  `pip-audit -r requirements.txt` ([docs/SECURITY_SCANS.md](docs/SECURITY_SCANS.md)). GitHub runs the same checks, plus CodeQL, on every pull request.
+- No new outside package without a reason in the pull request; network code only in the files listed in [docs/TRANSPARENCY.md](docs/TRANSPARENCY.md).

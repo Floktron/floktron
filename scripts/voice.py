@@ -219,7 +219,7 @@ def stt(path, lang=None, engine="auto", model="small"):
                                      {"file": (os.path.basename(path), f.read(), "application/octet-stream")})
         req = urllib.request.Request("https://api.elevenlabs.io/v1/speech-to-text", data=body,
                                      headers={"xi-api-key": _key(), "Content-Type": ctype})
-        with urllib.request.urlopen(req, timeout=180) as r:
+        with urllib.request.urlopen(req, timeout=180) as r:  # nosec B310 - fixed https:// address
             return json.loads(r.read().decode()).get("text", "").strip()
     raise VoiceError(f"unknown speech-to-text engine: {e}")
 
@@ -294,7 +294,7 @@ def _tts_one(e, text, out, lang, voice):
                 f"https://api.elevenlabs.io/v1/text-to-speech/{voice or EL_VOICE}?output_format=mp3_44100_128",
                 data=json.dumps({"text": text, "model_id": "eleven_multilingual_v2"}).encode(),
                 headers={"xi-api-key": _key(), "Content-Type": "application/json"})
-            with urllib.request.urlopen(req, timeout=180) as r, open(raw, "wb") as f:
+            with urllib.request.urlopen(req, timeout=180) as r, open(raw, "wb") as f:  # nosec B310 - fixed https:// address
                 f.write(r.read())
         else:
             raise VoiceError(f"unknown text-to-speech engine: {e}")

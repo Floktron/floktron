@@ -1,0 +1,37 @@
+name: scorecard
+# OpenSSF Scorecard: an independent, automated check of how this repository is kept (branch protection, code review,
+# pinned actions, token permissions, security policy, dependency updates, static analysis …). The result is public at
+# https://scorecard.dev/viewer/?uri=github.com/floktron/floktron and gives the badge in README.md.
+# It is a scan of repository practices, not a security audit of the code.
+on:
+  branch_protection_rule:
+  schedule:
+    - cron: "17 4 * * 1"   # every Monday
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions: read-all
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write   # results go to the Security tab (code scanning)
+      id-token: write          # signs the published result for the badge
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: ossf/scorecard-action@23f22cd43608bae7a1f1fa2603d7314dee9538a5 # v2.6.0
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: scorecard-results
+          path: results.sarif
+          retention-days: 5
+      - uses: github/codeql-action/upload-sarif@915412ff23e8b7659517e607487dbeae018f2934 # v4.39.5
+        with:
+          sarif_file: results.sarif
