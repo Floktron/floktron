@@ -43,6 +43,111 @@ def clean_for_speech(text):
     return re.sub(r"\n{3,}", "\n\n", t).strip()
 
 
+# ---------------------------------------------------------------- text for the ear (0.32)
+MONTHS_RU = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"]
+SAY_AS = {   # how names are SAID (ru); longest first. Unknown Latin words stay as they are.
+    "ru": [("FLOKTRON", "Флоктрон"),
+           ("LinkedIn", "Линкедин"), ("Instagram", "Инстаграм"), ("Facebook", "Фейсбук"), ("TikTok", "Тикток"),
+           ("Telegram", "Телеграм"), ("YouTube", "Ютуб"), ("WhatsApp", "Ватсап"), ("Proton Mail", "Протон"), ("Proton", "Протон"),
+           ("iCloud", "Ай-клауд"), ("Gmail", "Джимейл"), ("Google", "Гугл"), ("e-mail", "имейл"), ("email", "имейл"),
+           ("Stripe", "Страйп"), ("GitHub", "Гитхаб"), ("Mac", "Мак"), ("iPhone", "Айфон"), ("Excel", "Эксель"),
+           ("SIA", "СИА"), ("PVN", "П-В-Н"), ("VAT", "НДС"), ("EUR", "евро"), ("USD", "долларов"), ("PDF", "пэ-дэ-эф"),
+           ("AI", "ИИ"), ("OK", "окей"), ("ok", "окей")],
+}
+CMD_SAY = {"ru": {"pulse": "пульс", "addword": "добавить слово", "delword": "убрать слово", "words": "слова", "client": "клиент",
+                  "backup": "резервная копия", "version": "версия", "start": "старт", "id": "айди", "help": "помощь", "add": "добавить"},
+           "lv": {"pulse": "pulss", "add": "pievienot", "help": "palīdzība"}}
+FILE_WORD = {"ru": "файл", "lv": "fails", "en": "file"}
+WORDS = {"ru": {"eur": ("евро", "евро", "евро"), "usd": ("доллар", "доллара", "долларов"), "pct": ("процент", "процента", "процентов"),
+                "cent": ("цент", "цента", "центов"), "plus": "плюс", "no": "номер", "and": "и", "from": "с", "to": "до", "or": "или",
+                "x": "Икс", "deg": ("градус", "градуса", "градусов")},
+         "lv": {"eur": ("eiro",) * 3, "usd": ("dolārs", "dolāri", "dolāru"), "pct": ("procents", "procenti", "procentu"),
+                "cent": ("cents", "centi", "centu"), "plus": "plus", "no": "numurs", "and": "un", "from": "no", "to": "līdz", "or": "vai",
+                "x": "X", "deg": ("grāds", "grādi", "grādu")},
+         "en": {"eur": ("euro", "euros", "euros"), "usd": ("dollar", "dollars", "dollars"), "pct": ("percent",) * 3,
+                "cent": ("cent", "cents", "cents"), "plus": "plus", "no": "number", "and": "and", "from": "from", "to": "to", "or": "or",
+                "x": "X", "deg": ("degree", "degrees", "degrees")}}
+
+
+def _plural(n, forms):
+    """forms = (1, 2-4, 5+) — Russian rule; fine for lv/en too (they only use 1 vs other)."""
+    try:
+        n = abs(int(n))
+    except ValueError:
+        return forms[2]
+    if n % 10 == 1 and n % 100 != 11:
+        return forms[0]
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return forms[1]
+    return forms[2]
+
+
+def speech_text(text, lang="ru"):
+    """Plain text for a voice: no symbols, signs or commands — said by meaning.
+    1 800 € → 1800 евро; 12,50 € → 12 евро 50 центов; 21 % → 21 процент; 26.11 → 26 ноября; /pulse → (dropped);
+    LinkedIn → Линкедин; «кавычки», (скобки), маркеры списков и эмодзи — убраны."""
+    lang = (lang or "ru")[:2].lower()
+    W = WORDS.get(lang, WORDS["en"])
+    t = str(text or "").replace(" ", " ").replace(" ", " ").replace("️", "")
+    t = re.sub(r"https?://\S+|www\.\S+", "", t)
+    t = re.sub(r"\b[\w.+-]+@[\w-]+\.[\w.]+\b", "", t)                          # e-mail addresses
+    cmd = CMD_SAY.get(lang, {})
+    t = re.sub(r"(?<![\w/])/([A-Za-z_]+)\b", lambda m: cmd.get(m.group(1).lower(), m.group(1)), t)   # /pulse → пульс
+    fw = FILE_WORD.get(lang, "file")
+    t = re.sub(r"(?i)\b(" + fw + r"\s+)?[\w«»\"-]+\.(?:command|py|xlsx|json|yaml|md|txt|pdf|m4a|docx|csv)\b", fw, t)  # names of files
+    t = re.sub(r"(?<![\d,.])(\+?\d{3}\s)?([26]\d)(\d\d)(\d\d)(\d\d)(?!\d)",
+               lambda m: (m.group(1) or "") + ", ".join(m.group(i) for i in range(2, 6)), t)   # LV phone 20000000 → 20, 00, 00, 00
+    t = re.sub(r"(?<=\d)[ ](?=\d{3}\b)", "", t)                                 # 1 800 → 1800
+    t = re.sub(r"(?<=\d)[ ](?=\d{3}\b)", "", t)                                 # 1 000 000 (second pass)
+    num = r"(\d+)(?:[,.](\d{1,2}))?"
+
+    def money(m, cur):
+        whole, cents = m.group(1), m.group(2)
+        s = f"{whole} {_plural(whole, W[cur])}"
+        if cents and int(cents):
+            c = cents if len(cents) == 2 else cents + "0"
+            s += f" {int(c)} {_plural(int(c), W['cent'])}"
+        return s
+    t = re.sub(r"€\s*" + num, lambda m: money(m, "eur"), t)
+    t = re.sub(num + r"\s*(?:€|EUR\b|eur\b|евро\b)", lambda m: money(m, "eur"), t)
+    t = re.sub(r"\$\s*" + num, lambda m: money(m, "usd"), t)
+    t = re.sub(num + r"\s*(?:\$|USD\b)", lambda m: money(m, "usd"), t)
+    t = re.sub(r"(\d+)(?:[,.]\d+)?\s*%", lambda m: f"{m.group(0).rstrip('% ').replace('.', ',')} {_plural(m.group(1), W['pct'])}", t)
+    t = re.sub(r"(\d+)\s*°\s*C?", lambda m: f"{m.group(1)} {_plural(m.group(1), W['deg'])}", t)
+    t = t.replace("€", " " + W["eur"][2] + " ").replace("№", W["no"] + " ").replace("&", " " + W["and"] + " ")
+    if lang == "ru":
+        def date(m):
+            d, mo, y = int(m.group(1)), int(m.group(2)), m.group(3)
+            if not (1 <= d <= 31 and 1 <= mo <= 12):
+                return m.group(0)
+            return f"{d} {MONTHS_RU[mo - 1]}" + (f" {y} года" if y else "")
+        t = re.sub(r"\b(\d{1,2})\.(\d{1,2})(?:\.(\d{4}))?\b(?!\.\d)", date, t)
+        t = re.sub(r"\bт\.\s?е\.", "то есть", t)
+        t = re.sub(r"\bи т\.\s?д\.", "и так далее", t)
+        t = re.sub(r"\bи т\.\s?п\.", "и тому подобное", t)
+    t = re.sub(r"\b0(\d):(\d\d)\b", r"\1:\2", t)                                 # 07:40 → 7:40
+    t = re.sub(r"(?:\b(?:в|во|at|plkst\.?)\s+)?\b(\d{1,2}(?::\d\d)?)\s*[–—-]\s*(\d{1,2}(?::\d\d)?)\b(?!\.\d)",
+               lambda m: f"{W['from']} {m.group(1)} {W['to']} {m.group(2)}", t)  # (в) 10–12 → с 10 до 12
+    for a, b in SAY_AS.get(lang, []):
+        t = re.sub(r"(?<![\w-])" + re.escape(a) + r"(?!\w)", b, t)
+    if lang == "ru":
+        t = re.sub(r"(?<![\w-])X(?![\w-])", W["x"], t)                       # соцсеть X
+    t = re.sub(r"(?<![\w+])\+(?=\s*\w)", W["plus"] + " ", t)
+    t = re.sub(r"[®™©]", "", t)
+    t = re.sub(r"(?<=\w)\s*/\s*(?=\w)", f" {W['or']} ", t)                     # было / сделано → было или сделано
+    t = re.sub(r"[«»\"“”„]", "", t)
+    t = re.sub(r"\s*\(\s*", ", ", t).replace(")", ",")
+    t = re.sub(r"(?m)^\s*(?:[-–—•*>]+|\d+[.)])\s+", "", t)                     # list markers
+    t = clean_for_speech(t)
+    t = re.sub(r"[\\/{}\[\]<>=~^_|#*@]", " ", t)                                # any symbol left — silence
+    t = re.sub(r"\s+([,.;:!?])", r"\1", t)
+    t = re.sub(r",\s*,+", ",", t)
+    t = re.sub(r"([,.;:!?])(?=[^\s\d,.;:!?])", r"\1 ", t)
+    t = re.sub(r"[ \t]+", " ", t)
+    t = re.sub(r",\s*\.", ".", t)
+    return "\n".join(x.strip(" ,") for x in t.splitlines()).strip()
+
+
 def _key():
     if os.environ.get("ELEVENLABS_API_KEY"):
         return os.environ["ELEVENLABS_API_KEY"].strip()
@@ -151,7 +256,7 @@ def engines_tts(lang="ru"):
 
 def tts(text, out, lang="ru", engine="auto", voice=None):
     """Speak `text` into the audio file `out` (.m4a or .mp3). Returns the path."""
-    text = clean_for_speech(text)
+    text = speech_text(text, lang)            # for the ear: no symbols, € → euro, dates in words, names as said
     if not text:
         raise VoiceError("nothing to say")
     order = engines_tts(lang) if engine == "auto" else [engine]
@@ -160,7 +265,18 @@ def tts(text, out, lang="ru", engine="auto", voice=None):
     if not order:
         raise VoiceError(f"no text-to-speech engine for '{lang}': on Mac add a voice in System Settings → "
                          "Accessibility → Spoken Content; on Linux install espeak-ng; or set voice.tts_engine: elevenlabs")
-    e = order[0]
+    if engine == "elevenlabs" and say_voice(lang):
+        order = order + ["say"]                # cloud voice failed (no key, no credits, offline) → system voice, still on time
+    last = None
+    for e in order:
+        try:
+            return _tts_one(e, text, out, lang, None if (engine == "elevenlabs" and e != engine) else voice)
+        except Exception as ex:  # noqa: BLE001 — try the next engine
+            last = ex
+    raise VoiceError(f"text to speech failed: {last}")
+
+
+def _tts_one(e, text, out, lang, voice):
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     with tempfile.TemporaryDirectory() as td:
         src = os.path.join(td, "in.txt")

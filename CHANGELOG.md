@@ -3,6 +3,22 @@
 History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 
+## 0.32.0 — 26.11.2026 · what it needs and what it costs a month
+- `docs/REQUIREMENTS.md` rewritten: the computer per variant (text only · computer voice · voice reports turned into
+  text on this computer · live cloud voice) and every monthly payment to outside services with the public price and
+  its source — AI assistant, mail, Telegram, ElevenLabs, a server. The basic setup costs one AI subscription; a live
+  cloud voice adds $6–22 a month.
+- `scripts/capacity_check.py` now says which variants this computer can carry (✅ / ⚠️), also in `--json`.
+- The morning audio reads better: `speech_text()` in `scripts/voice.py` turns symbols into words before any voice —
+  € → euro, 12,50 € → 12 euro 50 cents, % → percent, dates and times in words, /commands, links, addresses and
+  file names dropped, names said the way people say them.
+- If the cloud voice fails (no key, no credits, offline), the summary is read with the computer's own voice and still
+  arrives on time.
+- `docs/REQUIREMENTS.md` also gives our security recommendations (separate mailbox, two-factor sign-in, keys in the
+  keychain, disk encryption, weekly backup).
+- Website: new page floktron.com/en/about/ in 9 languages — why FLOKTRON was made, what it costs a month, security.
+- `docs/FLOKTRON_overview.pdf` = overview 1.23 (20 pages): new page 19 "What your computer needs and what a month costs".
+
 ## 0.31.1 — 26.11.2026 · overview PDF 1.22
 - `docs/FLOKTRON_overview.pdf` = overview 1.22: page 17 now names all three industry packs; versions and tests updated.
 

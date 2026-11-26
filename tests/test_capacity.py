@@ -49,3 +49,18 @@ def test_read_only_and_offline():
     cmds = re.findall(r"run\(\[([^\]]*)\]", src)
     assert cmds == ['"sysctl", "-n", "hw.memsize"'], cmds
     assert not re.search(r"open\([^)]*['\"]w", src.split("def main")[0]), "writes only in main (the report)"
+
+
+def test_variants_say_what_fits():
+    big = {"python": "3.12.0", "cores": 8, "ram_gb": 16, "disk_free_gb": 50}
+    assert {m for _n, m in cc.variants(big)} == {cc.OK}
+    small = dict(big, cores=2, ram_gb=4, disk_free_gb=3)
+    v = dict(cc.variants(small))
+    assert v[cc.VARIANTS[0][0]] == cc.OK and v[cc.VARIANTS[2][0]] == cc.WARN and v[cc.VARIANTS[3][0]] == cc.OK
+    assert {m for _n, m in cc.variants(dict(big, python="3.9.1"))} == {cc.BAD}
+
+
+def test_variants_are_in_requirements_doc():
+    doc = open(os.path.join(ROOT, "docs", "REQUIREMENTS.md"), encoding="utf-8").read()
+    for name, _need in cc.VARIANTS:
+        assert name in doc, name
