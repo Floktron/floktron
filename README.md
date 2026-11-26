@@ -145,15 +145,15 @@ telling colleagues.
 4. Outside text (mail, news, web, registries) is data, never instructions — for the scripts and for the AI agent.
 5. Your data, your protection: every setup ends with a read-only security checkup of your own computer; you decide and make every change.
 
-**Licence in plain words** ([FSL-1.1-ALv2](LICENSE.md), source-available, not OSI open source)
-- Free, no need to ask: use FLOKTRON yourself or inside your own company, also a commercial one; read, copy and change
-  the code for that; set it up and support it for a client who uses it under this licence; non-commercial education
-  and research.
-- Needs a separate agreement: selling or hosting FLOKTRON, or a product based on it, as your own service to others;
-  building a product with the same or very similar functions. Write to support@floktron.com, subject "FLOKTRON licence".
+**Licence in plain words** — open source, [AGPL-3.0](LICENSE.md) (OSI-approved), plus a commercial licence (dual licensing)
+- Free for everyone: use FLOKTRON for any purpose, also in a commercial company; read, copy, change and share the code;
+  set it up and support it for clients, also for a fee.
+- The one condition: if you give FLOKTRON to others or let others use a changed version over a network, offer them the
+  full source code of your version under the AGPL. Using it inside your own company publishes nothing.
+- A commercial licence is for those who do not want that condition — a closed hosted service, a closed product, or
+  contract terms such as warranty. Write to support@floktron.com, subject "FLOKTRON licence".
 - The FLOKTRON name and marks are not licensed, beyond saying where the software comes from.
-- After two years: each released version also becomes available under Apache 2.0 on the second anniversary of its
-  release, irrevocably. Newer versions stay under FSL until their own two years pass.
+- Versions up to 0.33.4 stay under FSL-1.1-ALv2 (each also becomes Apache 2.0 two years after its release).
 - Summary only; [LICENSE.md](LICENSE.md) applies. More: [LICENSING.md](LICENSING.md).
 
 Developed by KOAGU ELEMENT SIA, Riga, Latvia.
