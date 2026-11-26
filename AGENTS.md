@@ -22,7 +22,7 @@ Tell the person which version you are working with.
 Before any step, say this to the person in their language, in plain words:
 - FLOKTRON runs only on their own computer (or server) and in their own mailbox. The authors see nothing: no data, no mail, no passwords.
 - It runs in a real company: an operating manufacturing company uses it every day (tasks, replies, mail, invoices, Telegram reports), and new features work there first. Public examples and tests use fictional companies only.
-- It is an early preview. Risks are kept low (see `SECURITY.md`), but no software is risk-free — so the first run is a test.
+- It is a young public release (in daily use in an operating company since October 2026, public since November 2026). Risks are kept low (see `SECURITY.md`), but no software is risk-free — so the first run is a test.
 - Support: GitHub Issues or support@floktron.com (subject "FLOKTRON"); answers on working days.
 - They use only the parts they need: one or two rays, or only the radar and the content plan — the rest stays off.
 - You will ask before every change, and you start with a test that sends mail only to their own address.
@@ -112,4 +112,4 @@ available in an assistant that works on their computer. Do not skip Way A. Then 
 | `tests/` | Automatic checks incl. safety checks — `pip install -r requirements.txt pytest && pytest -q` |
 | `data/` | The company's local data — never committed |
 
-Status: early preview, open for testing. Licence: FSL-1.1-ALv2 (see LICENSE.md, LICENSING.md); rights holder KOAGU ELEMENT SIA. Do not remove copyright notices.
+Status: in daily use in an operating company since October 2026, public since November 2026. Licence: FSL-1.1-ALv2 (see LICENSE.md, LICENSING.md); rights holder KOAGU ELEMENT SIA. Do not remove copyright notices.
