@@ -196,7 +196,7 @@ def fold(s):
 def event(title, start, end=None, location="", description="", uid="", alarm_minutes=None):
     """start/end: datetime (aware or local) or date (all-day). Returns VEVENT lines."""
     stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    uid = uid or hashlib.sha1(f"{title}|{start}|{location}".encode("utf-8")).hexdigest()[:20] + "@floktron"
+    uid = uid or hashlib.sha1(f"{title}|{start}|{location}".encode("utf-8"), usedforsecurity=False).hexdigest()[:20] + "@floktron"
     if isinstance(start, datetime.datetime):
         end = end or start + datetime.timedelta(hours=1)
         fmt = lambda d: (d.astimezone(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")  # noqa: E731

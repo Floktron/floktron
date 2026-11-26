@@ -15,7 +15,8 @@ against, how, and what it cannot protect against.
 | A hostile news server sends a huge file | Feeds over 5 MB are skipped and recorded in Gaps | `news_slice.py` |
 | Passwords leak | No password in files or chat: environment variable or system keychain only; `config.yaml`, `.env`, `data/`, `*.eml` never committed | `scripts/mail/send.py`, `.gitignore` + test |
 | Dangerous code slips into the scripts | No `eval`, `exec`, `os.system`, `shell=True`, `pickle`, `curl | sh` — checked on every change | `tests/test_safety.py`, GitHub Actions |
-| Outside packages | Only `openpyxl` and `PyYAML` from pypi.org, versions pinned | `requirements.txt` |
+| Outside packages | Only `openpyxl` and `PyYAML` from pypi.org, versions pinned; known vulnerabilities checked by pip-audit on every change, updates proposed by Dependabot | `requirements.txt`, `.github/workflows/security.yml` |
+| A hostile feed or link | Links from settings must be `http(s)://` (never `file://`); feeds that declare XML entities are skipped | `news_slice.py`, `supply_watch.py`, `registry_lv.py`, `tests/test_scan_fixes.py` |
 | A mistake goes out to people | Order of every new setup: `--dry` → `--test` own address → real; posts are never published automatically, a person copies them | `AGENTS.md` rule 8, `content_check.py` |
 | The agent reaches too far | Works only in the FLOKTRON folder and its storage folder; never whole-disk, browser or other accounts | `AGENTS.md` rule 2 |
 | Your own computer is weak (disk not encrypted, firewall off, sharing open, no backup) | A security checkup ends every setup: read-only, plain explanations, the person makes each change; repeat monthly | `scripts/security_check.py`, `docs/SECURITY_CHECKUP.md`, test |
@@ -42,6 +43,11 @@ News can be wrong or deliberately false, even on official sites. FLOKTRON never 
 used for a post gets a light check first — echo in other outlets, primary source, fact-checkers — shown as a status
 (✅ / ℹ️ / ⚠️ / ⛔); corrections of news already used in posts are watched for 14 days and reported to the manager
 (`prompts/31_news_check.md`). One source is normal for local news; the person decides.
+
+## Automated security checks
+OpenSSF Scorecard, GitHub CodeQL, Bandit, pip-audit and Dependabot run on every change and once a week; what the first
+run found and how it was fixed: [docs/SECURITY_SCANS.md](docs/SECURITY_SCANS.md). These are automated scans, not an
+independent audit — no outside reviewer has checked the code yet.
 
 ## Nothing hidden
 FLOKTRON connects only to your mail server, the news feeds in your radar and (optionally) the Latvian open data portal.
@@ -72,4 +78,5 @@ GitHub page, or write to support@floktron.com (subject "FLOKTRON security"). Rem
 - 2-factor login for every account with write access.
 - Branch protection on `main`: changes only through pull requests, tests must pass.
 - Secret scanning + push protection, Dependabot alerts, private vulnerability reporting — on.
+- Code scanning shows the CodeQL and Scorecard results (Security tab); a new high finding is fixed before the next release.
 - Releases as tags (`v0.8.0`); testers install a tag, not a moving branch.

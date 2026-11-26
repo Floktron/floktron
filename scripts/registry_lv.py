@@ -21,6 +21,7 @@ import json
 import os
 import re
 import sys
+import urllib.parse
 import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -41,12 +42,12 @@ UA = {"User-Agent": "FLOKTRON registry reader"}
 def resources(package_id):
     """Resources (files) of a data.gov.lv dataset: [{"url", "format", "name", ...}] (used by prospects.py)."""
     url = "https://data.gov.lv/dati/api/3/action/package_show?id=" + package_id
-    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30) as r:
+    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30) as r:  # nosec B310 - fixed https:// address
         return json.load(r)["result"]["resources"]
 
 
 def csv_url():
-    with urllib.request.urlopen(urllib.request.Request(CKAN, headers=UA), timeout=30) as r:
+    with urllib.request.urlopen(urllib.request.Request(CKAN, headers=UA), timeout=30) as r:  # nosec B310 - fixed https:// address
         res = json.load(r)["result"]["resources"]
     for x in res:
         if "register" in (x.get("url") or "").lower() and (x.get("format") or "").upper() == "CSV":
@@ -59,7 +60,9 @@ def lines(source):
         with open(source, encoding="utf-8-sig", newline="") as f:
             yield from f
         return
-    with urllib.request.urlopen(urllib.request.Request(source, headers=UA), timeout=120) as r:
+    if urllib.parse.urlsplit(source).scheme not in ("https", "http"):
+        raise ValueError("the register source must be a local file or an https:// link")
+    with urllib.request.urlopen(urllib.request.Request(source, headers=UA), timeout=120) as r:  # nosec B310 - scheme checked above (http/https only)
         yield from codecs.iterdecode(r, "utf-8-sig")
 
 

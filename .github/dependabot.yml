@@ -1,0 +1,19 @@
+# Dependabot: a pull request when a package or a GitHub Action used here has a newer or fixed version.
+# Nothing merges by itself — every update is a pull request a maintainer reviews.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+  - package-ecosystem: pip
+    directory: "/.github"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

@@ -39,7 +39,7 @@ def via_telegram(cfg, section_cfg=None):
 
 def key_of(s):
     """Short stable key for long ids (Message-ID)."""
-    return hashlib.sha1(str(s).encode("utf-8")).hexdigest()[:10]
+    return hashlib.sha1(str(s).encode("utf-8"), usedforsecurity=False).hexdigest()[:10]
 
 
 def buttons(kind, key, lang="en"):

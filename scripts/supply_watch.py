@@ -136,10 +136,15 @@ def parse_rss(data):
 
 
 # ---------- network ----------
+MAX_PAGE_BYTES = 5_000_000  # a feed or a price page is never this big; protects memory from a hostile server
+
+
 def fetch(url, timeout=25):
+    if urllib.parse.urlsplit(url).scheme not in ("https", "http"):
+        raise ValueError("a watched page or feed must be an https:// link")
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode("utf-8", "replace")
+    with urllib.request.urlopen(req, timeout=timeout) as r:  # nosec B310 - scheme checked above (http/https only)
+        return r.read(MAX_PAGE_BYTES).decode("utf-8", "replace")
 
 
 # ---------- workbook ----------

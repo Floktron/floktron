@@ -71,8 +71,10 @@ MAX_FEED_BYTES = 5_000_000  # a news feed is never this big; protects memory fro
 
 
 def fetch(url, timeout=25):
+    if urllib.parse.urlsplit(url).scheme not in ("https", "http"):
+        raise ValueError("a news feed must be an https:// link")
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/rss+xml, application/xml, */*"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
+    with urllib.request.urlopen(req, timeout=timeout) as r:  # nosec B310 - scheme checked above (http/https only)
         data = r.read(MAX_FEED_BYTES + 1)
     if len(data) > MAX_FEED_BYTES:
         raise ValueError(f"feed larger than {MAX_FEED_BYTES // 1_000_000} MB — skipped")
@@ -81,8 +83,12 @@ def fetch(url, timeout=25):
 
 def parse_feed(data):
     """Return [(date, title, link, summary)] from RSS or Atom."""
+    # A news feed never needs its own XML entities; a feed that declares them could blow up memory
+    # ("billion laughs") or point at local files, so it is skipped before any parsing.
+    if re.search(rb"<!ENTITY", data, re.I):
+        raise ValueError("feed declares XML entities — skipped")
     data = re.sub(rb"<!DOCTYPE[^>]*>", b"", data)
-    root = ET.fromstring(data)
+    root = ET.fromstring(data)  # nosec B314 - entity declarations refused above, DOCTYPE removed
     items = []
     for it in root.iter():
         tag = it.tag.split("}")[-1]

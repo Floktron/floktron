@@ -54,7 +54,7 @@ def fetch(url, timeout=30):
     if not url.startswith("https://"):
         raise ValueError("the calendar link must start with https:// or webcal://")
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
+    with urllib.request.urlopen(req, timeout=timeout) as r:  # nosec B310 - https:// checked above
         return r.read(8_000_000).decode("utf-8", "replace")  # 8 MB is far more than any normal calendar
 
 

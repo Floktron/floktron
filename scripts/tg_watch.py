@@ -93,7 +93,7 @@ def run(config, dry=False):
     for ch in chs:
         try:
             req = urllib.request.Request(f"https://t.me/s/{ch}", headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=25) as r:
+            with urllib.request.urlopen(req, timeout=25) as r:  # nosec B310 - fixed https:// address
                 items = parse_tg_preview(r.read(3_000_000)); ok += 1
         except Exception as e:  # noqa: BLE001
             bad += 1; print(f"@{ch}: {str(e)[:80]}"); continue

@@ -1,0 +1,28 @@
+name: security
+# Two free scanners on every change and once a week:
+# - Bandit: known risky patterns in the Python code (fails on medium or high findings; low ones are listed in docs/SECURITY_SCANS.md)
+# - pip-audit: known vulnerabilities (PyPI advisory database / OSV) in the packages FLOKTRON uses, optional ones included
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "23 5 * * 3"   # every Wednesday
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - run: pip install -r .github/security-tools.txt
+      - name: Bandit (scripts/, medium and high findings fail the check)
+        run: bandit -r scripts -ll
+      - name: pip-audit (required packages)
+        run: pip-audit -r requirements.txt
+      - name: pip-audit (optional packages a full setup uses)
+        run: pip-audit -r .github/optional-packages.txt
