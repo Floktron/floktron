@@ -10,6 +10,9 @@ you show it) is processed by that assistant's provider (Anthropic, OpenAI, Googl
 does not control that. Show it only what you would show that service; for sensitive work use a business plan with no
 training on your data.
 
+Text from e-mails, attachments, web pages and Telegram is treated as data, never as instructions — how, in
+[SECURITY.md](../SECURITY.md#prompt-injection--hidden-instructions-in-mail-attachments-web-pages-and-telegram).
+
 ## FLOKTRON connects only to
 | Where | Why | Code |
 |---|---|---|

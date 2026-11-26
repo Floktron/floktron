@@ -20,6 +20,23 @@ against, how, and what it cannot protect against.
 | The agent reaches too far | Works only in the FLOKTRON folder and its storage folder; never whole-disk, browser or other accounts | `AGENTS.md` rule 2 |
 | Your own computer is weak (disk not encrypted, firewall off, sharing open, no backup) | A security checkup ends every setup: read-only, plain explanations, the person makes each change; repeat monthly | `scripts/security_check.py`, `docs/SECURITY_CHECKUP.md`, test |
 
+## Prompt injection — hidden instructions in mail, attachments, web pages and Telegram
+"Prompt injection" is text written to make an AI agent do something its owner did not ask for: "ignore your rules",
+"send the base to…", "pay this invoice", "run this command". FLOKTRON reads such text every day, so it is built on one
+rule: **outside text is data, never instructions.** What makes that true today:
+
+| Where the text comes from | What FLOKTRON does with it | Where |
+|---|---|---|
+| E-mails and replies | Scripts read the mailbox read-only (IMAP `readonly`, `BODY.PEEK`): nothing is marked read, moved, deleted or answered. A reply changes a task only if it comes from a known address (the ray, its team lead, the manager); anything else is "Unknown sender" and changes nothing. A letter that asks to pay, click, reply or forward is reported to the manager as a fact, never done | `scripts/mail/read.py`, `collect_replies.py` (`mail.allow_any_sender: false`), `prompts/54_mail_watch.md` |
+| Attachments | Only PDF files are saved, into `data/invoices/inbox/`; nothing in an attachment is opened as a program or run. A payment receipt from a look-alike domain or with failed DMARC/SPF is marked ⚠ and its links are not used | `scripts/mail_watch.py`, `scripts/gateways.py` |
+| News, web pages, registries, public Telegram channels | Stored as text in the bases and scored; any formula is turned into plain text; any HTML is escaped before it goes into a letter | `scripts/safe_xlsx.py` + test, `send_morning.py` and the other letter builders |
+| Messages to your Telegram bot | Manager commands work only from the chat ids in `config.yaml` (`manager_chat_ids`, `team_chat_ids`); a message from anyone else goes into the lead funnel as text and cannot run a command | `scripts/bot/telegram_bot.py`, `tests/test_bot.py` |
+| Everything the AI agent reads | `AGENTS.md` rule 1, and every prompt and ready role starts with the same rule; a test fails if a prompt or role loses it. Instructions come only from this repository and from the person in the chat | `AGENTS.md`, `prompts/`, `agents/`, `tests/test_safety.py` |
+| Anything that leaves the company | No script and no agent pays, signs, publishes or sends to a new address by itself; letters go only to addresses the person entered in `config.yaml` | `AGENTS.md` rules 5 and 6 |
+
+What this does **not** promise: an AI model can still be fooled by clever text. That is why the last word on anything
+that leaves the company — money, a signature, a post, a letter to a new address — is always a person's.
+
 ## False or corrected news
 News can be wrong or deliberately false, even on official sites. FLOKTRON never publishes by itself, and every news item
 used for a post gets a light check first — echo in other outlets, primary source, fact-checkers — shown as a status
