@@ -58,7 +58,12 @@ Name (company, team or the person), country (LV / LT / EE / other — public hol
 
 ## 2. Mailbox — a separate one for FLOKTRON
 Recommend a new mailbox only for FLOKTRON (e.g. `company.floktron@gmail.com`), not the person's main one.
-Options: Gmail · Outlook/Microsoft 365 · Proton (paid, needs Bridge on an always-on computer) · other.
+Options: Gmail (free) · Proton (paid plan only) · any other IMAP/SMTP server. Ask before anything else:
+- *Proton?* Ask whether their Proton plan is **paid**. Proton Mail Bridge comes only with paid plans (for example
+  Mail Plus) and must run on an always-on computer. A free Proton account cannot be used — say so plainly and offer Gmail.
+- *Outlook / Microsoft 365?* Not supported yet: Microsoft no longer lets outside programs sign in with a password, and
+  FLOKTRON does not have the Microsoft sign-in yet. Say so plainly and offer a separate Gmail mailbox (or paid Proton).
+Cheapest working choice: a separate Gmail mailbox, 0 €. Costs per month: `docs/REQUIREMENTS.md` §2.
 For Gmail follow `docs/GMAIL_TEST.md` (2-step verification → app password).
 The password is typed by the person into the environment variable `FLOKTRON_MAIL_PASSWORD` or the system keychain —
 never into the chat, never into a file.

@@ -23,13 +23,18 @@ Prices as the services publish them, without tax, checked on 26.11.2026. They ch
 | Service | Needed? | Price | Source |
 |---|---|---|---|
 | AI assistant (for example Claude Pro) | yes | $20 per month, or $17 per month billed yearly | [claude.com/pricing](https://claude.com/pricing) |
-| Mail — Gmail or Outlook | yes, one mailbox | 0 € (free accounts work) | — |
-| Mail — Proton | only if you choose Proton | €4.99 per month, or €3.99 per month billed yearly (Mail Plus; Proton Mail Bridge is part of the paid plans) | [proton.me](https://proton.me/support/proton-plans) |
+| Mail — Gmail | yes, one mailbox (or Proton below) | 0 € — a free account works, with 2-Step Verification and an app password | [support.google.com](https://support.google.com/a/answer/6260879) |
+| Mail — Proton Mail Plus | only if you choose Proton | €4.99 per month, or €3.99 per month billed yearly | [proton.me](https://proton.me/support/proton-plans) |
+| Mail + Drive + Pass — Proton Unlimited | only if you choose Proton for more than mail | €12.99 per month, or €9.99 per month billed yearly | [proton.me](https://proton.me/blog/proton-unlimited-plan) |
+| Mail — Outlook / Microsoft 365 | **not supported yet** | — Microsoft no longer accepts a password from outside programs; FLOKTRON does not have the Microsoft sign-in yet | [support.microsoft.com](https://support.microsoft.com/en-us/office/f4202ebf-89c6-4a8a-bec3-3d60cf7deaef) |
 | Telegram bot | optional | 0 € | [core.telegram.org](https://core.telegram.org/bots/faq) |
 | Live cloud voice — ElevenLabs Starter | optional | $6 per month, 30,000 credits | [elevenlabs.io/pricing](https://elevenlabs.io/pricing) |
 | Live cloud voice — ElevenLabs Creator | optional, for a long daily summary | $22 per month, 121,000 credits | [elevenlabs.io/pricing](https://elevenlabs.io/pricing) |
 | Small cloud server | only if no computer is always on | about 5–15 € per month (estimate) | — |
 | WhatsApp Business Platform | optional, planned | paid per message (Meta) | — |
+
+**A free Proton account does not work with FLOKTRON**: FLOKTRON reaches Proton through Proton Mail Bridge, and Bridge
+comes only with paid Proton plans. If you want to pay nothing for mail, take a separate Gmail mailbox.
 
 A basic AI subscription is enough to set up FLOKTRON and run it every day; a higher plan only adds room for heavy use.
 
@@ -37,6 +42,7 @@ A basic AI subscription is enough to set up FLOKTRON and run it every day; a hig
 | Setup | Per month |
 |---|---|
 | Text only: AI + Gmail + Telegram | about $20 |
+| Text only, with Proton mail | about $20 + €4.99 (Mail Plus) |
 | Text + computer voice | about $20 — the system voice is free |
 | Text + live cloud voice | about $26–42 ($20 AI + $6–22 voice) |
 
@@ -59,7 +65,7 @@ Recommendations, not required steps. The setup ends with a read-only check of th
 ([SECURITY_CHECKUP](SECURITY_CHECKUP.md)); you switch things on yourself.
 
 - **A separate mailbox for FLOKTRON.** We use Proton Mail ourselves: end-to-end encrypted mail, open-source apps that are
-  independently audited, Swiss data protection law. Gmail and Outlook work too.
+  independently audited, Swiss data protection law (paid plan, see §2). Gmail works too.
 - **Two-factor sign-in** for mail, Telegram, the AI assistant and GitHub.
 - **Passwords and keys** in a password manager or the system keychain — never in files, `config.yaml` or a chat.
 - **Disk encryption** (FileVault on Mac, BitLocker on Windows) and automatic system updates.

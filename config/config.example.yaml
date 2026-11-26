@@ -7,7 +7,7 @@ company:
   holidays: []            # extra days off, e.g. ["2026-12-30"]
 
 mail:
-  provider: "gmail"       # proton_bridge | gmail | outlook | smtp
+  provider: "gmail"       # gmail | proton_bridge (paid Proton) | smtp | outlook (not working yet: needs Microsoft sign-in)
   user: ""                # login address of the mailbox
   from: ""                # sender shown to people (may be an alias); empty = user
   reply_to: ""            # where button replies go; empty = user

@@ -2,9 +2,11 @@
 """FLOKTRON · mail/send.py — one way to send mail for every provider.
 
 Providers (config.yaml → mail.provider):
-    proton_bridge  Proton Mail Bridge on this computer (paid Proton plan), 127.0.0.1:1025
+    proton_bridge  Proton Mail Bridge on this computer, 127.0.0.1:1025 — Bridge comes only with a PAID Proton plan;
+                   a free Proton account cannot be used (take Gmail instead)
     gmail          smtp.gmail.com:587 — needs an app password (Google account → Security)
-    outlook        smtp.office365.com:587 — Outlook.com / Microsoft 365
+    outlook        smtp.office365.com:587 — Outlook.com / Microsoft 365. NOT WORKING YET: Microsoft no longer accepts
+                   a password from outside programs; FLOKTRON does not have the Microsoft sign-in (OAuth) yet
     smtp           any other server: set smtp_host and smtp_port yourself
 
 The password is NEVER stored in config.yaml. It is read from:
@@ -27,6 +29,27 @@ PRESETS = {
 
 class MailError(Exception):
     pass
+
+
+
+HINTS = {
+    "outlook": "Outlook / Microsoft 365: Microsoft no longer lets outside programs sign in with a password "
+               "(Outlook.com since 16.09.2024, Microsoft 365 earlier). FLOKTRON cannot sign in to Outlook yet — "
+               "use a separate Gmail mailbox (free, app password) or a paid Proton plan with Bridge.",
+    "proton_bridge": "Proton: is Proton Mail Bridge open on this computer? Bridge comes only with a paid Proton plan "
+                     "(for example Mail Plus); a free Proton account cannot be used — take a separate Gmail mailbox instead.",
+    "gmail": "Gmail: use an app password (2-Step Verification must be on), not the normal password — docs/GMAIL_TEST.md.",
+}
+
+
+def hint(mail_cfg):
+    """One plain sentence for the person when the mailbox refuses the connection."""
+    return HINTS.get((mail_cfg or {}).get("provider") or "", "")
+
+
+def with_hint(message, mail_cfg):
+    h = hint(mail_cfg)
+    return f"{message}. {h}" if h else message
 
 
 def read_secret(env, service):
@@ -55,6 +78,7 @@ class Sender:
     """Open once, send many messages, close. Use as: with Sender(cfg) as s: s.send(msg)"""
 
     def __init__(self, mail_cfg):
+        self._cfg = mail_cfg
         provider = mail_cfg.get("provider", "smtp")
         if provider not in PRESETS:
             raise MailError(f"Unknown mail.provider '{provider}'. Use one of: {', '.join(PRESETS)}")
@@ -79,7 +103,7 @@ class Sender:
             self._s.starttls(context=ctx)
             self._s.login(self.user, self._pwd)
         except Exception as e:
-            raise MailError(f"Cannot connect to {self.host}:{self.port} — {e}") from e
+            raise MailError(with_hint(f"Cannot connect to {self.host}:{self.port} — {e}", self._cfg)) from e
         return self
 
     def send(self, msg):

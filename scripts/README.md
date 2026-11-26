@@ -14,7 +14,7 @@ Status: **18 parts ready, 1 planned.** Working versions are cleaned
 | `post_link.py` | Platform and exact publishing time from a post link (LinkedIn and X keep the time in the post ID) | **ready (0.14.0)** |
 | `registry_lv.py` | New Latvian companies from open data (stream) by words in the name → Companies / Players | **ready (0.7.0)** |
 | `gaps_report.py` | Weekly: what FLOKTRON could not do (by kind, with the fix) + runs that ended with an error → support | **ready (0.7.0)** |
-| `mail/` | Adapters: `proton_bridge.py`, `gmail.py`, `outlook.py`, `imap.py` | **ready (0.3.0)**: `mail/send.py` + `mail/read.py` — Proton Bridge, Gmail, Outlook, any server |
+| `mail/` | Adapters: `proton_bridge.py`, `gmail.py`, `outlook.py`, `imap.py` | **ready (0.3.0)**: `mail/send.py` + `mail/read.py` — Proton Bridge (paid Proton plan), Gmail, any server; Outlook not yet (needs Microsoft sign-in) |
 | `backup_weekly.sh` | Weekly copy of the base and documents | planned |
 | `install/` | Scheduler setup: macOS (launchd), Windows (Task Scheduler), Linux (cron) — see docs/INSTALL.md | **ready (0.6.0)** |
 | `run.py` | One entry for the scheduler: morning · collect · deadline · evening · news · summary · status; lock + log | **ready (0.6.0)** |
