@@ -4,6 +4,10 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.35.1 — 27.11.2026 · where to follow FLOKTRON
+- README and the footer of floktron.com (9 languages) now link to the FLOKTRON pages: YouTube (step-by-step guides),
+  LinkedIn, Facebook and X. Nothing changes in the program; support stays in Issues and support@floktron.com.
+
 ## 0.35.0 — 26.11.2026 · the FLOKTRON mark and a desktop icon
 - FLOKTRON has a mark: a violet tile (#8B5CF6) with a white F whose middle bar is a dot. Files in `assets/brand/`:
   mark and logo (SVG, light and dark), app icons for Mac (`.icns`), Windows (`.ico`) and Linux (PNG).
