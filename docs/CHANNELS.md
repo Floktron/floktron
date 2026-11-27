@@ -61,7 +61,9 @@ Switch from the command line: `python3 scripts/channels.py set manager web` · `
 
 - Open your link in Safari (iPhone) or Chrome (Android) → **Share → Add to Home Screen**. It opens like an app.
   The link carries the key, so the home-screen app stays signed in.
-- At the top: the channel switch (Telegram / This page / E-mail) and Push on / off.
+- At the bottom: the channel switch (Telegram / This page / E-mail) and Push on / off.
+- Messages are shown as blocks: title, sections, news cards with the source and a short link button instead of a long
+  address. No pictures are loaded from other sites.
 - In the same Wi-Fi only: set `web.lan: true` and open `http://<computer address>:8765/m?k=…`.
 
 ### From anywhere: your own Cloudflare Tunnel (free)
