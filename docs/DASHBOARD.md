@@ -21,6 +21,7 @@ if the Mac asks, right-click the icon → Open → Open. The page itself also sh
 | Ring N/M + chips — which parts work | `data/run.log` (last run and exit code of each job), Telegram channel watch |
 | Needs your attention | failed or late runs, overdue tasks, questions from people, deadlines within 3 days |
 | Coming up | open consultations with a deadline (radar) |
+| Online meetings — date, time, service, the official join link in full, ID and passcode; a trick link only as a red warning | `data/meetings.json` from `scripts/meeting_links.py` (your calendar + invitation letters, [MEETINGS](MEETINGS.md)); a meeting within the hour also goes to the top of *Needs your attention* |
 | Rays — who confirmed today's tasks | sheets Rays / Tasks / Receipts of `floktron_base.xlsx` (test rays are marked) |
 | Work time — at work now, hours today and this month, overtime, night, weekend, what to check | `data/worktime.jsonl`, marks from the bot ([WORKTIME](WORKTIME.md)); no end mark or a start far from the site also goes to *Needs your attention* |
 | Site cameras — online / no fresh frame, the latest frame, a button to open the camera; public webcams only as marked *examples* (link) | `config.yaml → cameras`, frames from `scripts/cameras.py snap` in `data/cameras/` ([CAMERAS](CAMERAS.md)); a camera without a fresh frame also goes to *Needs your attention* |

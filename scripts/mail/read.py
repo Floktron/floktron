@@ -143,3 +143,41 @@ def with_flags(mail_cfg, boxes, days=4, skip_ids=()):
             M.logout()
         except Exception:
             pass
+
+
+def meeting_mail(mail_cfg, days=30, terms=(), skip_ids=()):
+    """Online meetings (scripts/meeting_links.py): yield dict(mid, raw) for inbox letters of the last `days` days that
+    contain a meeting address (IMAP search of the body for each term; a server that cannot search bodies → every
+    letter of the period). Read-only (BODY.PEEK: letters stay unread); raw is None when the Message-ID is in skip_ids."""
+    p = PRESETS.get(mail_cfg.get("provider", "smtp"), PRESETS["smtp"])
+    host = mail_cfg.get("imap_host") or p["host"]
+    port = int(mail_cfg.get("imap_port") or p["port"])
+    M = _open(mail_cfg, p, host, port)
+    since = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%d-%b-%Y")
+    skip = set(skip_ids)
+    try:
+        if M.select("INBOX", readonly=True)[0] != "OK":
+            return
+        nums = set()
+        try:
+            for t in terms:
+                typ, data = M.search(None, "SINCE", since, "BODY", '"' + str(t).replace('"', "") + '"')
+                if typ != "OK":
+                    raise imaplib.IMAP4.error(typ)
+                nums |= set((data[0] or b"").split())
+        except imaplib.IMAP4.error:
+            _, data = M.search(None, f"(SINCE {since})")
+            nums = set((data[0] or b"").split())
+        for num in sorted(nums, key=int):
+            _, hd = M.fetch(num, "(BODY.PEEK[HEADER.FIELDS (MESSAGE-ID)])")
+            mid = (email.message_from_bytes(hd[0][1]).get("Message-ID", "") or "").strip()
+            raw = None
+            if not mid or mid not in skip:
+                _, md = M.fetch(num, "(BODY.PEEK[])")
+                raw = md[0][1]
+            yield dict(mid=mid, raw=raw)
+    finally:
+        try:
+            M.logout()
+        except Exception:
+            pass

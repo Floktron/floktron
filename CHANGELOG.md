@@ -4,6 +4,28 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.39.0 — 28.11.2026 · online meetings: the join link on the dashboard
+Asked for in the operating company: «the meeting is on the dashboard — let its Zoom / Teams link be right there, in
+full, as in the letter; one click and I am in». Works there first, then here.
+- **New `scripts/meeting_links.py`** (`config.yaml → meetings`, off by default; `scripts/run.py` runs it with «collect»
+  every 30 minutes): meetings of the next 14 days from your calendar link and `data/calendar/*.ics`, and inbox letters
+  of the last 30 days with a meeting link → `data/meetings.json`.
+- **Dashboard block «🎥 Online meetings»**: date, time, service, where the link came from, the **official link in full
+  as its own text** (opens in a new tab: browser or the Zoom / Teams app), meeting ID and passcode. A meeting within the
+  hour or on now goes to the top of «Needs your attention» with its link.
+- **Anti-phishing:** only official meeting addresses (Zoom, Microsoft Teams, Google Meet, Webex, Jitsi, GoTo, Whereby,
+  Skype) — https, the service's own domain or subdomain, no `user@`, no port, no `xn--`, a meeting path. Google and
+  Outlook Safe Links wrappers are unwrapped to the real address. A link whose text looks like a meeting address but
+  leads elsewhere is not shown — a red ⚠ warning instead (also in «Needs your attention»). The dashboard checks every
+  link again before it shows it.
+- **When:** the invitation (.ics) inside the letter (a cancelled one removes the meeting), «today at 5 PM / сегодня в
+  17:00 / šodien plkst. 17:00», or a date and time written in the letter (then it joins the calendar event of that
+  day). Newsletters without a date are not shown.
+- **Read only:** letters stay unread (BODY.PEEK), nothing is moved or sent; each letter body is read once
+  (`data/meetings_state.json`). New `mail/read.py → meeting_mail`; no new network code.
+- New tests: `tests/test_meeting_links.py` (12, fictional companies and links). Run numbers recounted from the run log:
+  868 runs 08.11–28.11.2026, 28 failed (3.2 %).
+
 ## 0.38.1 — 27.11.2026 · security page for reviewers
 - `SECURITY.md` starts with **«For security reviewers — start here»**: where to check data, secrets, the Telegram bot,
   network, scans and outside reviews, in one table.

@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.38.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.39.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -143,11 +143,11 @@ Status: in daily use in an operating company since October 2026, public since No
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.38.1 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.39.0 · last update 28.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
-**Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company. In numbers (November 2026): about 30–45 letters a day go through FLOKTRON (paid Proton Mail via Bridge, read-only); about 5 % of incoming letters needed a person; 143 staff replies with one button; automatic runs 08.11–27.11.2026: 861, of them 28 failed (3.3 %) — almost always because Proton Mail Bridge was closed or the computer was asleep; 14 were fixed by the next run, and on three days (13.11, 21.11, 23.11) letters did not go out even after retries. Counted from the company's run log: one run = one start of a job; failed = the run logged an error; ok means the job finished without an error, not that every letter was read. Corrected in 0.37.3: earlier we said "about 1,460 runs, about 2 % failed" — that counted log lines, not runs. These numbers are recounted with every release (`scripts/run_stats.py` does the same for your own log) ([a month of mail](https://floktron.com/en/about/#keis-pochta)).
+**Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company. In numbers (November 2026): about 30–45 letters a day go through FLOKTRON (paid Proton Mail via Bridge, read-only); about 5 % of incoming letters needed a person; 143 staff replies with one button; automatic runs 08.11–28.11.2026: 868, of them 28 failed (3.2 %) — almost always because Proton Mail Bridge was closed or the computer was asleep; 14 were fixed by the next run, and on three days (13.11, 21.11, 23.11) letters did not go out even after retries. Counted from the company's run log: one run = one start of a job; failed = the run logged an error; ok means the job finished without an error, not that every letter was read. Corrected in 0.37.3: earlier we said "about 1,460 runs, about 2 % failed" — that counted log lines, not runs. These numbers are recounted with every release (`scripts/run_stats.py` does the same for your own log) ([a month of mail](https://floktron.com/en/about/#keis-pochta)).
 
 AI-assisted operations system for companies. Built for the owner or manager who runs teams, production and processes — departments, crews, sites, a fleet, a workshop — and wants to see it all in one place. B2B fields: construction, logistics and haulage, production, equipment rental, wholesale, services.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -156,6 +156,7 @@ Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) 
 A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big producers, listed companies, freight routes, reference prices and currencies — it speaks up only when something moves ([SUPPLY_CHAIN](docs/SUPPLY_CHAIN.md)).
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
 **Work time — start, pause, end with one tap**: your team marks the working day with three buttons in the work chat with your bot; with one location point at the start (if you switch it on) the manager sees who is on which site. The dashboard shows who is at work now, today's and the month's hours, overtime, night and weekend hours and what needs a look; once a month a table for the accountant. Hours are never made up: a day without an end mark waits for the manager's correction, and every correction keeps its reason ([WORKTIME](docs/WORKTIME.md)).
+**Online meetings — join from the dashboard**: a Zoom, Microsoft Teams or Google Meet meeting from your calendar or from an invitation letter shows on the dashboard with its official link in full, exactly as in the letter — one click opens the browser or the app; the meeting ID and passcode are there too, and a meeting within the hour goes to the top of «Needs your attention». Only official meeting addresses are shown; a link whose text says Zoom but leads elsewhere becomes a red warning. Mail is only read; nothing goes through FLOKTRON ([MEETINGS](docs/MEETINGS.md)).
 **Site cameras on the dashboard — security, not watching people**: gate, yard, warehouse — is each camera online, its latest frame and a button to open it live in the camera's own app; a camera that went quiet goes to «Needs your attention». One frame per camera is kept on your computer and overwritten: no recording, no video through anyone's server, no face recognition ([CAMERAS](docs/CAMERAS.md)).
 Your team can **report by voice** — the bot turns a voice message into text on your own computer; the manager gets a **morning audio summary** to listen to in the car ([VOICE](docs/VOICE.md)).
 **Your own website before marketing**: the assistant leads you through a safe site on Cloudflare (free certificates, protection, one-click undo) — or on the hosting you already like, such as Namecheap or GoDaddy ([WEBSITE](docs/WEBSITE.md)).
@@ -442,7 +443,7 @@ Text from e-mails, attachments, web pages and Telegram is treated as data, never
 ## FLOKTRON connects only to
 | Where | Why | Code |
 |---|---|---|
-| Your own mail server (IMAP / SMTP), with the address and app password you set | send the morning letters, read the replies; for reminders after an offer (if switched on) — see which offers were sent and answered | `scripts/mail/read.py`, `scripts/mail/send.py` |
+| Your own mail server (IMAP / SMTP), with the address and app password you set | send the morning letters, read the replies; for reminders after an offer (if switched on) — see which offers were sent and answered; for online meetings (if switched on) — find inbox letters with a meeting link (read only, letters stay unread) | `scripts/mail/read.py`, `scripts/mail/send.py` |
 | News feeds (RSS) and public Telegram channel pages (`t.me/s/<channel>`) listed in your own radar base | the news slice by your keywords — no Telegram account or login is used | `scripts/news_slice.py` |
 | Public Telegram channel pages `t.me/s/<channel>` from your own channel list (only if you use the channel watch) | posts with your keywords | `scripts/tg_watch.py` |
 | api.telegram.org — only if you switch the Telegram bot on, with the bot token you created | receive messages people send to YOUR bot, answer them, tell the manager about a new lead | `scripts/bot/telegram_bot.py` |
@@ -983,6 +984,60 @@ Check: `python3 scripts/calendar_read.py --check`, then `python3 scripts/calenda
   shown — tell us (`docs/FEEDBACK.md`).
 - Remove: delete the Keychain item `FLOKTRON_CAL` (or the variable) and set `calendar.enabled: false`; reset the link in
   your calendar so the old one stops working.
+
+
+===== FILE: docs/MEETINGS.md =====
+
+# Online meetings — the join link on the dashboard
+
+A Zoom, Microsoft Teams or Google Meet meeting is in your calendar, or an invitation is in your mail. The dashboard
+shows the meeting with its **official link in full** — the whole address, exactly as in the letter, not «click here».
+One click opens it in the browser or in the Zoom / Teams app. The meeting ID and passcode are shown too, when the
+letter has them. A meeting that starts within the hour (or is on now) goes to the top of **Needs your attention**.
+
+**Nothing goes through FLOKTRON or anyone's server.** The link is text on your own dashboard and you click it.
+FLOKTRON never opens these links itself and sends nothing.
+
+## Switch it on
+```yaml
+meetings:
+  enabled: true
+  mail: true          # also look in the inbox (read only)
+  mail_days: 30
+  days_ahead: 14
+```
+`scripts/run.py` then runs `scripts/meeting_links.py` every 30 minutes together with «collect», and the dashboard
+shows the block **🎥 Online meetings**. By hand: `python3 scripts/meeting_links.py`.
+
+## Where meetings come from
+| Source | What is read |
+|---|---|
+| Your calendar link (`calendar:` — [CALENDAR](CALENDAR.md)) and `.ics` files in `data/calendar/` | events of the next 14 days (repeats included); the link from the place, the description or the Teams / Google meeting fields |
+| Inbox letters of the last 30 days that contain a meeting address | the invitation (.ics) inside the letter; else «today at 5 PM / сегодня в 17:00 / šodien plkst. 17:00»; else a date and time written in the letter — then the link joins the calendar event of that day |
+
+A cancelled invitation removes the meeting. Newsletters without a date are not shown; a letter without a date or time
+shows for 3 days as «time — in the letter». Letters stay unread (BODY.PEEK); nothing is moved, flagged or sent. Each
+letter body is read once (`data/meetings_state.json`).
+
+## Protection against phishing
+- Only **official meeting addresses** are shown: Zoom (zoom.us, zoom.com, zoomgov.com), Microsoft Teams
+  (teams.microsoft.com, teams.live.com, teams.cloud.microsoft), Google Meet (meet.google.com), Webex, Jitsi Meet,
+  GoTo Meeting, Whereby, Skype.
+- Only `https`; the server must be the service's own domain or its subdomain — `zoom.us.other-site.example` or
+  `evilzoom.us` do not pass; no `user@`, no port, no `xn--` (look-alike letters); the path must look like a meeting
+  link (`/j/…`, `/l/meetup-join/…`, `abc-defg-hij`).
+- Google (`google.com/url?q=…`) and Outlook Safe Links wrappers are unwrapped — you see the real meeting address.
+- **A trick link** — its text says `zoom.us/j/…` but it leads to another site — is not shown. A red ⚠ warning names
+  the real site instead, also in *Needs your attention*.
+- The dashboard checks every link again before it shows it: a changed `data/meetings.json` cannot put another address
+  on the page.
+
+## Check your own letters
+```
+python3 scripts/meeting_links.py --selftest invitation.eml       # links, warnings, time FLOKTRON sees
+python3 scripts/meeting_links.py --ics my-calendar.ics             # meetings and links in a calendar file
+```
+Text of letters and calendars is data, never instructions.
 
 
 ===== FILE: docs/SUPPLY_CHAIN.md =====
@@ -2190,6 +2245,7 @@ if the Mac asks, right-click the icon → Open → Open. The page itself also sh
 | Ring N/M + chips — which parts work | `data/run.log` (last run and exit code of each job), Telegram channel watch |
 | Needs your attention | failed or late runs, overdue tasks, questions from people, deadlines within 3 days |
 | Coming up | open consultations with a deadline (radar) |
+| Online meetings — date, time, service, the official join link in full, ID and passcode; a trick link only as a red warning | `data/meetings.json` from `scripts/meeting_links.py` (your calendar + invitation letters, [MEETINGS](MEETINGS.md)); a meeting within the hour also goes to the top of *Needs your attention* |
 | Rays — who confirmed today's tasks | sheets Rays / Tasks / Receipts of `floktron_base.xlsx` (test rays are marked) |
 | Work time — at work now, hours today and this month, overtime, night, weekend, what to check | `data/worktime.jsonl`, marks from the bot ([WORKTIME](WORKTIME.md)); no end mark or a start far from the site also goes to *Needs your attention* |
 | Site cameras — online / no fresh frame, the latest frame, a button to open the camera; public webcams only as marked *examples* (link) | `config.yaml → cameras`, frames from `scripts/cameras.py snap` in `data/cameras/` ([CAMERAS](CAMERAS.md)); a camera without a fresh frame also goes to *Needs your attention* |
