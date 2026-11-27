@@ -4,6 +4,10 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.37.1 — 27.11.2026 · «View site» button
+- Dashboard, site cameras: the button of your own camera now reads «View site» (RU «Смотреть объект», LV «Skatīt
+  objektu»); link-only examples (public webcams) keep «Open camera».
+
 ## 0.37.0 — 27.11.2026 · site cameras
 - New `scripts/cameras.py` and docs/CAMERAS.md: list your cameras in `config.yaml → cameras`; `cameras.py snap`
   (also `run.py cameras`) takes ONE frame per camera — an HTTP snapshot address (most IP cameras, recorders, the ONVIF
