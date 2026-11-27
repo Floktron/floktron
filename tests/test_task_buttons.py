@@ -54,8 +54,9 @@ def test_team_is_never_a_client(bot):
     b.handle(msg(222, "/start"))
     assert "work chat" in api.last("sendMessage")["text"]
     assert not (tmp / "floktron_leads.xlsx").exists()
+    n = len(api.calls)
     b.handle(msg(333, "hello"))
-    assert "333" in b.store.state["sessions"]                    # a stranger still gets the dialog
+    assert "333" not in b.store.state["sessions"] and len(api.calls) == n   # 0.38: a stranger gets nothing (strangers: ignore)
     b.handle(msg(111, "/client"))
     assert b.store.state["sessions"]["111"]["source"] == "team_test"
 

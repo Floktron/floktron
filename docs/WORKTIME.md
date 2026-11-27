@@ -81,17 +81,22 @@ worktime:
 The bot must be running ([TELEGRAM](TELEGRAM.md)); the people above join the team automatically and never get the
 client dialog.
 
-**Invite link instead of chat ids.** Give each person a hard-to-guess code and send them their own link:
+**Invite link instead of chat ids.** Make one link per person — it works **once, for that one person, and only until
+its date** (0.38):
 
-```yaml
-worktime:
-  invites:
-    "wt-7f3a91c2": "Anna"      # → https://t.me/<your bot>?start=wt-7f3a91c2
+```
+python3 scripts/worktime.py invite --name "Anna" --days 7
+→ https://t.me/<your bot>?start=wt-3f9c0a17b2d84e61   (works once, until 2026-12-04)
 ```
 
 The person opens the link, taps Start and gets the three buttons; the managers get one message «Anna joined».
-Who joined is kept in `data/worktime_people.json`. A link works only for the name in your config; change the code if a
-link reached the wrong person. A person who does not want to share a location writes `/in` instead of tapping ▶ Start. Reminders are sent by the bot itself; `python3 scripts/worktime.py remind` does the same from a scheduler.
+The first chat that opens a link owns it. If the link was forwarded and someone else opens it, they are refused and
+the managers are told. Who joined is kept in `data/worktime_people.json`, made links in `data/worktime_invites.json`,
+used ones in `data/worktime_invites_used.json`. A phone lost or the wrong person in? Send `/remove <chat id>` to the
+bot (managers only) or run `python3 scripts/worktime.py remove --who "Anna"` — the person is out at once, no restart.
+Codes written by hand in `worktime.invites` still work (`"wt-…": "Anna"` or `"wt-…": {name: "Anna", until: "2026-12-04"}`),
+also once per person; a code used before 0.38 belongs to whoever joined with it.
+A person who does not want to share a location writes `/in` instead of tapping ▶ Start. Reminders are sent by the bot itself; `python3 scripts/worktime.py remind` does the same from a scheduler.
 
 ## Personal data — keep it small
 

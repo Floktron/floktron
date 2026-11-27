@@ -11,7 +11,7 @@ and protected with what your computer already has. Your own antivirus or other p
 | Your data | Where it is | What protects it | Checked by |
 |---|---|---|---|
 | Settings (`config/config.yaml`) | FLOKTRON folder on your computer | no passwords inside; readable only by you | `security_check.py` §1 |
-| Mail password, bot token, calendar link | system keychain (Mac) or environment variable | never in a file, never in a chat | §1 + you |
+| Mail password, bot token, calendar link | system keychain (Mac; bot token also Windows / Linux store: `telegram_bot.py --set-token`) or environment variable | never in a file, never in a chat; token leaked → [TELEGRAM «If the bot is taken over»](TELEGRAM.md#if-the-bot-is-taken-over-or-the-token-may-have-leaked) | §1 + you |
 | Bases, letters, replies (`data/`) | FLOKTRON folder (often in your cloud) | file permissions, disk encryption, version history | §1, §3 |
 | Your mailbox | your mail provider | 2-step login, a separate mailbox with an app password | manual list §5 |
 | The whole computer | your desk / bag | disk encryption, firewall, updates, screen lock | §3, §4 |

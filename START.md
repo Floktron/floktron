@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.37.3. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.38.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -143,11 +143,11 @@ Status: in daily use in an operating company since October 2026, public since No
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.37.3 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.38.0 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
-**Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company. In numbers (November 2026): about 30–45 letters a day go through FLOKTRON (paid Proton Mail via Bridge, read-only); about 5 % of incoming letters needed a person; 143 staff replies with one button; automatic runs 08.11–27.11.2026: 860, of them 28 failed (3.3 %) — almost always because Proton Mail Bridge was closed or the computer was asleep; 14 were fixed by the next run, and on three days (13.11, 21.11, 23.11) letters did not go out even after retries. Counted from the company's run log: one run = one start of a job; failed = the run logged an error; ok means the job finished without an error, not that every letter was read. Corrected in 0.37.3: earlier we said "about 1,460 runs, about 2 % failed" — that counted log lines, not runs. These numbers are recounted with every release (`scripts/run_stats.py` does the same for your own log) ([a month of mail](https://floktron.com/en/about/#keis-pochta)).
+**Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company. In numbers (November 2026): about 30–45 letters a day go through FLOKTRON (paid Proton Mail via Bridge, read-only); about 5 % of incoming letters needed a person; 143 staff replies with one button; automatic runs 08.11–27.11.2026: 861, of them 28 failed (3.3 %) — almost always because Proton Mail Bridge was closed or the computer was asleep; 14 were fixed by the next run, and on three days (13.11, 21.11, 23.11) letters did not go out even after retries. Counted from the company's run log: one run = one start of a job; failed = the run logged an error; ok means the job finished without an error, not that every letter was read. Corrected in 0.37.3: earlier we said "about 1,460 runs, about 2 % failed" — that counted log lines, not runs. These numbers are recounted with every release (`scripts/run_stats.py` does the same for your own log) ([a month of mail](https://floktron.com/en/about/#keis-pochta)).
 
 AI-assisted operations system for companies. Built for the owner or manager who runs teams, production and processes — departments, crews, sites, a fleet, a workshop — and wants to see it all in one place. B2B fields: construction, logistics and haulage, production, equipment rental, wholesale, services.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -441,7 +441,8 @@ in any other file, or if the model download is missing from this list.
 - stores passwords in files — only the environment variable or the system keychain;
 - runs hidden commands. The only programs it starts are its own scripts (`scripts/run.py`) and, on a Mac,
   the system keychain tool `security` to read the mail password, the calendar link and the backup password (`scripts/mail/send.py`) and the bot token
-  (`scripts/bot/telegram_bot.py`); for voice (only if you switch it on) `scripts/voice.py` starts the system speech tools `say` and `afconvert` (Mac)
+  (`scripts/secret_store.py`, used by `scripts/bot/telegram_bot.py`; on Linux also `secret-tool` if installed, and on any system the
+  package `keyring` if you installed it — they read and save only the bot token, under the name in `telegram.keychain_service`); for voice (only if you switch it on) `scripts/voice.py` starts the system speech tools `say` and `afconvert` (Mac)
   or `espeak-ng` / `ffmpeg` (Linux) — the local speech model itself runs inside Python; the security checkup starts only the system's own read-only settings tools
   (the list `READ_ONLY_COMMANDS` in `scripts/security_check.py`, guarded by a test) and connects to nothing; the capacity
   check (`scripts/capacity_check.py`) starts only `sysctl -n hw.memsize` on a Mac to read the memory size. `scripts/desktop_icon.py` starts PowerShell once on Windows, only when you make the desktop icon, to save the shortcut. `scripts/cameras.py` starts `ffmpeg` (only if you list an `rtsp://` camera) to take one frame from YOUR camera.
@@ -796,12 +797,24 @@ Two optional parts. Both run on your own computer; nothing goes through the auth
 1. **Goal.** What should the bot do: take requests, orders, support questions, send you reports — or only watch channels?
 2. **Dialog.** The assistant writes `config/bot_flow.yaml` from your answers: questions, buttons, branches (e.g. company / private), languages. It checks the file without internet: `python3 scripts/bot/telegram_bot.py --flow-check`. You read every text.
 3. **Create the bot — you, in Telegram.** Search **@BotFather** — only the one with the blue check mark and exactly this name. `/newbot` → name → username ending in `bot`. Then `/setjoingroups` → **Disable**, `/setdescription`, `/setabouttext`, `/setcommands`.
-4. **Token — you, never in chat.** BotFather gives a token (the key to your bot). Mac: double-click `scripts/install/telegram/1_token.command` and paste it — it goes straight into the Keychain. Windows/Linux: environment variable `FLOKTRON_TG_TOKEN`. Do not paste the token into any chat, file, e-mail or screenshot.
+4. **Token — you, never in chat.** BotFather gives a token (the key to your bot). Any computer:
+   `python3 scripts/bot/telegram_bot.py --set-token` — paste it (nothing is shown); it goes into the system store
+   (macOS Keychain; Windows Credential Manager or Linux Secret Service through the package `keyring`, Linux `secret-tool`)
+   and is checked with Telegram. Mac: double-clicking `scripts/install/telegram/1_token.command` does the same. A server
+   without a store: environment variable `FLOKTRON_TG_TOKEN`. Do not paste the token into any chat, file, e-mail or screenshot.
 5. **Check:** `2_check.command` (or `python3 scripts/bot/telegram_bot.py --check`) → `OK — bot @…`.
 6. **You become the manager.** Start the bot, open it in Telegram, send `/id`, put the number into `telegram.manager_chat_ids`, restart the bot.
 7. **Test every branch** together with the assistant: each finished dialog must arrive to you and appear in `floktron_leads.xlsx`.
 8. **Autostart:** `4_autostart_on.command` (Mac) — see "macOS and iCloud" below.
 9. **Channels:** forward the bot any post from a public channel → it is added to the watch list (`/channels` shows the list). Times: `telegram.watch_times`, e.g. `["07:05", "18:40"]`.
+
+## Who the bot talks to (0.38)
+`telegram.strangers: ignore` (the default): the bot answers **only the team** — `manager_chat_ids`, `team_chat_ids`,
+voice users and people who joined with a valid invite link. Anyone else gets no answer, no dialog, no buttons, and
+nothing about them is kept (only a count per day in the log, no names, no text). `/id` answers a stranger only while
+`manager_chat_ids` is still empty — for your first setup.
+`telegram.strangers: dialog` switches the client dialog (leads) on for strangers. Leads are personal data: switch it on
+only when you need it, and keep `/privacy` and `/forget` texts in your dialog.
 
 ## Tasks: yes / no
 Your own chat with the bot is a work chat. The manager (`manager_chat_ids`), the team (`team_chat_ids`) and voice users
@@ -832,8 +845,11 @@ With `worktime.enabled` the team gets three buttons under the message field: ▶
 ## Security
 | Risk | What happens | Protection in FLOKTRON |
 |---|---|---|
-| Token leaks | whoever has it controls the bot and reads what people send | Keychain / environment variable only; never in files, code or chat. Leaked? BotFather → `/revoke` → new token |
-| Your Telegram account is taken over | BotFather hands over all your bots | turn on **Two-Step Verification** (cloud password), passkey, login e-mail |
+| Token leaks | whoever has it controls the bot and reads what people send | system store / environment variable only; never in files, code, logs, backups or chat; anything that looks like a token is hidden in the bot's output and `data/bot.log`; `--set-token` replaces it in one step (below) |
+| Your Telegram account is taken over | BotFather hands over all your bots | turn on **Two-Step Verification** (cloud password), passkey, login e-mail; check **Active sessions** (below) |
+| Strangers write to the bot | spam, attempts to get data or press old buttons | `strangers: ignore` — they get nothing; buttons and commands work only for the team; a button press counts only from the person in whose chat it is |
+| An invite link is forwarded | a stranger joins the team | a link works once, for one person, until its date; a second person is refused and the managers are told; `/remove <chat id>` |
+| A task message is forwarded | names, sums go further | `protect_content`: tasks, leads and voice notes cannot be forwarded or saved; tasks hide e-mails, phones, IBANs, card numbers, personal codes (`mask_personal`) |
 | Fake BotFather | look-alike names ask for the token or money | only @BotFather with the blue check mark |
 | Bot added to strange groups | spam, data collection | works only in private chats; `/setjoingroups` → Disable |
 | Someone pretends to be the manager | wants to see leads | manager commands work only from `manager_chat_ids` |
@@ -842,7 +858,33 @@ With `worktime.enabled` the team gets three buttons under the message field: ▶
 | Harmful text in answers | a formula or link trap in Excel | every saved text is plain text; length limit; flood guard; old buttons ignored |
 | Third-party bot builders | your leads on someone else's server | your own code, your own computer |
 | Open server port | attack from outside | none: the bot fetches messages itself (long polling) |
-| Bot chats are not end-to-end encrypted | as in normal Telegram cloud chats | ask only what you need: name, phone, e-mail |
+| Bot chats are not end-to-end encrypted | as in normal Telegram cloud chats | send only what is needed: the task, not the letter; the details stay on your computer |
+
+### Protect your own Telegram account (5 minutes, once)
+1. Telegram → Settings → **Privacy and Security → Two-Step Verification** → set a cloud password (not used anywhere
+   else) and a recovery e-mail. Without it, whoever gets one SMS code gets your account and all your bots.
+2. Same screen → **Passkeys** (if offered) — sign-in with Face ID / fingerprint instead of an SMS code.
+3. Settings → **Devices** (Active sessions): end every session you do not recognise; set «Automatically terminate old
+   sessions» to 1 month or less.
+4. Settings → Privacy → **Phone number** → «Who can see»: My contacts or Nobody.
+5. Never type a login code anywhere except the Telegram app — Telegram itself never asks for it in a chat.
+
+### If the bot is taken over (or the token may have leaked)
+Signs: messages you did not send, the bot answers strangely, «Conflict: terminated by other getUpdates request» in
+`data/bot.log` (someone else runs your bot), or the token was in a chat, a file, a screenshot.
+1. **Stop the old key — 1 minute.** Telegram → @BotFather (blue check mark) → `/mybots` → your bot → API Token →
+   **Revoke current token**. The old token stops working at once, for everyone.
+2. **Put the new one in — one command:** `python3 scripts/bot/telegram_bot.py --set-token` (Mac: double-click
+   `scripts/install/telegram/6_new_token.command`, it also restarts the bot). It checks the new token with Telegram
+   and replaces the old one in the system store; nothing is shown or written to a file.
+3. **Restart the bot** (`3_bot_start.command`, or your scheduler) and send it `/version` — it must answer you.
+4. **Check who is in the team:** `manager_chat_ids`, `team_chat_ids`, `data/worktime_people.json`; remove anyone you
+   do not know (`/remove <chat id>`). Make new invite links if old ones went around.
+5. **Your account:** Two-Step Verification on, end unknown sessions (above). If your Telegram account itself was taken,
+   first get it back (Telegram → «Forgot password» / support), then steps 1–4.
+6. **Look at what could have been seen:** messages in the bot's chats stay in Telegram's cloud; tasks hide contact and
+   payment details (`mask_personal`). If personal data of others may have been seen, the GDPR asks you to assess it
+   and, where there is a risk to people, tell the authority within 72 hours.
 
 People can type `/privacy` (what you keep) and `/forget` (personal fields are blanked; the row stays as "Deleted" for counting).
 
@@ -2060,17 +2102,22 @@ worktime:
 The bot must be running ([TELEGRAM](TELEGRAM.md)); the people above join the team automatically and never get the
 client dialog.
 
-**Invite link instead of chat ids.** Give each person a hard-to-guess code and send them their own link:
+**Invite link instead of chat ids.** Make one link per person — it works **once, for that one person, and only until
+its date** (0.38):
 
-```yaml
-worktime:
-  invites:
-    "wt-7f3a91c2": "Anna"      # → https://t.me/<your bot>?start=wt-7f3a91c2
+```
+python3 scripts/worktime.py invite --name "Anna" --days 7
+→ https://t.me/<your bot>?start=wt-3f9c0a17b2d84e61   (works once, until 2026-12-04)
 ```
 
 The person opens the link, taps Start and gets the three buttons; the managers get one message «Anna joined».
-Who joined is kept in `data/worktime_people.json`. A link works only for the name in your config; change the code if a
-link reached the wrong person. A person who does not want to share a location writes `/in` instead of tapping ▶ Start. Reminders are sent by the bot itself; `python3 scripts/worktime.py remind` does the same from a scheduler.
+The first chat that opens a link owns it. If the link was forwarded and someone else opens it, they are refused and
+the managers are told. Who joined is kept in `data/worktime_people.json`, made links in `data/worktime_invites.json`,
+used ones in `data/worktime_invites_used.json`. A phone lost or the wrong person in? Send `/remove <chat id>` to the
+bot (managers only) or run `python3 scripts/worktime.py remove --who "Anna"` — the person is out at once, no restart.
+Codes written by hand in `worktime.invites` still work (`"wt-…": "Anna"` or `"wt-…": {name: "Anna", until: "2026-12-04"}`),
+also once per person; a code used before 0.38 belongs to whoever joined with it.
+A person who does not want to share a location writes `/in` instead of tapping ▶ Start. Reminders are sent by the bot itself; `python3 scripts/worktime.py remind` does the same from a scheduler.
 
 ## Personal data — keep it small
 
@@ -2485,7 +2532,7 @@ and protected with what your computer already has. Your own antivirus or other p
 | Your data | Where it is | What protects it | Checked by |
 |---|---|---|---|
 | Settings (`config/config.yaml`) | FLOKTRON folder on your computer | no passwords inside; readable only by you | `security_check.py` §1 |
-| Mail password, bot token, calendar link | system keychain (Mac) or environment variable | never in a file, never in a chat | §1 + you |
+| Mail password, bot token, calendar link | system keychain (Mac; bot token also Windows / Linux store: `telegram_bot.py --set-token`) or environment variable | never in a file, never in a chat; token leaked → [TELEGRAM «If the bot is taken over»](TELEGRAM.md#if-the-bot-is-taken-over-or-the-token-may-have-leaked) | §1 + you |
 | Bases, letters, replies (`data/`) | FLOKTRON folder (often in your cloud) | file permissions, disk encryption, version history | §1, §3 |
 | Your mailbox | your mail provider | 2-step login, a separate mailbox with an app password | manual list §5 |
 | The whole computer | your desk / bag | disk encryption, firewall, updates, screen lock | §3, §4 |

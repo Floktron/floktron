@@ -76,13 +76,13 @@ def test_voice_from_team_member_saved_and_sent_to_manager(tmp_path, fake_engines
 def test_voice_from_stranger_refused(tmp_path, fake_engines):
     bot, api = make(tmp_path, {"enabled": True, "users": {111: "L5"}})
     bot.handle(vmsg(222))
-    assert any("only from the team" in t for t in api.texts(222))
+    assert not api.texts(222)                                  # 0.38: strangers get no answer at all
     assert not os.path.exists(tmp_path / "data" / "voice_reports.xlsx")
     assert not api.texts(999)
 
 
 def test_voice_off_and_too_long(tmp_path, fake_engines):
-    bot, api = make(tmp_path, {"enabled": False})
+    bot, api = make(tmp_path, {"enabled": False, "users": {111: "L5"}})
     bot.handle(vmsg(111))
     assert any("as text" in t for t in api.texts(111))
     bot, api = make(tmp_path, {"enabled": True, "users": {111: "L5"}, "max_seconds": 60})

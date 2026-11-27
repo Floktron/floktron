@@ -34,6 +34,16 @@ Manager commands (only from manager_chat_ids): /leads — last 10 leads · /funn
 Work time (worktime.enabled, docs/WORKTIME.md): the team gets three buttons — ▶ Start (one location point when worktime.geo) ·
 ⏸ Pause · ⏹ End; /hours — my hours · /who — who is at work now (managers)
 Anyone: /start (optionally /start <source>, e.g. t.me/<bot>?start=qr_bucket) · /menu · /privacy · /forget · /id
+  — only with telegram.strangers: dialog. Default since 0.38 (strangers: ignore): the bot answers NOBODY outside
+  manager_chat_ids / team_chat_ids / voice users / people who joined with a valid invite — no dialog, no data kept
+  (only /id while manager_chat_ids is still empty, for the first setup).
+
+Security (0.38, docs/TELEGRAM.md «If the bot is taken over»):
+  token — environment variable or the system store (macOS Keychain, Windows Credential Manager / Linux Secret Service
+  via `keyring`, Linux secret-tool), never a file: `--set-token` asks for it hidden and checks it;
+  nothing that looks like a token reaches the console or data/bot.log;
+  task messages, leads and voice notes go with protect_content (no forwarding, no saving);
+  invite links work once, for one person, and can expire; /remove <chat id> takes a person out at once (managers).
 """
 import argparse
 import datetime
@@ -93,18 +103,37 @@ def load_yaml(path):
         return yaml.safe_load(f) or {}
 
 
+def token_service(cfg):
+    return cfg.get("keychain_service") or "FLOKTRON_TG_BOT"
+
+
 def token_from(cfg):
+    """Environment variable → macOS Keychain → system keyring (Windows / Linux) → secret-tool. Never a file."""
+    import secret_store
     env = cfg.get("token_env", "FLOKTRON_TG_TOKEN")
-    if os.environ.get(env):
-        return os.environ[env].strip()
-    service = cfg.get("keychain_service")
-    if service and sys.platform == "darwin":
-        r = subprocess.run(["security", "find-generic-password", "-s", service, "-w"],
-                           capture_output=True, text=True)
-        if r.stdout.strip():
-            return r.stdout.strip()
-    raise BotError(f"No bot token: set environment variable {env}"
-                   + (f" or Keychain item '{service}'" if service else ""))
+    tok = secret_store.get(token_service(cfg), env=env)
+    if tok:
+        return tok
+    raise BotError(f"No bot token: run `python3 scripts/bot/telegram_bot.py --set-token` (system store "
+                   f"'{token_service(cfg)}') or set environment variable {env}")
+
+
+def set_token(cfg):
+    """--set-token: new token from @BotFather (after /revoke) → system store → checked with getMe. Never printed."""
+    import secret_store
+    print("Paste the token from @BotFather and press Enter. Nothing is shown — that is normal.")
+    tok = secret_store.ask_hidden("Token: ")
+    if not secret_store.TG_TOKEN_RX.fullmatch(tok):
+        raise BotError("This does not look like a bot token (digits:letters). Nothing saved.")
+    try:
+        me = Api(tok, timeout=20).call("getMe")
+    except (BotError, OSError) as e:
+        raise BotError(f"Telegram does not accept this token ({secret_store.redact(e, tok)}). Nothing saved.") from None
+    err = secret_store.put(token_service(cfg), tok)
+    if err:
+        raise BotError(f"Not saved: {err}")
+    print(f"✅ Token saved in {secret_store.where(token_service(cfg)) or 'the system store'} — bot @{me.get('username')}.\n"
+          "   Now restart the bot. If an environment variable with an old token is set, remove it.")
 
 
 def check_flow(flow):
@@ -340,6 +369,11 @@ class Bot:
         voice_users = (cfg.get("voice") or {}).get("users") or {}
         # the team: managers + team_chat_ids + voice users — tasks, buttons ✅/⛔, never the client funnel
         self.team = self.managers | {str(x) for x in cfg.get("team_chat_ids") or []} | {str(k) for k in voice_users}
+        self.team_base = set(self.team)
+        # 0.38: strangers (not team) — "ignore" (default): no answer, nothing kept · "dialog": the client funnel
+        self.strangers = "dialog" if str(cfg.get("strangers") or "ignore").lower() == "dialog" else "ignore"
+        self.protect = cfg.get("protect_content", True) is not False   # team messages: no forwarding / saving
+        self._people_mtime = None
         self.ttext = {**TEAM_TEXT, **(cfg.get("team_texts") or {})}
         # work time (scripts/worktime.py, docs/WORKTIME.md): top-level worktime: of config.yaml, passed in by main()
         self.wt = {"worktime": cfg.get("_worktime") or {}, "company": cfg.get("_company") or {},
@@ -350,10 +384,37 @@ class Bot:
             self.wt["worktime"] = {**self.wt["worktime"], "people": {**worktime.joined(self.wt_path()),
                                                                      **(self.wt["worktime"].get("people") or {})}}
             self.team |= {str(k) for k in self.wt["worktime"].get("people") or {}}
+            self._people_mtime = self._people_stamp()
+        if self.strangers == "ignore":   # minimum data: unfinished client dialogs of strangers are not kept
+            old = [c for c in list(self.store.state.get("sessions") or {}) if c not in self.team]
+            for c in old:
+                self.store.state["sessions"].pop(c, None)
+            if old:
+                self.store.save_state()
+                print(f"{now_str()} strangers: ignore — {len(old)} old client dialog(s) removed from bot_state.json")
+
+    def _people_stamp(self):
+        import worktime
+        try:
+            return os.path.getmtime(worktime.joined_path(self.wt_path()))
+        except OSError:
+            return None
+
+    def refresh_team(self):
+        """Someone was removed (worktime.py remove) or joined meanwhile → the team follows without a restart."""
+        if not self.wt_on or self._people_stamp() == self._people_mtime:
+            return
+        import worktime
+        self._people_mtime = self._people_stamp()
+        joined = worktime.joined(self.wt_path())
+        self.wt["worktime"]["people"] = {**joined, **((self.cfg.get("_worktime") or {}).get("people") or {})}
+        self.team = self.team_base | {str(k) for k in self.wt["worktime"]["people"]}
 
     # ---- sending
-    def send(self, chat_id, text, keyboard=None, contact_button=None, markup=None):
+    def send(self, chat_id, text, keyboard=None, contact_button=None, markup=None, protect=False):
         p = {"chat_id": chat_id, "text": text[:4000], "disable_web_page_preview": True}
+        if protect and self.protect:
+            p["protect_content"] = True      # the message cannot be forwarded or saved
         if markup:
             p["reply_markup"] = markup
         elif keyboard:
@@ -409,7 +470,7 @@ class Bot:
                 answers]
         for m in self.managers:
             try:
-                self.send(int(m), "\n".join(x for x in note if x))
+                self.send(int(m), "\n".join(x for x in note if x), protect=True)
             except BotError:
                 pass
         sess["done"] = True
@@ -431,10 +492,31 @@ class Bot:
         self.store.state["flood"][key] = rec
         return rec[1] > MAX_PER_MINUTE
 
+    def stranger(self, chat_id):
+        return str(chat_id) not in self.team
+
+    def ignore(self, what, chat_id):
+        """A stranger with strangers: ignore — no answer, nothing kept; only a count in the log (no text, no name)."""
+        n = self.store.state.setdefault("ignored", {})
+        day = datetime.date.today().isoformat()
+        n[day] = int(n.get(day, 0)) + 1
+        for k in sorted(n)[:-14]:
+            n.pop(k, None)
+        if n[day] in (1, 10, 100):
+            print(f"{now_str()} ignored {what} from a chat outside the team (today: {n[day]})")
+
     def handle(self, upd):
+        self.refresh_team()
         if "callback_query" in upd:
             q = upd["callback_query"]
+            if not isinstance(q.get("message"), dict) or not (q["message"].get("chat") or {}).get("id"):
+                return                                   # inline / too old message — nothing to act on
             chat_id = q["message"]["chat"]["id"]
+            if str((q.get("from") or {}).get("id", chat_id)) != str(chat_id):
+                return self._answer(q)                   # a press in someone else's chat (group) — never acts
+            if self.strangers == "ignore" and self.stranger(chat_id):
+                self.ignore("a button press", chat_id)
+                return self._answer(q)
             if str(q.get("data", "")).startswith("fk:"):     # task buttons ✅ / ⛔ (scripts send them to the team)
                 return self.on_task_button(q)
             if str(q.get("data", "")).startswith("wt:"):     # work-time reminder: ⏹ end now / ▶ still working
@@ -457,11 +539,18 @@ class Bot:
             (msg.get("from", {}).get("first_name") or "")
         text = (msg.get("text") or "").strip()
         lang = (self.store.state["sessions"].get(str(chat_id)) or {}).get("lang") or self.langs[0]
-        if msg.get("voice") or msg.get("audio") or msg.get("video_note"):
+        if (msg.get("voice") or msg.get("audio") or msg.get("video_note")) and not (
+                self.strangers == "ignore" and self.stranger(chat_id)):
             return self.on_voice(chat_id, user, msg)
         team = str(chat_id) in self.team
-        if self.wt_on and text.startswith("/start ") and str(text[7:].strip()) in {str(k) for k in self.wt["worktime"].get("invites") or {}}:
+        if self.wt_on and text.startswith("/start ") and re.match(r"^wt-[A-Za-z0-9_-]{4,40}$", text[7:].strip()):
             return self.wt_join(chat_id, text[7:].strip())
+        if not team and self.strangers == "ignore":
+            if text == "/id" and not self.managers:      # first setup only: the owner learns their own chat id
+                return self.send(chat_id, f"chat id: {chat_id}")
+            return self.ignore("a message", chat_id)
+        if str(chat_id) in self.managers and re.match(r"^/remove(@\w+)?\s+\S+", text):
+            return self.remove_cmd(chat_id, text.split(None, 1)[1].strip())
         if team and self.wt_on:
             if msg.get("location"):
                 return self.wt_mark(chat_id, msg, "start", location=msg["location"])
@@ -542,13 +631,43 @@ class Bot:
         people = {str(k): str(v) for k, v in (self.wt["worktime"].get("people") or {}).items()}
         return people.get(str(chat_id)) or ("@" + frm["username"] if frm.get("username") else str(frm.get("first_name") or chat_id))
 
-    def wt_join(self, chat_id, code):
-        """Invite link: the person joins the team and the work-time record; the managers are told once."""
+    def _answer(self, q, text=""):
+        try:
+            self.api.call("answerCallbackQuery", callback_query_id=q["id"], text=text)
+        except (BotError, KeyError):
+            pass
+
+    def remove_cmd(self, chat_id, who):
+        """/remove <chat id or name> (managers): out of the team and work time at once — e.g. a phone was lost."""
         import worktime
         lang = self.wt["company"].get("language", "en")
-        name = worktime.join(self.wt_path(), self.wt["worktime"], code, chat_id)
+        L = worktime.texts(lang)
+        name = worktime.remove(self.wt_path(), who) if self.wt_on else ""
         if not name:
-            return self.start(chat_id, "", code)
+            return self.send(chat_id, L["not_found"].format(c=who[:40]))
+        self._people_mtime = None            # force: the team follows the file right now
+        self.refresh_team()
+        return self.send(chat_id, L["removed_mgr"].format(c=who[:40], n=name))
+
+    def wt_join(self, chat_id, code):
+        """Invite link: works once, for ONE person, until its date; the managers are told (and of any misuse)."""
+        import worktime
+        lang = self.wt["company"].get("language", "en")
+        name, status = worktime.join_check(self.wt_path(), self.wt["worktime"], code, chat_id)
+        if status == "unknown":
+            if self.strangers == "ignore" and self.stranger(chat_id):
+                return self.ignore("an unknown invite code", chat_id)
+            return self.start(chat_id, "", code) if self.stranger(chat_id) else self.team_help(chat_id)
+        if status in ("used", "expired"):
+            if status == "used":
+                for m in self.managers:
+                    try:
+                        self.send(int(m), worktime.texts(lang)["invite_used_mgr"].format(n=name, c=chat_id))
+                    except BotError as e:
+                        print(f"{now_str()} worktime invite notice: {e}")
+            print(f"{now_str()} invite refused ({status}) for chat {chat_id}")
+            return self.send(chat_id, worktime.texts(lang)["invite_bad"])
+        self._people_mtime = self._people_stamp()
         new = str(chat_id) not in (self.wt["worktime"].get("people") or {})
         self.wt["worktime"]["people"] = {**(self.wt["worktime"].get("people") or {}), str(chat_id): name}
         self.team.add(str(chat_id))
@@ -868,7 +987,7 @@ class Bot:
         for m in self.managers:
             if m != str(chat_id):
                 try:
-                    self.send(int(m), note)
+                    self.send(int(m), note, protect=True)
                 except BotError:
                     pass
 
@@ -970,6 +1089,8 @@ def main():
     g.add_argument("--once", action="store_true")
     g.add_argument("--check", action="store_true")
     g.add_argument("--flow-check", action="store_true")
+    g.add_argument("--set-token", action="store_true",
+                   help="save a new token from @BotFather (after /revoke) to the system store, hidden, and check it")
     a = ap.parse_args()
     full = load_yaml(a.config)
     cfg = full.get("telegram") or {}
@@ -991,8 +1112,17 @@ def main():
         sys.exit(1 if probs else 0)
     if probs:
         sys.exit("Dialog file has problems (run --flow-check):\n  " + "\n  ".join(probs))
+    if a.set_token:
+        try:
+            set_token(cfg)
+        except BotError as e:
+            sys.exit(str(e))
+        return
     try:
         api = Api(token_from(cfg))
+        import secret_store   # 0.38: nothing that looks like the token reaches the console or data/bot.log
+        sys.stdout = secret_store.RedactingStream(sys.stdout, api.token)
+        sys.stderr = secret_store.RedactingStream(sys.stderr, api.token)
         if a.check:
             me = api.call("getMe")
             print(f"OK — bot @{me.get('username')} ({me.get('first_name')}). Managers: {cfg.get('manager_chat_ids') or 'none yet'}")

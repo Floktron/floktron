@@ -43,7 +43,8 @@ in any other file, or if the model download is missing from this list.
 - stores passwords in files — only the environment variable or the system keychain;
 - runs hidden commands. The only programs it starts are its own scripts (`scripts/run.py`) and, on a Mac,
   the system keychain tool `security` to read the mail password, the calendar link and the backup password (`scripts/mail/send.py`) and the bot token
-  (`scripts/bot/telegram_bot.py`); for voice (only if you switch it on) `scripts/voice.py` starts the system speech tools `say` and `afconvert` (Mac)
+  (`scripts/secret_store.py`, used by `scripts/bot/telegram_bot.py`; on Linux also `secret-tool` if installed, and on any system the
+  package `keyring` if you installed it — they read and save only the bot token, under the name in `telegram.keychain_service`); for voice (only if you switch it on) `scripts/voice.py` starts the system speech tools `say` and `afconvert` (Mac)
   or `espeak-ng` / `ffmpeg` (Linux) — the local speech model itself runs inside Python; the security checkup starts only the system's own read-only settings tools
   (the list `READ_ONLY_COMMANDS` in `scripts/security_check.py`, guarded by a test) and connects to nothing; the capacity
   check (`scripts/capacity_check.py`) starts only `sysctl -n hw.memsize` on a Mac to read the memory size. `scripts/desktop_icon.py` starts PowerShell once on Windows, only when you make the desktop icon, to save the shortcut. `scripts/cameras.py` starts `ffmpeg` (only if you list an `rtsp://` camera) to take one frame from YOUR camera.
