@@ -125,6 +125,14 @@ def main():
                     f.write(f"--- exit {mm.returncode}\n")
                 except subprocess.TimeoutExpired:
                     f.write("--- meetings: timeout\n")
+                f.write(f"=== {datetime.datetime.now():%Y-%m-%d %H:%M} channels\n")   # e-mail channel: queued letters out, reply presses in (nothing while channels.enabled is false)
+                f.flush()
+                try:
+                    ch = subprocess.run([sys.executable, os.path.join(HERE, "channels.py"), "flush"], cwd=ROOT, stdout=f,
+                                        stderr=subprocess.STDOUT, timeout=300)
+                    f.write(f"--- exit {ch.returncode}\n")
+                except subprocess.TimeoutExpired:
+                    f.write("--- channels: timeout\n")
             if job == "morning":        # new FLOKTRON version? once a day; offline or off = nothing happens
                 f.write(f"=== {datetime.datetime.now():%Y-%m-%d %H:%M} update\n")
                 f.flush()

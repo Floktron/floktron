@@ -12,6 +12,7 @@ or exactly the exported Bridge certificate in mail.tls_cert).
 """
 import datetime
 import email
+import email.header
 import imaplib
 import os
 from mail.send import MailError, _password, tls_context, with_hint
@@ -180,4 +181,28 @@ def meeting_mail(mail_cfg, days=30, terms=(), skip_ids=()):
         try:
             M.logout()
         except Exception:
+            pass
+
+
+def subject_mail(mail_cfg, word, days=3):
+    """Channels (scripts/channels.py): yield dict(mid, subject, from) for inbox letters of the last `days` days whose
+    subject contains `word` (the «FLOKTRON-ACT …» reply letters). Read-only (BODY.PEEK: letters stay unread)."""
+    p = PRESETS.get(mail_cfg.get("provider", "smtp"), PRESETS["smtp"])
+    host = mail_cfg.get("imap_host") or p["host"]
+    port = int(mail_cfg.get("imap_port") or p["port"])
+    M = _open(mail_cfg, p, host, port)
+    since = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%d-%b-%Y")
+    try:
+        if M.select("INBOX", readonly=True)[0] != "OK":
+            return
+        typ, data = M.search(None, "SINCE", since, "SUBJECT", '"' + str(word).replace('"', "") + '"')
+        for num in (data[0] or b"").split() if typ == "OK" else []:
+            _, hd = M.fetch(num, "(BODY.PEEK[HEADER.FIELDS (MESSAGE-ID SUBJECT FROM)])")
+            h = email.message_from_bytes(hd[0][1])
+            dec = lambda v: str(email.header.make_header(email.header.decode_header(str(v or ""))))  # noqa: E731
+            yield dict(mid=(h.get("Message-ID") or "").strip(), subject=dec(h.get("Subject")), **{"from": dec(h.get("From"))})
+    finally:
+        try:
+            M.logout()
+        except Exception:  # noqa: BLE001
             pass

@@ -13,6 +13,8 @@ Each script then applies its own kind of presses to its own sheet on its next ru
 callback_data: fk:<kind>:<key>:<y|n> (Telegram allows 64 bytes). Kinds: mail · prospect · gw.
 No text about sheets or columns goes to Telegram: only the fact and the two buttons.
 Network: none here — the message goes through the bot's Api (scripts/bot/telegram_bot.py).
+Channels (0.40, docs/CHANNELS.md): with channels.enabled each person gets the task in the channel they chose —
+Telegram, their own page or e-mail (+ push) — through scripts/channels.py; a press anywhere lands in the same file.
 Minimum data (0.38): before a task leaves the computer, e-mail addresses, phone numbers, IBANs, card numbers and
 personal codes in its text are hidden (telegram.mask_personal, on by default) — names and subjects stay, so the task
 is still clear; the details stay on the computer. The message goes with protect_content (telegram.protect_content,
@@ -94,7 +96,17 @@ def _deliver(cfg, text, markup, outbox):
         os.makedirs(outbox, exist_ok=True)
         with open(os.path.join(outbox, "telegram_tasks.jsonl"), "a", encoding="utf-8") as f:
             f.write(json.dumps({"text": text, "buttons": markup or []}, ensure_ascii=False) + "\n")
+        if (cfg.get("channels") or {}).get("enabled"):   # 0.40: the same file for tests, plus each person's own channel
+            import channels
+            return channels.deliver(cfg, text, markup, lambda t, m: "", outbox=outbox)
         return ""
+    if (cfg.get("channels") or {}).get("enabled"):       # 0.40: each person's own channel (docs/CHANNELS.md)
+        import channels
+        return channels.deliver(cfg, text, markup, lambda t, m: _telegram(cfg, t, m))
+    return _telegram(cfg, text, markup)
+
+
+def _telegram(cfg, text, markup):
     tg = cfg.get("telegram") or {}
     ids = [str(x) for x in (tg.get("manager_chat_ids") or [])]
     if not ids:

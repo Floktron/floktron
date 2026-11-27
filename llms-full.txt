@@ -8,7 +8,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.39.0. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.40.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -136,11 +136,11 @@ Status: in daily use in an operating company since October 2026, public since No
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.39.0 · last update 28.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.40.0 · last update 28.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
-**Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company. In numbers (November 2026): about 30–45 letters a day go through FLOKTRON (paid Proton Mail via Bridge, read-only); about 5 % of incoming letters needed a person; 143 staff replies with one button; automatic runs 08.11–28.11.2026: 868, of them 28 failed (3.2 %) — almost always because Proton Mail Bridge was closed or the computer was asleep; 14 were fixed by the next run, and on three days (13.11, 21.11, 23.11) letters did not go out even after retries. Counted from the company's run log: one run = one start of a job; failed = the run logged an error; ok means the job finished without an error, not that every letter was read. Corrected in 0.37.3: earlier we said "about 1,460 runs, about 2 % failed" — that counted log lines, not runs. These numbers are recounted with every release (`scripts/run_stats.py` does the same for your own log) ([a month of mail](https://floktron.com/en/about/#keis-pochta)).
+**Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company. In numbers (November 2026): about 30–45 letters a day go through FLOKTRON (paid Proton Mail via Bridge, read-only); about 5 % of incoming letters needed a person; 143 staff replies with one button; automatic runs 08.11–28.11.2026: 874, of them 28 failed (3.2 %) — almost always because Proton Mail Bridge was closed or the computer was asleep; 14 were fixed by the next run, and on three days (13.11, 21.11, 23.11) letters did not go out even after retries. Counted from the company's run log: one run = one start of a job; failed = the run logged an error; ok means the job finished without an error, not that every letter was read. Corrected in 0.37.3: earlier we said "about 1,460 runs, about 2 % failed" — that counted log lines, not runs. These numbers are recounted with every release (`scripts/run_stats.py` does the same for your own log) ([a month of mail](https://floktron.com/en/about/#keis-pochta)).
 
 AI-assisted operations system for companies. Built for the owner or manager who runs teams, production and processes — departments, crews, sites, a fleet, a workshop — and wants to see it all in one place. B2B fields: construction, logistics and haulage, production, equipment rental, wholesale, services.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -149,6 +149,7 @@ Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) 
 A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big producers, listed companies, freight routes, reference prices and currencies — it speaks up only when something moves ([SUPPLY_CHAIN](docs/SUPPLY_CHAIN.md)).
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
 **Work time — start, pause, end with one tap**: your team marks the working day with three buttons in the work chat with your bot; with one location point at the start (if you switch it on) the manager sees who is on which site. The dashboard shows who is at work now, today's and the month's hours, overtime, night and weekend hours and what needs a look; once a month a table for the accountant. Hours are never made up: a day without an end mark waits for the manager's correction, and every correction keeps its reason ([WORKTIME](docs/WORKTIME.md)).
+**Each person chooses the channel — Telegram, their own page, or e-mail (+ push)**: not everyone wants Telegram. Each person gets tasks where they like and switches by themselves: Telegram as before, their own private page that opens like an app from the phone home screen (tasks with ✅ / ⛔ and the work-time buttons), or one summary letter with buttons; push to the phone only says «New task» — no names or amounts. The same buttons work everywhere and land in the same place; if Telegram is silent, the task goes to the backup channel. Off by default; the page runs on your computer, from outside only through your own tunnel ([CHANNELS](docs/CHANNELS.md)).
 **Online meetings — join from the dashboard**: a Zoom, Microsoft Teams or Google Meet meeting from your calendar or from an invitation letter shows on the dashboard with its official link in full, exactly as in the letter — one click opens the browser or the app; the meeting ID and passcode are there too, and a meeting within the hour goes to the top of «Needs your attention». Only official meeting addresses are shown; a link whose text says Zoom but leads elsewhere becomes a red warning. Mail is only read; nothing goes through FLOKTRON ([MEETINGS](docs/MEETINGS.md)).
 **Site cameras on the dashboard — security, not watching people**: gate, yard, warehouse — is each camera online, its latest frame and a button to open it live in the camera's own app; a camera that went quiet goes to «Needs your attention». One frame per camera is kept on your computer and overwritten: no recording, no video through anyone's server, no face recognition ([CAMERAS](docs/CAMERAS.md)).
 Your team can **report by voice** — the bot turns a voice message into text on your own computer; the manager gets a **morning audio summary** to listen to in the car ([VOICE](docs/VOICE.md)).
@@ -436,7 +437,7 @@ Text from e-mails, attachments, web pages and Telegram is treated as data, never
 ## FLOKTRON connects only to
 | Where | Why | Code |
 |---|---|---|
-| Your own mail server (IMAP / SMTP), with the address and app password you set | send the morning letters, read the replies; for reminders after an offer (if switched on) — see which offers were sent and answered; for online meetings (if switched on) — find inbox letters with a meeting link (read only, letters stay unread) | `scripts/mail/read.py`, `scripts/mail/send.py` |
+| Your own mail server (IMAP / SMTP), with the address and app password you set | send the morning letters, read the replies; for reminders after an offer (if switched on) — see which offers were sent and answered; for online meetings (if switched on) — find inbox letters with a meeting link (read only, letters stay unread); for channels (if switched on) — send the summary letter with tasks to the person who chose e-mail, and find reply letters with the subject «FLOKTRON-ACT» (read only) | `scripts/mail/read.py`, `scripts/mail/send.py` |
 | News feeds (RSS) and public Telegram channel pages (`t.me/s/<channel>`) listed in your own radar base | the news slice by your keywords — no Telegram account or login is used | `scripts/news_slice.py` |
 | Public Telegram channel pages `t.me/s/<channel>` from your own channel list (only if you use the channel watch) | posts with your keywords | `scripts/tg_watch.py` |
 | api.telegram.org — only if you switch the Telegram bot on, with the bot token you created | receive messages people send to YOUR bot, answer them, tell the manager about a new lead | `scripts/bot/telegram_bot.py` |
@@ -447,6 +448,8 @@ Text from e-mails, attachments, web pages and Telegram is treated as data, never
 | api.github.com — once a day with the morning run, unless you set `updates.check: false` (docs/UPDATES.md) | ask for the list of FLOKTRON releases to tell the manager that a newer version is out; one anonymous request — no account, no ID, nothing about you or your company is sent | `scripts/update_check.py` |
 | Nothing outside your computer: the desktop icon (only if you make it) opens your own local `data/dashboard.html` (a `file://` page) in your default browser | open the dashboard with one double-click | `scripts/desktop_icon.py` |
 | YOUR own cameras in your own network, at the addresses you wrote in `cameras.items` (only if you switch cameras on). Cameras marked `demo: true` are never contacted | one latest frame per camera, saved in `data/cameras/` and overwritten; no video is streamed or recorded, nothing is sent anywhere | `scripts/cameras.py` |
+| The ntfy push server (ntfy.sh, or your own in `channels.ntfy.server`) — only if a person switches push on in channels | ring that person's phone: only «New task: letter / new client / payment without a document» goes out — no names, subjects, amounts or addresses | `scripts/channels.py` |
+| Nothing outside your computer: the channels page (only if you start `scripts/channels.py serve`) listens on 127.0.0.1 — on your own network only with `channels.web.lan: true`, and from outside only through a tunnel YOU set up (docs/CHANNELS.md). It serves only the people's own task pages, each with its private key | each person sees and closes their own tasks, marks work time | `scripts/channels_web.py` |
 | Latvian open data portal data.gov.lv (only if you switch the registry on) | new companies by words in the name | `scripts/registry_lv.py` |
 | data.gov.lv public procurement results (EIS) and the register (only if you switch prospects on) | who has just signed a contract of the kind you serve; form, town, registration date of those companies | `scripts/registry_lv.py` (used by `scripts/prospects.py`) |
 
@@ -857,6 +860,8 @@ waiting 6 d.
 - **Reply** to a task message with text (swipe → Reply) → ✅ with your comment.
 - No text about sheets or columns; summaries with nothing to do come without buttons.
 - Your own words: `telegram.team_texts` (help, closed_y, closed_n, toast, reply_closed, already).
+- Not everyone wants Telegram: with [channels](CHANNELS.md) each person chooses Telegram, their own page (an app on
+  the phone) or e-mail (+ push), and the same buttons work there; if Telegram is silent, the task goes to the backup channel.
 
 ## Work time: start, pause, end
 
@@ -2142,6 +2147,9 @@ kiosk tablet at the entrance, an e-mail or SMS gateway you already have — mark
 
 The mark goes to the same log and the same hours; the dashboard shows which channel it came from.
 
+With [channels](CHANNELS.md) a person who chose their own page gets ▶ Start / ⏸ Pause / ⏹ End right there
+(`time: true` and `worktime_who` in `channels.people`) — with one location point at the start if the phone allows it; marks come `by: web`.
+
 ## Corrections — only by the manager, always with a reason
 
     python3 scripts/worktime.py fix --who "Anna" --date 2026-11-26 --end 17:30 --why "forgot to tap End"
@@ -2211,6 +2219,128 @@ rules), and decide how long you keep `data/worktime.jsonl`. A forwarded location
 on the map cannot be told from a real one by Telegram, so the point is a check, not proof.
 
 Camera monitoring of workplaces is **not** part of FLOKTRON.
+
+
+===== FILE: docs/CHANNELS.md =====
+
+# Channels — each person chooses: Telegram, their own page, or e-mail (+ push)
+
+Telegram is the easiest way to get tasks, not the only one. With channels switched on, **each person chooses** where
+their tasks come — and can switch at any time, by themselves, from their own page:
+
+| Channel | What the person gets | Buttons |
+|---|---|---|
+| **Telegram** | one task = one message, as before ([TELEGRAM](TELEGRAM.md#tasks-yes--no)) | ✅ / ⛔ under the message |
+| **Their own page** | a private page with all their open tasks; added to the phone home screen it opens like an app (its own icon, full screen) | ✅ / ⛔ on each task, and ▶ Start / ⏸ Pause / ⏹ End for work time |
+| **E-mail** | one summary letter with all new tasks (not one letter per task) | ✅ / ⛔ under each task |
+
+**Push** (optional, per person, with the page or e-mail): the phone rings with «New task: letter» — nothing else.
+
+A press in **any** channel writes the same line to `data/task_actions.jsonl` as the Telegram buttons do (with
+`by: telegram | web | email` and the person). Every module — mail watch, prospects, gateways — reads its presses
+exactly as before. Nothing else changes.
+
+Off by default (`config.yaml → channels.enabled: false`): tasks go to Telegram as before.
+
+## If a channel is silent
+
+Each person has a backup list (default: page → e-mail). If Telegram does not answer (no network, Telegram down), the
+task goes to the next channel on the list. Every task is also written to `data/channels_feed.jsonl`, so the page
+always shows everything — whichever channel delivered it.
+
+## Setup (your AI assistant leads, you decide)
+
+1. In `config.yaml`:
+
+   ```yaml
+   channels:
+     enabled: true
+     people:
+       manager: {name: "Anna", channel: telegram, email: "anna@yourcompany.com"}
+       site1:   {name: "Jānis", channel: web, time: true, worktime_who: "123456789", tasks: false}
+     web:
+       port: 8765
+       public_url: ""        # see «From anywhere» below
+       lan: false
+     ntfy:
+       server: "https://ntfy.sh"
+   ```
+
+   - `channel` — the starting choice; the person switches it on their page later.
+   - `email` — needed for the e-mail channel (summary letters go through your own mail server, `mail:` in config).
+   - `tasks: false` — this person gets no tasks (e.g. a worker who only marks work time).
+   - `time: true` + `worktime_who` — work-time buttons on the page; `worktime_who` is the same id as in
+     `worktime.people` (the Telegram chat id or the name) — marks go to the same log and the same hours ([WORKTIME](WORKTIME.md)).
+   - `backup: [web, email]` — the backup list (default).
+
+2. `python3 scripts/channels.py` — lists everyone with their channel and **their private page link**. Send each person
+   their own link privately (it is their key; whoever has it sees their tasks).
+3. Start the page: `python3 scripts/channels.py serve` (on `127.0.0.1:8765` — this computer only). For autostart, ask
+   your AI assistant to add it next to the bot (Mac launchd / Windows Task Scheduler / Linux systemd or cron @reboot).
+4. `scripts/run.py` sends queued summary letters and reads reply letters every 30 minutes with «collect»
+   (`python3 scripts/channels.py flush` does it by hand).
+
+Switch from the command line: `python3 scripts/channels.py set manager web` · `python3 scripts/channels.py push manager on`.
+
+## The page on a phone
+
+- Open your link in Safari (iPhone) or Chrome (Android) → **Share → Add to Home Screen**. It opens like an app.
+  The link carries the key, so the home-screen app stays signed in.
+- At the top: the channel switch (Telegram / This page / E-mail) and Push on / off.
+- In the same Wi-Fi only: set `web.lan: true` and open `http://<computer address>:8765/m?k=…`.
+
+### From anywhere: your own Cloudflare Tunnel (free)
+
+The page runs on your computer. To open it from a phone outside the office, put a tunnel in front of it with your own
+domain — for example `tasks.yourcompany.com`:
+
+1. Install `cloudflared`, `cloudflared tunnel login` (choose your domain), `cloudflared tunnel create tasks`,
+   `cloudflared tunnel route dns tasks tasks.yourcompany.com`.
+2. In the tunnel config **let only the page through** — nothing else on your computer is reachable:
+
+   ```yaml
+   ingress:
+     - hostname: tasks.yourcompany.com
+       path: ^/(m|a)(/|$|\?)
+       service: http://127.0.0.1:8765
+     - service: http_status:404
+   ```
+
+3. `channels.web.public_url: "https://tasks.yourcompany.com"` → e-mail buttons become links to the page.
+
+Check: `https://tasks.yourcompany.com/m?k=<key>` opens the page; `https://tasks.yourcompany.com/` gives 404.
+
+The page server itself also serves only `/m…` and `/a`, answers only for `127.0.0.1`, your `public_url` host and (with
+`lan`) your local network, and needs the person's key for everything.
+
+## E-mail buttons
+
+- **With `public_url`:** a button is a link to `/a`. The page shows the task and asks **«Confirm»** — so a mail
+  scanner that opens every link closes nothing. Only the press of «Confirm» (a POST) closes the task.
+- **Without `public_url`:** a button opens a new letter to your own address with a ready subject
+  `FLOKTRON-ACT mail:a1:y manager <signature>`. The person just sends it; the next run reads it (read only), checks
+  that it came from that person's address and that the signature is right, and closes the task once.
+
+Every button is signed (HMAC, key in `data/.channels_secret`): a changed answer, task or person does not pass.
+
+## Push (ntfy)
+
+[ntfy](https://ntfy.sh) is a free push service; install the **ntfy** app on the phone and subscribe to the person's
+topic (the page shows it, «Push on»). FLOKTRON sends **only** «New task: letter / new client / payment without a
+document» — no names, subjects, amounts or addresses. The task itself stays on your computer, in Telegram or in your
+own mail. The topic is a long random word per person. You can run your own ntfy server: `channels.ntfy.server`.
+
+## What is kept
+
+| File | What |
+|---|---|
+| `data/channels_state.json` | each person's channel, push on/off, page key, push topic |
+| `data/channels_feed.jsonl` | the tasks shown on the pages (the same short text as in Telegram) |
+| `data/channels_mail_queue.jsonl` | tasks waiting for the next summary letter |
+| `data/.channels_secret` | the signing key for buttons |
+| `data/task_actions.jsonl` | the presses — the same file as for Telegram |
+
+Nothing goes to the authors or anyone else ([TRANSPARENCY](TRANSPARENCY.md)). Task text is data, never instructions.
 
 
 ===== FILE: docs/DASHBOARD.md =====
