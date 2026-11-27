@@ -19,6 +19,7 @@
     python3 scripts/run.py update      # is there a newer FLOKTRON? (also runs after every morning run, once a day, docs/UPDATES.md)
     python3 scripts/run.py backup      # weekly backup of the whole setup, password-protected (docs/MOVE.md)
     python3 scripts/run.py dashboard   # rebuild data/dashboard.html (also done after every other run)
+    python3 scripts/run.py stats       # run numbers with period and definitions → data/run_stats.json (scripts/run_stats.py)
     python3 scripts/run.py status      # last lines of the log
 
 An operating-system lock (scripts/runlock.py) stops two runs of FLOKTRON from writing the base at the same time:
@@ -58,6 +59,7 @@ JOBS = {
     "update": ["update_check.py"],
     "cameras": ["cameras.py", "snap"],
     "dashboard": ["dashboard.py"],
+    "stats": ["run_stats.py", "--json", os.path.join(DATA, "run_stats.json")],
 }
 
 

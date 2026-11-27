@@ -4,6 +4,17 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.37.3 — 27.11.2026 · honest run numbers
+- Correction: README said "about 1,460 automatic runs since 8 November, about 2 % failed". That counted lines of the
+  run log — one run writes several lines (mail → tasks → routes). Counted per run, 08.11–27.11.2026: 860 runs, 28
+  failed (3.3 %), 14 fixed by the next run; on three days (13.11, 21.11, 23.11) letters did not go out even after
+  retries. An outside reviewer noticed that the number had no period and no definition — thank you.
+- New `scripts/run_stats.py` (also `run.py stats`): the same numbers for your own `data/run.log` — period from–to, runs,
+  ok, failed, fixed by the next run, unfinished, skipped — as text and `data/run_stats.json`. "Ok" means the job
+  finished without an error, not that every letter was read. The numbers in README, on floktron.com and in the PDF are
+  recounted this way with every release.
+- New tests: `tests/test_run_stats.py` (2, fictional log).
+
 ## 0.37.2 — 27.11.2026 · fixes after an outside code review
 An outside review (an AI assistant reading tag v0.37.1) named three points; all three were confirmed in the code and
 fixed, and the invoice check was hardened before the next review round. Details with files: docs/CODE_REVIEW.md.
