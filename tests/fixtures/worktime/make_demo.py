@@ -12,6 +12,7 @@ import random
 
 PEOPLE = {"9001": "Anna K. (TEST)", "9002": "Jānis B. (TEST)", "9003": "Oleg S. (TEST)", "9004": "Marta L. (TEST)",
           "9005": "Pēteris D. (TEST)", "9006": "Ivo R. (TEST)"}
+WHY = {"ru": "забыл нажать «Закончил» (TEST)", "lv": "aizmirsa nospiest «Beidzu» (TEST)", "en": "forgot to tap End (TEST)"}
 SITES = [{"name": "Objekts Parka 12 (TEST)", "lat": 56.95100, "lon": 24.11300, "radius_m": 250},
          {"name": "Noliktava (TEST)", "lat": 56.93000, "lon": 24.16000, "radius_m": 200}]
 
@@ -64,7 +65,7 @@ def main():
     put("9004", t.replace(hour=15, minute=31), "end")
     fixd = (now.date() - datetime.timedelta(days=3)).isoformat()
     ev.append({"ts": (now - datetime.timedelta(days=2)).strftime("%Y-%m-%d %H:%M"), "who": "9001", "name": PEOPLE["9001"], "ev": "fix",
-               "by": "manager", "date": fixd, "end": "17:10", "why": "забыл нажать «Закончил» (TEST)"})
+               "by": "manager", "date": fixd, "end": "17:10", "why": WHY.get(a.lang, WHY["en"])})
     ev.sort(key=lambda r: r["ts"])
     with open(os.path.join(a.out, "worktime.jsonl"), "w", encoding="utf-8") as f:
         for r in ev:

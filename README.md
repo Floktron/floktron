@@ -36,7 +36,7 @@ checks disk encryption, firewall, updates, open network doors, passwords and bac
 and shows where to click — you make each change. At the end the system works and is protected with what your computer
 already has; your own antivirus can be added on top ([SECURITY_CHECKUP](docs/SECURITY_CHECKUP.md)).
 
-**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 21 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, breath and ready roles, move in one click, new versions, industry keyword packs, FLOKTRON for each of the six industries, a safe first test, what else can be plugged in. Other languages: [floktron.com](https://floktron.com/en/).
+**Read before you install:** [FLOKTRON overview by rays](docs/FLOKTRON_overview.pdf) — one PDF, 22 pages: the daily cycle, what each of the 8 rays does, the radars, the tools and connectors, the website, supplier-invoice, company-snapshot, own-documents, follow-up, mail-watch, new-customer and payment-gateway steps, breath and ready roles, move in one click, new versions, industry keyword packs, FLOKTRON for each of the six industries, work time, a safe first test, what else can be plugged in. Other languages: [floktron.com](https://floktron.com/en/).
 
 ## Before you install — a safe first test
 
