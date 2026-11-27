@@ -22,6 +22,7 @@ import os
 import re
 import sys
 
+import cameras
 import worktime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -341,6 +342,11 @@ def collect(cfg, data=DATA, now=None):
     if (cfg.get("worktime") or {}).get("enabled") or os.path.exists(worktime.events_path(cfg, data)):
         D["worktime"] = worktime.collect(cfg, data, now)
         D["attention"] += D["worktime"]["attention"]
+    # site cameras (config cameras:, frames from scripts/cameras.py snap — docs/CAMERAS.md)
+    D["cameras"] = None
+    if (cfg.get("cameras") or {}).get("enabled"):
+        D["cameras"] = cameras.collect(cfg, data, now, D.get("lang", "en"))
+        D["attention"] += D["cameras"]["attention"]
     D["score"] = dict(ok=sum(1 for p in D["pulse"] if p["st"] == "ok"), n=len(D["pulse"]))
     D["attention"].sort(key=lambda a: {"bad": 0, "warn": 1}.get(a["lvl"], 2))
     return D
@@ -381,6 +387,11 @@ main{max-width:1180px;margin:-40px auto 40px;padding:0 14px}
 .tb{width:100%;border-collapse:collapse;font-size:13.5px}.tb th{font-size:11.5px;color:var(--mut);font-weight:600;text-align:right;padding:4px 6px}
 .tb td{border-top:1px solid var(--line);padding:6px;text-align:right}.tb td:first-child,.tb th:first-child{text-align:left;white-space:nowrap}
 @media (max-width:860px){.wt{grid-template-columns:1fr}}footer{text-align:center;color:var(--mut);font-size:12px;margin:24px 0 10px}
+.cams{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}.cam{border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.cam .ph{position:relative;aspect-ratio:16/9;background:#0f1724}.cam .ph img,.cam .ph svg{display:block;width:100%;height:100%;object-fit:cover}
+.cam .ph .tag{position:absolute;top:8px;left:8px}.cam .ph .ex{left:auto;right:8px;background:#8B5CF6;color:#fff}
+.cam .cb{padding:10px 12px;display:flex;flex-direction:column;gap:4px;flex:1}.cam .cb b{font-weight:600}.cam .go{margin-top:auto;padding-top:6px;font-weight:600;color:var(--acc);text-decoration:none}
+.camnote{font-size:12px;color:var(--mut);margin:10px 0 0}
 @media (max-width:520px){.kpis{grid-template-columns:1fr 1fr}.rays{grid-template-columns:1fr 1fr;gap:8px}.list li{flex-wrap:wrap}.act{flex-basis:100%;padding-left:19px}}
 """
 
@@ -389,6 +400,15 @@ main{max-width:1180px;margin:-40px auto 40px;padding:0 14px}
 MARK = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#8B5CF6"/>'
         '<path d="M17 13h31v10H28v7h-11zM17 30h11v21H17z" fill="#fff"/><circle cx="41" cy="35.5" r="6.5" fill="#fff"/></svg>')
 FAVICON = "data:image/svg+xml," + MARK.replace('"', "'").replace("#", "%23").replace("<", "%3C").replace(">", "%3E")
+
+# a drawn placeholder for a camera without a local frame (no third-party images): skyline at dusk + lens mark
+CAM_PH = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" aria-hidden="true"><defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">'
+          '<stop offset="0" stop-color="#1A365D"/><stop offset="1" stop-color="#3b2a6e"/></linearGradient></defs><rect width="320" height="180" fill="url(#cg)"/>'
+          '<path d="M0 140h22v-18h10v-26l6-14 6 14v26h14v-12h16v12h8V84l5-22 5 22v28h12v-20h18v20h10v-8h12V70l7-30 7 30v42h12v-16h20v16h10V96h8l4-12 4 12h8'
+          'v20h16v-10h14v10h12v-22h12v22h18v24H0z" fill="#0f1724" opacity=".85"/><path d="M0 150c60-10 120 6 180-2s100-8 140 0v32H0z" fill="#8B5CF6" opacity=".25"/>'
+          '<g fill="none" stroke="#fff" stroke-width="3" opacity=".9"><rect x="138" y="66" width="34" height="24" rx="5"/><path d="M172 74l12-7v22l-12-7"/></g>'
+          '<circle cx="146" cy="72" r="2.5" fill="#c53030"/></svg>')
+
 
 def esc(s):
     return html.escape(str(s or ""), quote=True)
@@ -473,6 +493,24 @@ def render(D, colors=None):
                f'<th>{WL["night"]}</th><th>{WL["weekend"]}</th></tr>{mrows}</table></div>') if mrows else ""
         fl = (f'<h4>⚠ {WL["k_flags"]}</h4>' + lst([li(f["lvl"], esc(f["name"]), esc(f["text"])) for f in wt["flags"]], "—")) if wt["flags"] else ""
         work = f'<div class="kpis" style="margin-bottom:10px">{kw}</div><div class="wt"><div>{ppl}</div><div>{mon}{fl}</div></div>'
+    cm = D.get("cameras")
+    cams_html = ""
+    if cm:
+        CL = cameras.texts(D["lang"])
+        cards = ""
+        for x in cm["cams"]:
+            ph = (f'<img src="{esc(os.path.relpath(x["frame"], D.get("_outdir", DATA)))}" alt="{esc(x["name"])}" loading="lazy">' if x["frame"] else CAM_PH)
+            ex = f'<span class="tag ex">{CL["demo"]}</span>' if x["demo"] else ""
+            meta = " · ".join(v for v in (x["place"], CL["shot"].format(t=x["when"]) if x["when"] else "") if v)
+            src = f'<span class="sub">{esc(CL["demo_note"].format(src=x["source"] or "—"))}</span>' if x["demo"] else ""
+            go = f'<a class="go" href="{esc(x["url"])}" target="_blank" rel="noopener noreferrer">{CL["open"]} ↗</a>' if x["url"] else ""
+            cards += (f'<div class="cam"><div class="ph">{ph}{ex or f'<span class="tag {x["st"]}">● {esc(x["stx"])}</span>'}</div>'
+                      f'<div class="cb"><b>{esc(x["name"])}</b>{f"<span class=sub>{esc(meta)}</span>" if meta else ""}{src}{go}</div></div>')
+        live = [x for x in cm["cams"] if not x["demo"]]
+        kc = "".join(f'<div class="kpi"><b>{v}</b><span>{esc(t)}</span></div>' for v, t in (
+            (f'{cm["on"]}/{len(live)}' if live else "—", CL["k_on"]), (cm["off"], CL["k_off"]), (cm["n"], CL["k_all"])))
+        cams_html = (f'<div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px">{kc}</div>'
+                     f'<div class="cams">{cards}</div>' if cm["cams"] else lst([], CL["none"])) + f'<p class="camnote">🛡 {CL["rule"]}</p>'
     ch = D["chain"]
     chain = (f'<div class="chips" style="margin-bottom:8px"><span class="chip ok">🟢 {ch["g"]}</span><span class="chip warn">🟡 {ch["y"]}</span>'
              f'<span class="chip bad">🔴 {ch["r"]}</span><span class="sub">{esc(ch["date"])}</span></div>'
@@ -480,13 +518,14 @@ def render(D, colors=None):
     nxt = lst([li("warn" if x["days"] <= 3 else "wait", link(x["url"], x["title"]),
                   L["today"] if x["days"] == 0 else L["tomorrow"] if x["days"] == 1 else L["days"].format(d=x["days"]) + " · " + x["t"]) for x in D["next"]], L["none_next"])
     return f"""<!DOCTYPE html><html lang="{D['lang']}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="refresh" content="900"><meta name="robots" content="noindex"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; media-src 'self' file:; img-src 'self' data:">
+<meta http-equiv="refresh" content="900"><meta name="robots" content="noindex"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; media-src 'self' file:; img-src 'self' data: file:">
 <link rel="icon" href="{FAVICON}"><title>FLOKTRON · {esc(D['org'])}</title><style>{css}</style></head><body>
 <header><div class="top"><div class="logo">{MARK}</div><div><h1>FLOKTRON · {L['title']}</h1><small>{esc(D['org'])}</small></div><div class="upd">{L['upd']}<br><b>{esc(D['updated'])}</b></div></div></header>
 <main><section class="hero">{ring}<div><h2>{head}</h2><p>{sub}</p><div class="chips">{chips}</div>{audio}</div></section><div class="grid">
 <div class="card w8"><h3>⚡ {L['att']}</h3>{lst([li(a['lvl'], esc(a['text']), '', f'<span class=act>{esc(a["act"])}</span>' if a['act'] else '') for a in att[:8]], L['none_att'])}</div>
 <div class="card w4"><h3>📅 {L['next']}</h3>{nxt}</div>
 <div class="card w12"><div class="kpis">{kp}</div></div>
+{f'<div class="card w12" id="cameras"><h3>📹 {cameras.texts(D["lang"])["title"]}</h3>{cams_html}</div>' if cams_html else ''}
 {f'<div class="card w12"><h3>⏱ {worktime.texts(D["lang"])["title"]}</h3>{work}</div>' if work else ''}
 <div class="card w12"><h3>🧭 {L['rays']}</h3><div class="rays">{rays}</div></div>
 <div class="card"><h3>✅ {L['tasks']}</h3>{lst([li('bad' if t['over'] else 'wait', esc(t['text']), esc(t['ray'] + ' · ' + t['st'] + (' · ' + L['due'] + ' ' + t['due'] if t['due'] else ''))) for t in D['tasks']], L['none_tasks'])}{f'<p class=sub>{L["hidden"].format(n=D["tasks_test"])}</p>' if D['tasks_test'] else ''}</div>

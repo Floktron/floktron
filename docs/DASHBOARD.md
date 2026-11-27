@@ -23,6 +23,7 @@ if the Mac asks, right-click the icon → Open → Open. The page itself also sh
 | Coming up | open consultations with a deadline (radar) |
 | Rays — who confirmed today's tasks | sheets Rays / Tasks / Receipts of `floktron_base.xlsx` (test rays are marked) |
 | Work time — at work now, hours today and this month, overtime, night, weekend, what to check | `data/worktime.jsonl`, marks from the bot ([WORKTIME](WORKTIME.md)); no end mark or a start far from the site also goes to *Needs your attention* |
+| Site cameras — online / no fresh frame, the latest frame, a button to open the camera; public webcams only as marked *examples* (link) | `config.yaml → cameras`, frames from `scripts/cameras.py snap` in `data/cameras/` ([CAMERAS](CAMERAS.md)); a camera without a fresh frame also goes to *Needs your attention* |
 | Open tasks · answers for 14 days | Tasks, Receipts |
 | Voice reports · audio summary player | `voice_reports.xlsx`, `pulse_*.m4a` ([VOICE](VOICE.md)) |
 | Invoices → accounting | sheet Invoices ([INVOICES](INVOICES.md)) |

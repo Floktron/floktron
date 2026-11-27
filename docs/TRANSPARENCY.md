@@ -26,6 +26,7 @@ Text from e-mails, attachments, web pages and Telegram is treated as data, never
 | huggingface.co — ONCE, only if you switch voice on with the local engine `faster-whisper` (or openaipublic.azureedge.net with `openai-whisper`) | the speech model is downloaded one time ("small" ≈ 460 MB) and kept on your computer; after that speech → text works offline. No voice, text or data is sent | the `faster-whisper` / `openai-whisper` package, called from `scripts/voice.py` |
 | api.github.com — once a day with the morning run, unless you set `updates.check: false` (docs/UPDATES.md) | ask for the list of FLOKTRON releases to tell the manager that a newer version is out; one anonymous request — no account, no ID, nothing about you or your company is sent | `scripts/update_check.py` |
 | Nothing outside your computer: the desktop icon (only if you make it) opens your own local `data/dashboard.html` (a `file://` page) in your default browser | open the dashboard with one double-click | `scripts/desktop_icon.py` |
+| YOUR own cameras in your own network, at the addresses you wrote in `cameras.items` (only if you switch cameras on). Cameras marked `demo: true` are never contacted | one latest frame per camera, saved in `data/cameras/` and overwritten; no video is streamed or recorded, nothing is sent anywhere | `scripts/cameras.py` |
 | Latvian open data portal data.gov.lv (only if you switch the registry on) | new companies by words in the name | `scripts/registry_lv.py` |
 | data.gov.lv public procurement results (EIS) and the register (only if you switch prospects on) | who has just signed a contract of the kind you serve; form, town, registration date of those companies | `scripts/registry_lv.py` (used by `scripts/prospects.py`) |
 
@@ -45,7 +46,7 @@ in any other file, or if the model download is missing from this list.
   (`scripts/bot/telegram_bot.py`); for voice (only if you switch it on) `scripts/voice.py` starts the system speech tools `say` and `afconvert` (Mac)
   or `espeak-ng` / `ffmpeg` (Linux) — the local speech model itself runs inside Python; the security checkup starts only the system's own read-only settings tools
   (the list `READ_ONLY_COMMANDS` in `scripts/security_check.py`, guarded by a test) and connects to nothing; the capacity
-  check (`scripts/capacity_check.py`) starts only `sysctl -n hw.memsize` on a Mac to read the memory size. `scripts/desktop_icon.py` starts PowerShell once on Windows, only when you make the desktop icon, to save the shortcut.
+  check (`scripts/capacity_check.py`) starts only `sysctl -n hw.memsize` on a Mac to read the memory size. `scripts/desktop_icon.py` starts PowerShell once on Windows, only when you make the desktop icon, to save the shortcut. `scripts/cameras.py` starts `ffmpeg` (only if you list an `rtsp://` camera) to take one frame from YOUR camera.
 
 ## Check it yourself
 1. Ask your AI assistant: *"Read all files in scripts/ and tell me every place where FLOKTRON connects to the internet
