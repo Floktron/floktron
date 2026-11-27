@@ -223,6 +223,7 @@ worktime:                  # work time: ▶ Start / ⏸ Pause / ⏹ End in the b
   enabled: false
   geo: false                    # true = one location point at «Start» (the phone asks); never during the day
   people: {}                    # chat id: "Name" — who marks work time (write /id to the bot)
+  invites: {}                   # or a personal link t.me/<bot>?start=<code>: e.g. "wt-7f3a91c2": "Anna" (docs/WORKTIME.md)
   sites: []                     # e.g. - {name: "Site Park 12", lat: 56.951, lon: 24.113, radius_m: 250}
   remind_at: "20:00"            # «Still at work?» to whoever has not ended
   day_hours: 8                  # more in one day = overtime

@@ -345,7 +345,10 @@ class Bot:
         self.wt = {"worktime": cfg.get("_worktime") or {}, "company": cfg.get("_company") or {},
                    "telegram": {"voice": {"users": voice_users}}}
         self.wt_on = bool(self.wt["worktime"].get("enabled"))
-        if self.wt_on:
+        if self.wt_on:   # + who joined with an invite link t.me/<bot>?start=<code> (worktime.invites)
+            import worktime
+            self.wt["worktime"] = {**self.wt["worktime"], "people": {**worktime.joined(self.wt_path()),
+                                                                     **(self.wt["worktime"].get("people") or {})}}
             self.team |= {str(k) for k in self.wt["worktime"].get("people") or {}}
 
     # ---- sending
@@ -457,6 +460,8 @@ class Bot:
         if msg.get("voice") or msg.get("audio") or msg.get("video_note"):
             return self.on_voice(chat_id, user, msg)
         team = str(chat_id) in self.team
+        if self.wt_on and text.startswith("/start ") and str(text[7:].strip()) in {str(k) for k in self.wt["worktime"].get("invites") or {}}:
+            return self.wt_join(chat_id, text[7:].strip())
         if team and self.wt_on:
             if msg.get("location"):
                 return self.wt_mark(chat_id, msg, "start", location=msg["location"])
@@ -536,6 +541,25 @@ class Bot:
     def wt_name(self, chat_id, frm):
         people = {str(k): str(v) for k, v in (self.wt["worktime"].get("people") or {}).items()}
         return people.get(str(chat_id)) or ("@" + frm["username"] if frm.get("username") else str(frm.get("first_name") or chat_id))
+
+    def wt_join(self, chat_id, code):
+        """Invite link: the person joins the team and the work-time record; the managers are told once."""
+        import worktime
+        lang = self.wt["company"].get("language", "en")
+        name = worktime.join(self.wt_path(), self.wt["worktime"], code, chat_id)
+        if not name:
+            return self.start(chat_id, "", code)
+        new = str(chat_id) not in (self.wt["worktime"].get("people") or {})
+        self.wt["worktime"]["people"] = {**(self.wt["worktime"].get("people") or {}), str(chat_id): name}
+        self.team.add(str(chat_id))
+        if new:
+            for m in self.managers:
+                try:
+                    self.send(int(m), worktime.texts(lang)["joined_mgr"].format(n=name, c=chat_id))
+                except BotError as e:
+                    print(f"{now_str()} worktime join notice: {e}")
+        self.send(chat_id, worktime.texts(lang)["joined"].format(n=name))
+        return self.team_help(chat_id)
 
     def wt_mark(self, chat_id, msg, act, location=None):
         import worktime
