@@ -200,7 +200,7 @@ def test_cli_fix_and_month(tmp_path):
     yaml.safe_dump(CFG, open(cfgp, "w", encoding="utf-8"), allow_unicode=True)
     put(tmp_path / "worktime.jsonl", "1", "start", "2026-11-25 08:00")
     run = lambda *a: subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "worktime.py"), *a, "--config", str(cfgp),  # noqa: E731
-                                     "--data", str(tmp_path)], capture_output=True, text=True)
+                                     "--data", str(tmp_path)], capture_output=True, text=True, encoding="utf-8")
     assert run("fix", "--who", "Anna (TEST)", "--date", "2026-11-25").returncode != 0      # a reason is required
     r = run("fix", "--who", "Anna (TEST)", "--date", "2026-11-25", "--end", "16:00", "--why", "forgot (TEST)")
     assert r.returncode == 0, r.stderr
@@ -212,7 +212,7 @@ def test_mark_without_telegram_is_shown_with_its_channel(tmp_path):
     cfgp = tmp_path / "config.yaml"
     yaml.safe_dump(CFG, open(cfgp, "w", encoding="utf-8"), allow_unicode=True)
     r = subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "worktime.py"), "mark", "--who", "Anna (TEST)", "--action", "start",
-                        "--by", "dashboard", "--config", str(cfgp), "--data", str(tmp_path)], capture_output=True, text=True)
+                        "--by", "dashboard", "--config", str(cfgp), "--data", str(tmp_path)], capture_output=True, text=True, encoding="utf-8")
     assert r.returncode == 0 and "Work started" in r.stdout
     rows = wt.days(wt.read(str(tmp_path / "worktime.jsonl")))
     assert rows[0]["who"] == "1" and ("via", {"via": "dashboard"}) in rows[0]["flags"]
