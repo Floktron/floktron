@@ -7,14 +7,14 @@ Providers (config.yaml → mail.provider), same names as mail/send.py:
     outlook        outlook.office365.com:993, SSL, folders INBOX, Junk — not working yet (see mail/send.py)
     smtp           any server: set imap_host / imap_port yourself
 The password is taken the same way as for sending (environment variable or macOS Keychain).
+Certificates are checked the same way as for sending (mail/send.py → tls_context: Bridge only on this computer,
+or exactly the exported Bridge certificate in mail.tls_cert).
 """
 import datetime
 import email
 import imaplib
 import os
-import ssl
-
-from mail.send import MailError, _password, with_hint
+from mail.send import MailError, _password, tls_context, with_hint
 
 PRESETS = {
     "proton_bridge": {"host": "127.0.0.1", "port": 1143, "ssl": False, "self_signed": True,
@@ -27,6 +27,21 @@ PRESETS = {
 }
 
 
+def _open(mail_cfg, p, host, port):
+    """Log in to the mailbox: SSL or STARTTLS, certificate checked by tls_context (never silently off)."""
+    ctx = tls_context(host, p["self_signed"], mail_cfg)   # raises MailError for a non-local Bridge address
+    try:
+        if p["ssl"]:
+            M = imaplib.IMAP4_SSL(host, port, ssl_context=ctx)
+        else:
+            M = imaplib.IMAP4(host, port)
+            M.starttls(ssl_context=ctx)
+        M.login(mail_cfg.get("user") or "", _password(mail_cfg))
+    except Exception as e:
+        raise MailError(with_hint(f"Cannot open mailbox {host}:{port} — {e}", mail_cfg)) from e
+    return M
+
+
 def from_imap(mail_cfg, days=2, marker="FLOKTRON#"):
     """Yield raw messages (bytes) whose subject contains the marker, from the last `days` days."""
     provider = mail_cfg.get("provider", "smtp")
@@ -36,20 +51,7 @@ def from_imap(mail_cfg, days=2, marker="FLOKTRON#"):
     host = mail_cfg.get("imap_host") or p["host"]
     port = int(mail_cfg.get("imap_port") or p["port"])
     folders = mail_cfg.get("imap_folders") or p["folders"]
-    user = mail_cfg.get("user") or ""
-    ctx = ssl.create_default_context()
-    if p["self_signed"]:
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-    try:
-        if p["ssl"]:
-            M = imaplib.IMAP4_SSL(host, port, ssl_context=ctx)
-        else:
-            M = imaplib.IMAP4(host, port)
-            M.starttls(ssl_context=ctx)
-        M.login(user, _password(mail_cfg))
-    except Exception as e:
-        raise MailError(with_hint(f"Cannot open mailbox {host}:{port} — {e}", mail_cfg)) from e
+    M = _open(mail_cfg, p, host, port)
     since = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%d-%b-%Y")
     seen = set()
     try:
@@ -80,19 +82,7 @@ def all_messages(mail_cfg, folders, days=60):
     p = PRESETS.get(mail_cfg.get("provider", "smtp"), PRESETS["smtp"])
     host = mail_cfg.get("imap_host") or p["host"]
     port = int(mail_cfg.get("imap_port") or p["port"])
-    ctx = ssl.create_default_context()
-    if p["self_signed"]:
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-    try:
-        if p["ssl"]:
-            M = imaplib.IMAP4_SSL(host, port, ssl_context=ctx)
-        else:
-            M = imaplib.IMAP4(host, port)
-            M.starttls(ssl_context=ctx)
-        M.login(mail_cfg.get("user") or "", _password(mail_cfg))
-    except Exception as e:
-        raise MailError(with_hint(f"Cannot open mailbox {host}:{port} — {e}", mail_cfg)) from e
+    M = _open(mail_cfg, p, host, port)
     since = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%d-%b-%Y")
     try:
         for box in folders:
@@ -127,19 +117,7 @@ def with_flags(mail_cfg, boxes, days=4, skip_ids=()):
     p = PRESETS.get(mail_cfg.get("provider", "smtp"), PRESETS["smtp"])
     host = mail_cfg.get("imap_host") or p["host"]
     port = int(mail_cfg.get("imap_port") or p["port"])
-    ctx = ssl.create_default_context()
-    if p["self_signed"]:
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-    try:
-        if p["ssl"]:
-            M = imaplib.IMAP4_SSL(host, port, ssl_context=ctx)
-        else:
-            M = imaplib.IMAP4(host, port)
-            M.starttls(ssl_context=ctx)
-        M.login(mail_cfg.get("user") or "", _password(mail_cfg))
-    except Exception as e:
-        raise MailError(with_hint(f"Cannot open mailbox {host}:{port} — {e}", mail_cfg)) from e
+    M = _open(mail_cfg, p, host, port)
     since = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%d-%b-%Y")
     skip = set(skip_ids)
     try:

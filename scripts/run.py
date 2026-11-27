@@ -21,14 +21,16 @@
     python3 scripts/run.py dashboard   # rebuild data/dashboard.html (also done after every other run)
     python3 scripts/run.py status      # last lines of the log
 
-A lock file stops two runs of FLOKTRON from writing the base at the same time.
-If the base is open in Excel, the run waits and tries again (up to 10 minutes).
+An operating-system lock (scripts/runlock.py) stops two runs of FLOKTRON from writing the base at the same time:
+taking it is atomic, and the system frees it by itself if a run crashes. If the base is open in Excel, the run waits and tries again (up to 10 minutes).
 """
 import datetime
 import os
 import subprocess
 import sys
 import time
+
+from runlock import RunLock
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -76,8 +78,9 @@ def main():
     if job not in JOBS:
         sys.exit(__doc__)
 
-    # one FLOKTRON run at a time (a stale lock older than 1 hour is ignored)
-    if os.path.exists(LOCK) and time.time() - os.path.getmtime(LOCK) < 3600:
+    # one FLOKTRON run at a time: atomic OS lock, freed by the system even after a crash
+    lock = RunLock(LOCK)
+    if not lock.acquire():
         with open(LOG, "a", encoding="utf-8") as f:
             f.write(f"{datetime.datetime.now():%Y-%m-%d %H:%M} {job}: skipped — another FLOKTRON run is working\n")
         return
@@ -86,7 +89,6 @@ def main():
         if not excel_has_open(base):
             break
         time.sleep(60)
-    open(LOCK, "w").close()
     try:
         with open(LOG, "a", encoding="utf-8") as f:
             f.write(f"\n=== {datetime.datetime.now():%Y-%m-%d %H:%M} {job}\n")
@@ -126,7 +128,7 @@ def main():
                 subprocess.run([sys.executable, os.path.join(HERE, "dashboard.py")], cwd=ROOT,
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=300)
     finally:
-        os.remove(LOCK)
+        lock.release()
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.37.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.37.2. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -136,7 +136,7 @@ Status: in daily use in an operating company since October 2026, public since No
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.37.1 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.37.2 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
@@ -315,6 +315,8 @@ against, how, and what it cannot protect against.
 | Hidden instructions for the AI agent inside an e-mail, news item or web page ("ignore your rules…") | The agent treats all outside text as data; instructions come only from this repository and the person | `AGENTS.md` rule 1, header of every prompt |
 | HTML/script inside a reply shows up in a letter to the manager | All outside text is escaped before it goes into a letter | `send_morning.py`, `weekly_summary.py`, `gaps_report.py`, `content_check.py` |
 | A hostile news server sends a huge file | Feeds over 5 MB are skipped and recorded in Gaps | `news_slice.py` |
+| Someone in the middle of the mail connection (fake mail server) | Every mail server's certificate is checked. The only exception is Proton Mail Bridge, which runs on your own computer with a self-signed certificate: the check is relaxed only for the address of this computer (127.0.0.1 / localhost) — or, better, pinned to Bridge's exported certificate (`mail.tls_cert`). A Bridge address on another computer without the pinned certificate is refused | `scripts/mail/send.py` → `tls_context`, `tests/test_audit_fixes.py` |
+| Two runs write the base at the same time (data lost) | One run at a time: an operating-system lock, taken in one atomic step and freed by the system even if a run crashes; `invoices.py --apply` waits for it too | `scripts/runlock.py`, `scripts/run.py`, test |
 | Passwords leak | No password in files or chat: environment variable or system keychain only; `config.yaml`, `.env`, `data/`, `*.eml` never committed | `scripts/mail/send.py`, `.gitignore` + test |
 | Dangerous code slips into the scripts | No `eval`, `exec`, `os.system`, `shell=True`, `pickle`, `curl | sh` — checked on every change | `tests/test_safety.py`, GitHub Actions |
 | Outside packages | Only `openpyxl` and `PyYAML` from pypi.org, versions pinned; known vulnerabilities checked by pip-audit on every change, updates proposed by Dependabot | `requirements.txt`, `.github/workflows/security.yml` |
@@ -349,7 +351,8 @@ used for a post gets a light check first — echo in other outlets, primary sour
 ## Automated security checks
 OpenSSF Scorecard, GitHub CodeQL, Bandit, pip-audit and Dependabot run on every change and once a week; what the first
 run found and how it was fixed: [docs/SECURITY_SCANS.md](docs/SECURITY_SCANS.md). These are automated scans, not an
-independent audit — no outside reviewer has checked the code yet.
+independent audit. Outside code reviews (so far by AI assistants reading a release tag) and what was fixed:
+[docs/CODE_REVIEW.md](docs/CODE_REVIEW.md).
 
 ## Nothing hidden
 FLOKTRON connects only to your mail server, the news feeds in your radar and (optionally) the Latvian open data portal.
@@ -1244,13 +1247,15 @@ python3 scripts/invoices.py --folder tests/fixtures/invoices/docs --extraction t
 | Situation | Status | Task |
 |---|---|---|
 | Paid, payment found (invoice number or supplier name + amount + date) | `Paid <date>` | — (goes into the hand-over task) |
-| The same document forwarded again (`FW_ …`, `(1).pdf`) or already in the base | not added | — |
+| The same document forwarded again (`FW_ …`, `(1).pdf`), a scan and a photo of the same invoice, or already in the base (number compared without spaces, dashes and case: `PR-2026/118` = `pr 2026 118`) | not added | — |
+| A record with an empty total, number or date, or an unknown type (the assistant could not read it) | not booked, listed as *needs a look* until the record is corrected | — (tell the person) |
 | Delivery note / *Lieferschein* / *pavadzīme* without amounts | `Not a payment document`, linked to its invoice | — |
 | Proforma paid, final invoice set off against it | proforma `Closed by invoice …`, invoice `Paid by advance` | — |
 | Proforma, order confirmation or advance invoice paid, no final invoice | `Paid · no final invoice` | ask the supplier for the final invoice |
 | Not paid, due date ahead | `To pay by <date>` | pay by the due date |
 | Not found in the statement | `Not found in statement` | check the payment |
 | Same amount paid to someone else (e.g. a supermarket card payment) | **not** taken as the payment — `(similar payment)` | check the payment, with the similar one named |
+| Same amount in another currency; a short number like `12` that also appears in a date; only a legal form (`SIA`, `GmbH`) in common | **not** taken as the payment | check the payment |
 | VAT of another country charged / reverse charge | comment on the row | one task for the accountant (ESTIMATE — to confirm) |
 | Several orders paid with one card payment | `one payment for N documents` | — |
 
@@ -1263,8 +1268,9 @@ data/invoices/extraction.json                 ← what the assistant read (step 
 ```
 
 **Bank statements.** Download them yourself from the internet bank — FLOKTRON never logs in to a bank.
-CSV from any bank works (columns *date, counterparty, details, amount*, in EN / LV / LT / ET / DE names; incoming money
-is skipped). PDF statements in the Swedbank layout work too if `pip install pypdf` is done; otherwise the script says so
+CSV from any bank works (columns *date, counterparty, details, amount*, optional *currency*, in EN / LV / LT / ET / DE
+names; incoming money is skipped — by the D/K column, or by the sign when outgoing payments are negative). The same
+payment in two overlapping statements (October and October–November) counts once. PDF statements in the Swedbank layout work too if `pip install pypdf` is done; otherwise the script says so
 and asks for CSV. Only statements of **your** account are read (`invoices.our_iban` in `config.yaml`); a private account
 statement in the same folder is skipped.
 

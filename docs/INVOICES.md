@@ -26,13 +26,15 @@ python3 scripts/invoices.py --folder tests/fixtures/invoices/docs --extraction t
 | Situation | Status | Task |
 |---|---|---|
 | Paid, payment found (invoice number or supplier name + amount + date) | `Paid <date>` | — (goes into the hand-over task) |
-| The same document forwarded again (`FW_ …`, `(1).pdf`) or already in the base | not added | — |
+| The same document forwarded again (`FW_ …`, `(1).pdf`), a scan and a photo of the same invoice, or already in the base (number compared without spaces, dashes and case: `PR-2026/118` = `pr 2026 118`) | not added | — |
+| A record with an empty total, number or date, or an unknown type (the assistant could not read it) | not booked, listed as *needs a look* until the record is corrected | — (tell the person) |
 | Delivery note / *Lieferschein* / *pavadzīme* without amounts | `Not a payment document`, linked to its invoice | — |
 | Proforma paid, final invoice set off against it | proforma `Closed by invoice …`, invoice `Paid by advance` | — |
 | Proforma, order confirmation or advance invoice paid, no final invoice | `Paid · no final invoice` | ask the supplier for the final invoice |
 | Not paid, due date ahead | `To pay by <date>` | pay by the due date |
 | Not found in the statement | `Not found in statement` | check the payment |
 | Same amount paid to someone else (e.g. a supermarket card payment) | **not** taken as the payment — `(similar payment)` | check the payment, with the similar one named |
+| Same amount in another currency; a short number like `12` that also appears in a date; only a legal form (`SIA`, `GmbH`) in common | **not** taken as the payment | check the payment |
 | VAT of another country charged / reverse charge | comment on the row | one task for the accountant (ESTIMATE — to confirm) |
 | Several orders paid with one card payment | `one payment for N documents` | — |
 
@@ -45,8 +47,9 @@ data/invoices/extraction.json                 ← what the assistant read (step 
 ```
 
 **Bank statements.** Download them yourself from the internet bank — FLOKTRON never logs in to a bank.
-CSV from any bank works (columns *date, counterparty, details, amount*, in EN / LV / LT / ET / DE names; incoming money
-is skipped). PDF statements in the Swedbank layout work too if `pip install pypdf` is done; otherwise the script says so
+CSV from any bank works (columns *date, counterparty, details, amount*, optional *currency*, in EN / LV / LT / ET / DE
+names; incoming money is skipped — by the D/K column, or by the sign when outgoing payments are negative). The same
+payment in two overlapping statements (October and October–November) counts once. PDF statements in the Swedbank layout work too if `pip install pypdf` is done; otherwise the script says so
 and asks for CSV. Only statements of **your** account are read (`invoices.our_iban` in `config.yaml`); a private account
 statement in the same folder is skipped.
 

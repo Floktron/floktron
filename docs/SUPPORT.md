@@ -16,7 +16,7 @@ The client does not need a terminal. The support person looks at three things an
 | `MAIL ERROR: Cannot connect … 127.0.0.1:1025` | Proton Mail Bridge is not running | start Bridge; the run retries after 10 and 20 min |
 | `Username and Password not accepted` | wrong app password / 2-step verification off | new app password (docs/GMAIL_TEST.md) |
 | no runs at all on a Mac | Python has no Full Disk Access | System Settings → Privacy → Full Disk Access → Python |
-| `skipped — another FLOKTRON run is working` many times | a run hangs | look at the last `===` block; remove `data/.floktron.lock` |
+| `skipped — another FLOKTRON run is working` many times | a run really hangs (the lock is freed by the system when a run ends or crashes, so it never goes stale) | look at the last `===` block and the PID in `data/.floktron.lock`; stop that process (Activity Monitor / Task Manager) — deleting the file does not help |
 | replies not counted | changed subject, or reply from another address | the weekly summary lists "unknown addresses"; add that address to the ray or ask to use the button |
 | no messages on a working day | the day is in `company.holidays`, or a public holiday | correct `config.yaml` |
 | news feed "error: 403" | the site blocks robots | use the Google News row for that country (Gaps says so) |
