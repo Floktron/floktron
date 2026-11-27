@@ -41,6 +41,7 @@ TEXT = {
                ask_geo="Tap «▶ Start» — Telegram will ask once to share your location at this moment (only this point is kept).",
                remind="⏰ Still at work? Started {t}, {h} so far.", still="▶ Still working", stop_now="⏹ End now",
                keep="👍 OK, the day stays open.", mine="⏱ Today {h} · this week {w} · this month {m}",
+               joined="👋 Hello, {n}! You are in the work-time record now. Mark your day with the buttons below.", joined_mgr="👤 {n} joined work time (chat id {c}).",
                who_head="👷 At work now", nobody="Nobody is at work now.", forwarded="⚠️ A forwarded location is not accepted — tap «▶ Start».",
                title="Work time", k_now="at work now", k_today="hours today", k_month="hours this month", k_flags="to check",
                since="since {t}", paused_s="on pause since {t}", done_s="{a}–{b}", absent="no mark today", none="No work-time marks yet. "
@@ -54,6 +55,7 @@ TEXT = {
                ask_geo="Нажми «▶ Начал работу» — Telegram один раз спросит разрешение отправить место в эту минуту (хранится только эта точка).",
                remind="⏰ Ты ещё на работе? Начало {t}, уже {h}.", still="▶ Ещё работаю", stop_now="⏹ Закончил сейчас",
                keep="👍 Хорошо, день остаётся открытым.", mine="⏱ Сегодня {h} · неделя {w} · месяц {m}",
+               joined="👋 Здравствуйте, {n}! Вы подключены к учёту рабочего времени. Отмечайте день кнопками внизу.", joined_mgr="👤 {n} подключился к учёту времени (chat id {c}).",
                who_head="👷 Сейчас на работе", nobody="Сейчас на работе никого.", forwarded="⚠️ Пересланное место не принимается — нажми «▶ Начал работу».",
                title="Учёт рабочего времени", k_now="сейчас на работе", k_today="часов сегодня", k_month="часов за месяц", k_flags="проверить",
                since="с {t}", paused_s="пауза с {t}", done_s="{a}–{b}", absent="сегодня не отмечался", none="Отметок пока нет. "
@@ -67,6 +69,7 @@ TEXT = {
                ask_geo="Spied «▶ Sāku darbu» — Telegram vienreiz pajautās atļauju nosūtīt atrašanās vietu šajā brīdī (glabā tikai šo punktu).",
                remind="⏰ Vēl esi darbā? Sākums {t}, jau {h}.", still="▶ Vēl strādāju", stop_now="⏹ Beidzu tagad",
                keep="👍 Labi, diena paliek atvērta.", mine="⏱ Šodien {h} · nedēļā {w} · mēnesī {m}",
+               joined="👋 Sveiki, {n}! Jūs esat pievienots darba laika uzskaitei. Atzīmējiet dienu ar pogām apakšā.", joined_mgr="👤 {n} pievienojās darba laika uzskaitei (chat id {c}).",
                who_head="👷 Tagad darbā", nobody="Tagad darbā neviena nav.", forwarded="⚠️ Pārsūtīta vieta netiek pieņemta — spied «▶ Sāku darbu».",
                title="Darba laika uzskaite", k_now="tagad darbā", k_today="stundas šodien", k_month="stundas mēnesī", k_flags="pārbaudīt",
                since="kopš {t}", paused_s="pauze kopš {t}", done_s="{a}–{b}", absent="šodien nav atzīmējies", none="Atzīmju vēl nav. "
@@ -309,11 +312,42 @@ def flag_text(f, row, L):
 
 
 # ---------------------------------------------------------------- summaries
-def people(cfg):
-    """chat id → name: worktime.people, else telegram.voice.users / team (chat id as name)."""
+def joined_path(log):
+    """People who joined with an invite link (worktime.invites) — kept next to the log."""
+    return os.path.join(os.path.dirname(os.path.abspath(log)), "worktime_people.json")
+
+
+def joined(log):
+    try:
+        with open(joined_path(log), encoding="utf-8") as f:
+            d = json.load(f)
+        return {str(k): str(v) for k, v in d.items()} if isinstance(d, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def join(log, w, code, chat_id):
+    """Invite link t.me/<bot>?start=<code>: the code from worktime.invites gives the name. '' = unknown code."""
+    invites = {str(k): str(v) for k, v in (w.get("invites") or {}).items()}
+    name = invites.get(str(code), "")
+    if not name:
+        return ""
+    d = joined(log)
+    d[str(chat_id)] = name
+    os.makedirs(os.path.dirname(os.path.abspath(log)), exist_ok=True)
+    tmp = joined_path(log) + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(d, f, ensure_ascii=False, indent=1)
+    os.replace(tmp, joined_path(log))
+    return name
+
+
+def people(cfg, log=None):
+    """chat id → name: worktime.people + who joined by an invite link, else telegram.voice.users."""
     w = cfg.get("worktime") or {}
     tg = cfg.get("telegram") or {}
-    p = {str(k): str(v) for k, v in (w.get("people") or {}).items()}
+    p = joined(log) if log else {}
+    p.update({str(k): str(v) for k, v in (w.get("people") or {}).items()})
     if not p:
         p = {str(k): str(v) for k, v in ((tg.get("voice") or {}).get("users") or {}).items()}
     return p
@@ -329,7 +363,7 @@ def collect(cfg, data=None, now=None):
     hol = {str(h) for h in (w.get("holidays") or [])}
     rows = days(read(events_path(cfg, data)), now, w, hol)
     today, month = now.date().isoformat(), now.strftime("%Y-%m")
-    team = people(cfg)
+    team = people(cfg, events_path(cfg, data))
     names = {r["who"]: r["name"] for r in rows}
     names.update(team)
     on, att = [], []
@@ -506,7 +540,7 @@ def month_xlsx(cfg, out, month, data=None, now=None):
     w = wcfg(cfg)
     hol = {str(h) for h in (w.get("holidays") or [])}
     rows = [r for r in days(read(events_path(cfg, data)), now, w, hol) if r["date"].startswith(month)]
-    names = people(cfg)
+    names = people(cfg, events_path(cfg, data))
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Month"
@@ -587,7 +621,7 @@ def main(argv=None):
     if a.cmd == "mark":
         if not (a.who and a.action):
             sys.exit("mark needs --who and --action start|pause|back|end")
-        team = people(cfg)
+        team = people(cfg, path)
         who = next((k for k, v in team.items() if v.lower() == a.who.lower()), a.who)
         loc = {"latitude": a.lat, "longitude": a.lon} if a.lat is not None and a.lon is not None else None
         lang = (cfg.get("company") or {}).get("language", "en")
@@ -596,7 +630,7 @@ def main(argv=None):
     if a.cmd == "fix":
         if not (a.who and a.why and (a.start or a.end) and re.match(r"^\d{4}-\d{2}-\d{2}$", a.date or "")):
             sys.exit("fix needs --who, --date YYYY-MM-DD, --start and/or --end HH:MM, and --why (kept in the log)")
-        team = people(cfg)
+        team = people(cfg, path)
         who = next((k for k, v in team.items() if v.lower() == a.who.lower()), a.who)
         add(path, who, team.get(who, a.who), "fix", by="manager", date=a.date, start=a.start, end=a.end, why=a.why)
         print(f"worktime: {team.get(who, a.who)} {a.date} corrected ({a.start or '—'}–{a.end or '—'}): {a.why}")

@@ -195,6 +195,28 @@ def test_bot_reminder_buttons_and_who(bot):
     assert "Сейчас на работе никого" in api.sent[-1][1]["text"]
 
 
+def test_invite_link_joins_the_team_once(tmp_path):
+    flow = yaml.safe_load(open(os.path.join(ROOT, "config", "bot_flow.example.yaml"), encoding="utf-8"))
+    api = FakeApi()
+    w = {**CFG["worktime"], "invites": {"wt-k3x9q2": "Anna (TEST)"}}
+    cfg = {"manager_chat_ids": [999], "_worktime": w, "_company": {"language": "ru"}}
+    b = tb.Bot(api, flow, cfg, tb.Store(data_dir=str(tmp_path)))
+    b.handle(msg(4242, "/start wt-wrong"))                 # an unknown code → the normal client dialog
+    assert "4242" not in b.team and not os.path.exists(tmp_path / "worktime_people.json")
+    b.handle(msg(4242, "/start wt-k3x9q2"))
+    texts = [p.get("text", "") for m, p in api.sent if m == "sendMessage"]
+    assert any("Anna (TEST)" in t and "подключился" in t for t in texts)          # the manager is told
+    assert api.sent[-1][1]["reply_markup"]["keyboard"][0][0]["text"] == "▶ Начал работу"
+    b.handle(msg(4242, "▶ Начал работу"))
+    assert json.loads(open(tmp_path / "worktime.jsonl", encoding="utf-8").readline())["name"] == "Anna (TEST)"
+    n = len(api.sent)
+    b.handle(msg(4242, "/start wt-k3x9q2"))                # the same link again: no second notice
+    assert not any("подключился" in p.get("text", "") for m, p in api.sent[n:])
+    b2 = tb.Bot(api, flow, cfg, tb.Store(data_dir=str(tmp_path)))   # after a restart the person is still in
+    assert "4242" in b2.team
+    assert any(x["name"] == "Anna (TEST)" for x in wt.collect({"worktime": w, "company": {"language": "ru"}}, str(tmp_path))["on"])
+
+
 def test_cli_fix_and_month(tmp_path):
     cfgp = tmp_path / "config.yaml"
     yaml.safe_dump(CFG, open(cfgp, "w", encoding="utf-8"), allow_unicode=True)

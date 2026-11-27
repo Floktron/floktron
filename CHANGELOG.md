@@ -4,6 +4,13 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.36.1 — 27.11.2026 · work time: invite link
+- `worktime.invites` in config.yaml: a personal link `t.me/<your bot>?start=<code>` per person. The person opens it,
+  taps Start and is in the work-time record under the name you set — no chat ids to copy. The managers get one notice.
+  Who joined is kept in `data/worktime_people.json` (next to the log) and stays after a bot restart.
+- `/in` starts work without a location point (for a person who does not want to share it).
+- The live box of the operating company runs on 0.36 now; tests: +1 (`test_invite_link_joins_the_team_once`).
+
 ## 0.36.0 — 27.11.2026 · work time
 - New `scripts/worktime.py` and docs/WORKTIME.md: the team marks ▶ Start / ⏸ Pause / ⏹ End with buttons in the work
   chat with the bot. Optional: one location point at «Start» (`worktime.geo`), compared with your sites — inside ✓ or the

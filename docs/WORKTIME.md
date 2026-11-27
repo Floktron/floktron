@@ -79,7 +79,19 @@ worktime:
 ```
 
 The bot must be running ([TELEGRAM](TELEGRAM.md)); the people above join the team automatically and never get the
-client dialog. Reminders are sent by the bot itself; `python3 scripts/worktime.py remind` does the same from a scheduler.
+client dialog.
+
+**Invite link instead of chat ids.** Give each person a hard-to-guess code and send them their own link:
+
+```yaml
+worktime:
+  invites:
+    "wt-7f3a91c2": "Anna"      # → https://t.me/<your bot>?start=wt-7f3a91c2
+```
+
+The person opens the link, taps Start and gets the three buttons; the managers get one message «Anna joined».
+Who joined is kept in `data/worktime_people.json`. A link works only for the name in your config; change the code if a
+link reached the wrong person. A person who does not want to share a location writes `/in` instead of tapping ▶ Start. Reminders are sent by the bot itself; `python3 scripts/worktime.py remind` does the same from a scheduler.
 
 ## Personal data — keep it small
 
