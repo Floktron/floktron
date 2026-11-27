@@ -385,13 +385,16 @@ def where_hint(desc):
 # ---------------------------------------------------------------- matching
 def match_cards(cards, mails, invoice_rows):
     """For every card payment: a row of the sheet Invoices that found it, or a gateway message. {key: (kind, ref)}."""
-    res, used = {}, set()
+    res, used, used_rows = {}, set(), set()
     for t in cards:
         hit = None
         for r in invoice_rows:
+            if r["id"] in used_rows:
+                continue  # one invoice row covers one card payment (two equal charges need two documents)
             if r["total"] is not None and abs(r["total"] - (t["eur"] if t["cur"] == "EUR" else t["orig"])) < 0.006 \
                     and t["date"].strftime("%d.%m.%Y") in r["paid"]:
                 hit = ("Invoices", r["id"])
+                used_rows.add(r["id"])
                 break
         if not hit:
             best, bs = None, -1.0

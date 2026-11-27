@@ -4,6 +4,28 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.37.2 — 27.11.2026 · fixes after an outside code review
+An outside review (an AI assistant reading tag v0.37.1) named three points; all three were confirmed in the code and
+fixed, and the invoice check was hardened before the next review round. Details with files: docs/CODE_REVIEW.md.
+- Mail, certificates: Proton Mail Bridge's self-signed certificate was accepted without a check even when `imap_host` /
+  `smtp_host` pointed to another computer. Now the check is relaxed only for this computer (127.0.0.1, ::1, localhost —
+  no DNS lookup), or pinned to Bridge's exported certificate (`mail.tls_cert`); any other Bridge address is refused.
+  Same rule for reading (`mail/read.py`, now one connect function instead of three copies) and sending (`mail/send.py`).
+- One run at a time: `run.py` checked for the lock file and created it in two steps (two runs started together could
+  both pass, and a run could wait up to 10 minutes for Excel between check and create); a run longer than one hour
+  could be overtaken. New `scripts/runlock.py`: an operating-system lock (fcntl on macOS / Linux, msvcrt on Windows),
+  atomic, freed by the system even after a crash — no stale lock. `invoices.py --apply` takes the same lock.
+- Excel formulas (`safe_xlsx`): reviewed, kept — `=` is the only way outside text becomes a formula in an .xlsx file
+  (`+`, `-`, `@` stay text there; FLOKTRON writes no CSV for Excel). The test now covers scripts in sub-folders too.
+- Invoices: a scan and a photo of the same invoice in one batch are one document; the duplicate key ignores spaces,
+  dashes and case; a short document number (`12`) or a legal form (`SIA`) alone never marks a document paid; amounts
+  are matched only in the same currency (new optional CSV column *currency*); incoming money is recognised by the sign
+  when there is no D/K column; the same payment in two overlapping statements counts once; a record with an empty
+  total / number / date or an unknown type is listed as *needs a look* instead of stopping the run; IDs continue after
+  the highest one (a deleted row never brings an ID back).
+- Payment gateways: one row of the sheet Invoices covers only one card payment.
+- New tests: `tests/test_audit_fixes.py` (32, fictional data).
+
 ## 0.37.1 — 27.11.2026 · «View site» button
 - Dashboard, site cameras: the button of your own camera now reads «View site» (RU «Смотреть объект», LV «Skatīt
   objektu»); link-only examples (public webcams) keep «Open camera».

@@ -6,10 +6,17 @@ Two steps, like everywhere in FLOKTRON:
      into data/invoices/extraction.json (format: docs/INVOICES.md, rules: prompts/50_invoices.md).
      The assistant never invents a number: what it cannot read stays empty and the document is flagged.
   2. This script (no AI, no network) does the bookkeeping logic:
-       - skips duplicates (same file content, or same supplier + type + number) — also inside one batch;
+       - skips duplicates (same file content, or same supplier + type + number, compared without spaces, dashes and
+         case: "PR-2026/118" = "pr 2026 118") — against the base and inside one batch;
+       - a record with an empty amount, number, date or an unknown type is NOT booked: it is listed for a person
+         ("needs a look") and stays in the extraction file until it is corrected;
        - reads your bank statements (CSV from any bank; Swedbank-style PDF if `pypdf` is installed) and finds the
-         payment of every document: amount + date window + invoice number or supplier name in the payment;
+         payment of every document: amount + same currency + date window + invoice number or supplier name in the
+         payment; the number must stand on its own in the payment text (number "12" does not match "2026-11-12"),
+         name words shorter than 4 letters and legal forms (SIA, UAB, GmbH ...) do not count;
          a payment with the same amount but neither number nor name is NOT taken (shown as "similar payment");
+         incoming money is skipped (D/K column, or the sign of the amount); the same payment in two overlapping
+         statements counts once;
        - sets a status and writes tasks for the finance ray:
            paid and found                     -> no task (goes into the hand-over task)
            proforma closed by a final invoice -> no task
@@ -51,6 +58,10 @@ TYPES = {"invoice": "Invoice", "proforma": "Proforma", "advance": "Advance invoi
          "delivery": "Delivery note (not an invoice)", "credit": "Credit note"}
 PAY = {"bank": "transfer", "card": "card", "advance": "advance set-off", "cash": "cash"}
 SKIP_DIRS = {"statements", "Bankas izraksti", "_done", "_archive"}
+REQUIRED = ("file", "supplier", "type", "number", "date", "total")
+# legal forms and filler words: never enough on their own to say "this payment is that supplier"
+WEAK_WORDS = {"SIA", "AS", "UAB", "AB", "OU", "OY", "GMBH", "AG", "KG", "LTD", "LLC", "INC", "BV", "NV", "SRL", "SPA",
+              "SAS", "SARL", "SRO", "SL", "SA", "OOO", "ZAO", "PLC", "CO", "THE", "AND", "UND", "BANK", "SHOP", "STORE"}
 
 
 def d(s):
@@ -90,15 +101,63 @@ def norm(s):
     return re.sub(r"[^A-Z0-9]", "", s.upper())
 
 
-def to_float(v):
-    s = str(v or "").strip().replace(" ", "").replace(" ", "")
+def to_float(v, signed=False):
+    s = str(v or "").strip().replace(" ", "").replace("\u00a0", "").replace("\u2212", "-")
     if re.search(r",\d{1,2}$", s):
         s = s.replace(".", "").replace(",", ".")
     s = s.replace(",", "")
     try:
-        return abs(float(s))
+        x = float(s)
     except ValueError:
         return None
+    return x if signed else abs(x)
+
+
+def ascii_up(s):
+    return unicodedata.normalize("NFKD", str(s or "")).encode("ascii", "ignore").decode().upper()
+
+
+def number_in(number, text):
+    """The document number stands on its own in the payment text (separators between its parts may differ).
+    Returns 'strong' (4+ letters/digits with a digit), 'weak' (shorter: "12" also stands alone in "2026-11-12", so it
+    counts only together with the supplier's name) or ''."""
+    n = norm(number)
+    if not n or not re.search(r"\d", n):
+        return ""
+    pat = r"(?<![A-Z0-9])" + r"[^A-Z0-9]{0,2}".join(re.escape(ch) for ch in n) + r"(?![A-Z0-9])"
+    if not re.search(pat, ascii_up(text)):
+        return ""
+    return "strong" if len(n) >= 4 else "weak"
+
+
+def name_words(doc):
+    """Usable supplier words from bank_kw: 4+ letters, not a legal form."""
+    out = []
+    for k in doc.get("bank_kw") or []:
+        words = [w for w in re.split(r"[^A-Z0-9]+", ascii_up(k)) if w]
+        good = [w for w in words if len(w) >= 4 and w not in WEAK_WORDS]
+        if good:
+            out.append(norm(" ".join(good)))
+    return out
+
+
+def problems(rec):
+    """Why a record cannot be booked yet ('' = fine)."""
+    miss = [k for k in REQUIRED if rec.get(k) in (None, "")]
+    if rec.get("type") and rec["type"] not in TYPES:
+        miss.append(f"type '{rec['type']}' unknown")
+    for k in ("net", "vat", "total", "to_pay"):
+        v = rec.get(k)
+        if v not in (None, "") and (isinstance(v, bool) or not isinstance(v, (int, float))):
+            miss.append(f"{k} is not a number")
+    if rec.get("date") and not to_date(rec["date"]):
+        miss.append("date is not YYYY-MM-DD")
+    return ", ".join(miss)
+
+
+def doc_key(reg, typ, number):
+    """Duplicate key: same supplier + type + number, without spaces / dashes / case."""
+    return (norm(reg), str(typ or ""), norm(number))
 
 
 def to_date(v):
@@ -118,6 +177,7 @@ CSV_COLS = {  # header aliases (lower case) → field
     "amount": ("amount", "summa", "suma", "summa eur", "betrag"),
     "details": ("details", "description", "informācija saņēmējam", "reference", "paskirtis", "selgitus", "verwendungszweck"),
     "dc": ("debit/credit", "debets/kredīts", "d/k", "type"),
+    "cur": ("currency", "valūta", "valiuta", "valuuta", "währung", "ccy"),
 }
 
 
@@ -131,16 +191,26 @@ def read_csv(path):
     ix = {k: next((head.index(a) for a in al if a in head), None) for k, al in CSV_COLS.items()}
     if ix["date"] is None or ix["amount"] is None:
         return []
-    out = []
-    for n, r in enumerate(rows[1:]):
-        def g(k):
-            return r[ix[k]] if ix[k] is not None and ix[k] < len(r) else ""
-        date, amt = to_date(g("date")), to_float(g("amount"))
+    def g(r, k):
+        return r[ix[k]] if ix[k] is not None and ix[k] < len(r) else ""
+    body = rows[1:]
+    # no D/K column: banks write money out as a negative amount — then a positive one is money in
+    signed = ix["dc"] is None and any((to_float(g(r, "amount"), True) or 0) < 0 for r in body)
+    out, count = [], {}
+    for r in body:
+        date, amt = to_date(g(r, "date")), to_float(g(r, "amount"), True)
         if not date or amt is None:
             continue
-        if g("dc").strip().upper() in ("K", "C", "CREDIT", "KREDĪTS"):
+        if g(r, "dc").strip().upper() in ("K", "C", "CR", "CREDIT", "KREDĪTS", "KREDITS"):
             continue  # money in, not a payment
-        out.append(dict(date=date, cp=g("cp"), amount=amt, details=g("details"), code="CSV", arch=f"{os.path.basename(path)}:{n}"))
+        if signed and amt > 0:
+            continue  # money in, not a payment
+        cur = (g(r, "cur").strip().upper() or "EUR")[:3]
+        # the same payment in two overlapping statements counts once; two equal payments in ONE file stay two
+        key = (date.isoformat(), round(abs(amt), 2), cur, norm(g(r, "cp")), norm(g(r, "details")))
+        count[key] = count.get(key, 0) + 1
+        out.append(dict(date=date, cp=g(r, "cp"), amount=abs(amt), cur=cur, details=g(r, "details"), code="CSV",
+                        arch="|".join(map(str, key)) + f"|{count[key]}"))
     return out
 
 
@@ -186,7 +256,7 @@ def read_pdf(path, our_iban):
             amount = float(a.group(1))
             after = body.split(a.group(0), 1)[1].strip().split("\n")
             details = after[0] if after else ""
-        out.append(dict(date=date, cp=cp, amount=amount, details=details, code=code, arch=arch))
+        out.append(dict(date=date, cp=cp, amount=amount, cur="EUR", details=details, code=code, arch=arch))
     return out
 
 
@@ -218,15 +288,19 @@ def match_payments(docs, txns):
     payable = [x for x in docs if x["type"] not in ("delivery", "credit") and x.get("to_pay", x["total"]) > 0]
     for doc in sorted(payable, key=lambda x: x["date"]):
         best, best_s = None, -1.0
+        cur = (doc.get("currency") or "EUR").upper()
+        words = name_words(doc)
         for t in free:
-            if abs(t["amount"] - doc["total"]) > 0.005:
+            if abs(t["amount"] - doc["total"]) > 0.005 or t.get("cur", "EUR") != cur:
                 continue
             lag = (t["date"] - d(doc["date"])).days
             if lag < -5 or lag > 90:
                 continue
-            txt = norm(t["cp"] + " " + t["details"])
-            s = (10 if norm(doc["number"]) and norm(doc["number"]) in txt else 0) \
-                + (2 if any(norm(k) in txt for k in doc.get("bank_kw", []) if norm(k)) else 0) + max(0, 1 - abs(lag) / 90)
+            raw = t["cp"] + " " + t["details"]
+            txt = norm(raw)
+            num = number_in(doc["number"], raw)
+            s = (10 if num == "strong" else 1 if num == "weak" else 0) \
+                + (2 if any(w in txt for w in words) else 0) + max(0, 1 - abs(lag) / 90)
             if s > best_s:
                 best, best_s = t, s
         if best is None:
@@ -244,9 +318,13 @@ def match_payments(docs, txns):
         if len(group) < 2:
             continue
         total = round(sum(x["total"] for x in group), 2)
+        words = name_words(group[0])
+        cur = (group[0].get("currency") or "EUR").upper()
+        if not words or any((x.get("currency") or "EUR").upper() != cur for x in group):
+            continue
         for t in free:
             txt = norm(t["cp"] + " " + t["details"])
-            if abs(t["amount"] - total) < 0.005 and any(norm(k) in txt for k in group[0].get("bank_kw", []) if norm(k)):
+            if abs(t["amount"] - total) < 0.005 and t.get("cur", "EUR") == cur and any(w in txt for w in words):
                 for x in group:
                     x["pay"] = dict(t, how=f"one payment for {len(group)} documents")
                     x.pop("similar", None)
@@ -346,9 +424,22 @@ def run(a):
     if not os.path.exists(extraction):
         print(f"No extraction file yet: {extraction}\nAsk your AI assistant to read the documents (prompts/50_invoices.md).")
         return 1
-    recs = {nfc(r["file"]): dict(r, file=nfc(r["file"])) for r in json.load(open(extraction, encoding="utf-8"))["docs"]}
+    with open(extraction, encoding="utf-8") as f:
+        raw_docs = json.load(f).get("docs") or []
+    recs, unbookable = {}, []
+    for r in raw_docs:
+        why = problems(r) if isinstance(r, dict) else "not a record"
+        if why:
+            unbookable.append(f"{(r.get('file') if isinstance(r, dict) else '') or '?'}: {why}")
+            if isinstance(r, dict) and r.get("file"):
+                recs[nfc(r["file"])] = None   # known file, but not booked until corrected
+            continue
+        recs[nfc(r["file"])] = dict(r, file=nfc(r["file"]), reg=r.get("reg") or "", date=to_date(r["date"]).isoformat(),
+                                    number=str(r["number"]).strip(), net=r.get("net") or 0, vat=r.get("vat") or 0,
+                                    pay_method=r.get("pay_method") or "bank",
+                                    due=to_date(r["due"]).isoformat() if r.get("due") and to_date(r["due"]) else None)
 
-    wb, have_hash, have_key = None, set(), set()
+    wb, have_hash, have_key, max_id = None, set(), set(), 0
     if a.apply or os.path.exists(base):
         import openpyxl
         sys.path.insert(0, HERE)
@@ -361,24 +452,31 @@ def run(a):
                 for r in ws.iter_rows(min_row=2, values_only=True):
                     row = dict(zip(h, r))
                     have_hash.add(row.get("Hash"))
-                    have_key.add((row.get("Reg. / VAT no."), row.get("Type"), str(row.get("Document no."))))
+                    have_key.add(doc_key(row.get("Reg. / VAT no."), row.get("Type"), row.get("Document no.")))
+                    m = re.match(r"T?INV-(\d+)$", str(row.get("ID") or ""))
+                    if m:
+                        max_id = max(max_id, int(m.group(1)))
         elif a.apply:
             sys.exit(f"Base not found: {base} (run scripts/base_create.py first)")
 
-    new, dup, unread, seen = [], [], [], {}
+    new, dup, unread, seen, seen_key = [], [], [], {}, {}
     forwarded = re.compile(r"(^|/)(FW|FWD|RE)[_: ]|\(\d\)\.pdf$", re.I)
-    for rel, rec in sorted(recs.items(), key=lambda kv: (bool(forwarded.search(kv[0])), kv[0])):
+    for rel, rec in sorted(((k, v) for k, v in recs.items() if v), key=lambda kv: (bool(forwarded.search(kv[0])), kv[0])):
         p = os.path.join(folder, rel)
         if not os.path.exists(p):
             print("! file not found:", rel)
             continue
         rec["hash"] = sha(p)
-        if rec["hash"][:12] in have_hash or (rec["reg"], TYPES[rec["type"]], rec["number"]) in have_key:
+        key = doc_key(rec["reg"], TYPES[rec["type"]], rec["number"])
+        if rec["hash"][:12] in have_hash or key in have_key:
             dup.append(f"{rel} (already in the base)")
         elif rec["hash"] in seen:
             dup.append(f"{rel} = copy of {seen[rec['hash']]}")
+        elif key in seen_key:   # another file (a scan, a photo) of the same document
+            dup.append(f"{rel} = same supplier, type and number as {seen_key[key]}")
         else:
             seen[rec["hash"]] = rel
+            seen_key[key] = rel
             new.append(rec)
     for root, dirs, files in os.walk(folder):
         dirs[:] = [x for x in dirs if x not in SKIP_DIRS]
@@ -393,7 +491,7 @@ def run(a):
     tasks = decide(new, today, home)
 
     pre, tpre = ("TINV", "TI") if a.test else ("INV", "I")
-    seq = (wb["Invoices"].max_row if wb is not None and "Invoices" in wb.sheetnames else 1)
+    seq = max_id + 1   # after the highest ID in the sheet: deleted rows never make an ID come back
     for x in sorted(new, key=lambda z: z["date"]):
         x["id"] = f"{pre}-{seq:04d}"
         seq += 1
@@ -414,7 +512,10 @@ def run(a):
     print(f"Statements: {len(txns)} payments from " + ("; ".join(used) or "— none —"))
     for g in gaps:
         print("  gap:", g)
-    print(f"New documents: {len(new)} · duplicates / already in base: {len(dup)} · not read yet: {len(unread)}")
+    print(f"New documents: {len(new)} · duplicates / already in base: {len(dup)} · not read yet: {len(unread)}"
+          + (f" · needs a look: {len(unbookable)}" if unbookable else ""))
+    for u in unbookable:
+        print("  needs a look (not booked — correct the record, never guess a figure):", u)
     for u in dup:
         print("  duplicate:", u)
     for u in unread:
@@ -437,6 +538,18 @@ def run(a):
     if not a.apply:
         print("DRY RUN — nothing written. Add --apply to write to the base.")
         return 0
+    from runlock import RunLock
+    lock = RunLock(os.path.join(os.path.dirname(os.path.abspath(base)), ".floktron.lock"))
+    if not lock.acquire():
+        print("Another FLOKTRON run is writing the base right now — nothing written. Try again in a few minutes.")
+        return 2
+    try:
+        return _write(a, wb, base, new, tasks, today, ray)
+    finally:
+        lock.release()
+
+
+def _write(a, wb, base, new, tasks, today, ray):
 
     from openpyxl.styles import Font, PatternFill
     if "Invoices" not in wb.sheetnames:

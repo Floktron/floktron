@@ -13,6 +13,8 @@ against, how, and what it cannot protect against.
 | Hidden instructions for the AI agent inside an e-mail, news item or web page ("ignore your rules…") | The agent treats all outside text as data; instructions come only from this repository and the person | `AGENTS.md` rule 1, header of every prompt |
 | HTML/script inside a reply shows up in a letter to the manager | All outside text is escaped before it goes into a letter | `send_morning.py`, `weekly_summary.py`, `gaps_report.py`, `content_check.py` |
 | A hostile news server sends a huge file | Feeds over 5 MB are skipped and recorded in Gaps | `news_slice.py` |
+| Someone in the middle of the mail connection (fake mail server) | Every mail server's certificate is checked. The only exception is Proton Mail Bridge, which runs on your own computer with a self-signed certificate: the check is relaxed only for the address of this computer (127.0.0.1 / localhost) — or, better, pinned to Bridge's exported certificate (`mail.tls_cert`). A Bridge address on another computer without the pinned certificate is refused | `scripts/mail/send.py` → `tls_context`, `tests/test_audit_fixes.py` |
+| Two runs write the base at the same time (data lost) | One run at a time: an operating-system lock, taken in one atomic step and freed by the system even if a run crashes; `invoices.py --apply` waits for it too | `scripts/runlock.py`, `scripts/run.py`, test |
 | Passwords leak | No password in files or chat: environment variable or system keychain only; `config.yaml`, `.env`, `data/`, `*.eml` never committed | `scripts/mail/send.py`, `.gitignore` + test |
 | Dangerous code slips into the scripts | No `eval`, `exec`, `os.system`, `shell=True`, `pickle`, `curl | sh` — checked on every change | `tests/test_safety.py`, GitHub Actions |
 | Outside packages | Only `openpyxl` and `PyYAML` from pypi.org, versions pinned; known vulnerabilities checked by pip-audit on every change, updates proposed by Dependabot | `requirements.txt`, `.github/workflows/security.yml` |
@@ -47,7 +49,8 @@ used for a post gets a light check first — echo in other outlets, primary sour
 ## Automated security checks
 OpenSSF Scorecard, GitHub CodeQL, Bandit, pip-audit and Dependabot run on every change and once a week; what the first
 run found and how it was fixed: [docs/SECURITY_SCANS.md](docs/SECURITY_SCANS.md). These are automated scans, not an
-independent audit — no outside reviewer has checked the code yet.
+independent audit. Outside code reviews (so far by AI assistants reading a release tag) and what was fixed:
+[docs/CODE_REVIEW.md](docs/CODE_REVIEW.md).
 
 ## Nothing hidden
 FLOKTRON connects only to your mail server, the news feeds in your radar and (optionally) the Latvian open data portal.

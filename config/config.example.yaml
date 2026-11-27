@@ -18,6 +18,8 @@ mail:
   imap_folders: []        # empty = provider default (Proton: All Mail, Spam; Gmail/Outlook: INBOX, Junk)
   password_env: "FLOKTRON_MAIL_PASSWORD"   # password comes from this environment variable...
   keychain_service: ""                  # ...or from macOS Keychain (service name)
+  tls_cert: ""            # Proton Bridge only: exported Bridge certificate (cert.pem) — then only it is accepted;
+                          # empty = Bridge must be on this computer (127.0.0.1), any other address is refused
   manager_address: ""
   support_address: ""     # who sets FLOKTRON up and fixes it — gets the gaps report (empty = manager)
   retry_minutes: [10, 20] # mail server not answering → try again after 10, then 20 minutes
