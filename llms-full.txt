@@ -8,7 +8,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.36.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.37.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -136,7 +136,7 @@ Status: in daily use in an operating company since October 2026, public since No
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.36.1 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.37.0 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
@@ -149,6 +149,7 @@ Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) 
 A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big producers, listed companies, freight routes, reference prices and currencies — it speaks up only when something moves ([SUPPLY_CHAIN](docs/SUPPLY_CHAIN.md)).
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
 **Work time — start, pause, end with one tap**: your team marks the working day with three buttons in the work chat with your bot; with one location point at the start (if you switch it on) the manager sees who is on which site. The dashboard shows who is at work now, today's and the month's hours, overtime, night and weekend hours and what needs a look; once a month a table for the accountant. Hours are never made up: a day without an end mark waits for the manager's correction, and every correction keeps its reason ([WORKTIME](docs/WORKTIME.md)).
+**Site cameras on the dashboard — security, not watching people**: gate, yard, warehouse — is each camera online, its latest frame and a button to open it live in the camera's own app; a camera that went quiet goes to «Needs your attention». One frame per camera is kept on your computer and overwritten: no recording, no video through anyone's server, no face recognition ([CAMERAS](docs/CAMERAS.md)).
 Your team can **report by voice** — the bot turns a voice message into text on your own computer; the manager gets a **morning audio summary** to listen to in the car ([VOICE](docs/VOICE.md)).
 **Your own website before marketing**: the assistant leads you through a safe site on Cloudflare (free certificates, protection, one-click undo) — or on the hosting you already like, such as Namecheap or GoDaddy ([WEBSITE](docs/WEBSITE.md)).
 **Supplier invoices → accounting**: your assistant reads invoices in any language (PDF, scan, photo), FLOKTRON checks each one against your bank statement and gives the finance ray short tasks — what to pay, what to check, which final invoice to ask for; duplicates and delivery notes are caught ([INVOICES](docs/INVOICES.md)).
@@ -413,6 +414,7 @@ Text from e-mails, attachments, web pages and Telegram is treated as data, never
 | huggingface.co — ONCE, only if you switch voice on with the local engine `faster-whisper` (or openaipublic.azureedge.net with `openai-whisper`) | the speech model is downloaded one time ("small" ≈ 460 MB) and kept on your computer; after that speech → text works offline. No voice, text or data is sent | the `faster-whisper` / `openai-whisper` package, called from `scripts/voice.py` |
 | api.github.com — once a day with the morning run, unless you set `updates.check: false` (docs/UPDATES.md) | ask for the list of FLOKTRON releases to tell the manager that a newer version is out; one anonymous request — no account, no ID, nothing about you or your company is sent | `scripts/update_check.py` |
 | Nothing outside your computer: the desktop icon (only if you make it) opens your own local `data/dashboard.html` (a `file://` page) in your default browser | open the dashboard with one double-click | `scripts/desktop_icon.py` |
+| YOUR own cameras in your own network, at the addresses you wrote in `cameras.items` (only if you switch cameras on). Cameras marked `demo: true` are never contacted | one latest frame per camera, saved in `data/cameras/` and overwritten; no video is streamed or recorded, nothing is sent anywhere | `scripts/cameras.py` |
 | Latvian open data portal data.gov.lv (only if you switch the registry on) | new companies by words in the name | `scripts/registry_lv.py` |
 | data.gov.lv public procurement results (EIS) and the register (only if you switch prospects on) | who has just signed a contract of the kind you serve; form, town, registration date of those companies | `scripts/registry_lv.py` (used by `scripts/prospects.py`) |
 
@@ -432,7 +434,7 @@ in any other file, or if the model download is missing from this list.
   (`scripts/bot/telegram_bot.py`); for voice (only if you switch it on) `scripts/voice.py` starts the system speech tools `say` and `afconvert` (Mac)
   or `espeak-ng` / `ffmpeg` (Linux) — the local speech model itself runs inside Python; the security checkup starts only the system's own read-only settings tools
   (the list `READ_ONLY_COMMANDS` in `scripts/security_check.py`, guarded by a test) and connects to nothing; the capacity
-  check (`scripts/capacity_check.py`) starts only `sysctl -n hw.memsize` on a Mac to read the memory size. `scripts/desktop_icon.py` starts PowerShell once on Windows, only when you make the desktop icon, to save the shortcut.
+  check (`scripts/capacity_check.py`) starts only `sysctl -n hw.memsize` on a Mac to read the memory size. `scripts/desktop_icon.py` starts PowerShell once on Windows, only when you make the desktop icon, to save the shortcut. `scripts/cameras.py` starts `ffmpeg` (only if you list an `rtsp://` camera) to take one frame from YOUR camera.
 
 ## Check it yourself
 1. Ask your AI assistant: *"Read all files in scripts/ and tell me every place where FLOKTRON connects to the internet
@@ -2102,6 +2104,7 @@ if the Mac asks, right-click the icon → Open → Open. The page itself also sh
 | Coming up | open consultations with a deadline (radar) |
 | Rays — who confirmed today's tasks | sheets Rays / Tasks / Receipts of `floktron_base.xlsx` (test rays are marked) |
 | Work time — at work now, hours today and this month, overtime, night, weekend, what to check | `data/worktime.jsonl`, marks from the bot ([WORKTIME](WORKTIME.md)); no end mark or a start far from the site also goes to *Needs your attention* |
+| Site cameras — online / no fresh frame, the latest frame, a button to open the camera; public webcams only as marked *examples* (link) | `config.yaml → cameras`, frames from `scripts/cameras.py snap` in `data/cameras/` ([CAMERAS](CAMERAS.md)); a camera without a fresh frame also goes to *Needs your attention* |
 | Open tasks · answers for 14 days | Tasks, Receipts |
 | Voice reports · audio summary player | `voice_reports.xlsx`, `pulse_*.m4a` ([VOICE](VOICE.md)) |
 | Invoices → accounting | sheet Invoices ([INVOICES](INVOICES.md)) |

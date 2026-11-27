@@ -230,6 +230,12 @@ worktime:                  # work time: ▶ Start / ⏸ Pause / ⏹ End in the b
   night: ["22:00", "06:00"]
   holidays: []                  # your public holidays, "YYYY-MM-DD"
 
+cameras:                   # site cameras on the dashboard: online?, the latest frame, a link (docs/CAMERAS.md) — security only
+  enabled: false
+  every_minutes: 15             # scripts/cameras.py snap runs this often; one latest frame per camera, overwritten
+  items: []                     # e.g. - {id: gate, name: "Gate", place: "Site Park 12", snapshot: "http://192.168.1.20/snapshot.jpg"}
+                                #      - {id: yard, name: "Yard", snapshot: "rtsp://user:pass@192.168.1.21:554/stream2"}  (needs ffmpeg)
+
 site_module:
   enabled: false
   bot: "telegram"          # telegram | whatsapp
