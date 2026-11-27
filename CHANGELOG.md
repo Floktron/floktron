@@ -4,6 +4,20 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.37.0 — 27.11.2026 · site cameras
+- New `scripts/cameras.py` and docs/CAMERAS.md: list your cameras in `config.yaml → cameras`; `cameras.py snap`
+  (also `run.py cameras`) takes ONE frame per camera — an HTTP snapshot address (most IP cameras, recorders, the ONVIF
+  snapshot URI) or `rtsp://` through `ffmpeg` — and overwrites it in `data/cameras/`. No recording, no streaming, no
+  face recognition; passwords in addresses are never printed.
+- Dashboard: a new block «Site cameras» — online / no fresh frame, the latest frame, a button to open the camera live
+  in its own app or page; a camera without a fresh frame also goes to «Needs your attention». A drawn placeholder is
+  shown until the first frame.
+- `demo: true` cameras are link-only examples (e.g. public city webcams): never fetched or embedded, marked «example»
+  with the source, never presented as a customer site.
+- For security and the state of a site only; the rules (GDPR, EDPB 3/2019, no watching how people work) are in
+  docs/CAMERAS.md. TRANSPARENCY lists the new local network call and `ffmpeg`.
+- New tests: `tests/test_cameras.py` (7, fictional company), demo `tests/fixtures/cameras/make_demo.py`.
+
 ## 0.36.1 — 27.11.2026 · work time: invite link
 - `worktime.invites` in config.yaml: a personal link `t.me/<your bot>?start=<code>` per person. The person opens it,
   taps Start and is in the work-time record under the name you set — no chat ids to copy. The managers get one notice.

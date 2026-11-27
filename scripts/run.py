@@ -54,6 +54,7 @@ JOBS = {
     "prospects": ["prospects.py"],
     "backup": ["move.py", "backup"],
     "update": ["update_check.py"],
+    "cameras": ["cameras.py", "snap"],
     "dashboard": ["dashboard.py"],
 }
 
