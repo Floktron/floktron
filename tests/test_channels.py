@@ -137,6 +137,16 @@ def test_page(web):
     assert C.people(cfg)["manager"]["channel"] == "web" and C.people(cfg)["manager"]["push"]
 
 
+def test_rich_text_for_the_eye():
+    h = CW.rich("📰 Evening TEST\n\nOur topic:\n1. [LV] Demo News TEST · A fictional headline - Demo News\n\n"
+                "https://news.google.com/rss/articles/" + "A" * 200 + "?oc=5\n• 🟡 Red Sea: Insurance costs rise - Demo Wire\n"
+                "<script>alert(1)</script> javascript:alert(1)")
+    assert 'class="ttl"' in h and 'class="sec">Our topic<' in h and "🇱🇻 LV" in h and 'class="tag">Red Sea<' in h
+    assert ">Google News ↗</a>" in h and "A" * 50 not in re.sub(r'href="[^"]*"', "", h)          # the long address is not shown
+    assert 'class="by">Demo Wire<' in h and h.count("Demo News") == 1                         # the repeated source is dropped
+    assert "<script>" not in h and 'href="javascript' not in h and "border-left-color:#e0b422" in h
+
+
 def test_worktime_from_page(web):
     cfg, req = web
     k2 = C.people(cfg)["site1"]["key"]

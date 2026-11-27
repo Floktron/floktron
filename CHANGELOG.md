@@ -4,6 +4,18 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.40.1 — 28.11.2026 · the page reads like a page, overview PDF 1.28
+Asked for in the operating company after the first evening with the page as an app: «long links, machine text —
+give the eye something to hold on to».
+- **The person's own page shows a message as blocks, not as raw text** (`scripts/channels_web.py → rich`): the first
+  line is the title; a line ending with «:» is a section with a divider; numbered lines and bullets are cards — the
+  country tag `[LV]` becomes a flag, «Source · Title» and «Title - Source» are split into a small source line and a
+  bold title, a 🟡 / 🔴 / 🟢 mark becomes a coloured edge. **A long address becomes a short button** with the site
+  name («lrt.lt ↗», «Google News ↗») that opens in a new tab. Everything is still escaped: message text is data.
+  No pictures are loaded from other sites — the page asks nothing from anyone but your own computer.
+- `docs/FLOKTRON_overview.pdf` = overview 1.28 (25 pages): new page 22 «Channels»; the file here had stayed at 1.26.
+- New test `test_rich_text_for_the_eye` (fictional news); 306 tests.
+
 ## 0.40.0 — 28.11.2026 · channels: each person chooses Telegram, their own page or e-mail (+ push)
 Asked for in the operating company: «whoever wants Telegram — Telegram; whoever wants their own page — please; mail
 plus push too — give the choice at once, and let people switch». Works there first (the manager now uses the page as

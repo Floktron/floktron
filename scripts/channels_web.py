@@ -62,19 +62,115 @@ W = {
                by={"telegram": "в Telegram", "web": "здесь", "email": "из почты"}, updated="обновлено", channel="Канал: "),
 }
 
+# --- rich text: a plain message → readable blocks (sections, news items, short links). Text is data: everything is escaped.
+_URL = re.compile(r"https?://[^\s<>\"']+")
+_DOTS = {"🔴": "#d64545", "🟠": "#e8862e", "🟡": "#e0b422", "🟢": "#4A9928", "🔵": "#2563c9", "🟣": "#8B5CF6", "⚪": "#9aa6b8", "⚫": "#717171"}
+_HOSTS = {"news.google.com": "Google News", "t.me": "Telegram", "youtu.be": "YouTube", "youtube.com": "YouTube"}
+
+
+def _link(url):
+    url = url.rstrip(".,;:!?)»”")
+    host = (urllib.parse.urlsplit(url).hostname or "").lower()
+    host = host[4:] if host.startswith("www.") else host
+    if not host:
+        return escape(url)
+    return f'<a class="lnk" href="{escape(url, True)}" target="_blank" rel="noopener noreferrer">{escape(_HOSTS.get(host, host))} ↗</a>'
+
+
+def _inline(s):
+    out, pos = [], 0
+    for m in _URL.finditer(s):
+        out.append(escape(s[pos:m.start()])); out.append(_link(m.group(0))); pos = m.end()
+    return "".join(out) + escape(s[pos:])
+
+
+def _flag(code):
+    return "".join(chr(0x1F1E6 + ord(ch) - 65) for ch in code) if len(code) == 2 and code.isascii() and code.isalpha() and code.isupper() else ""
+
+
+def rich(text):
+    lines = [x.strip() for x in str(text or "").replace("\r", "").split("\n")]
+    out, item, first = [], None, True
+
+    def close():
+        nonlocal item
+        if item:
+            links = f'<div class="lk">{"".join(item["links"])}</div>' if item["links"] else ""
+            out.append(f'<div class="it"{item["style"]}>{item["mark"]}<div class="ib">{item["head"]}<div class="tt">{item["body"]}</div>{links}</div></div>')
+            item = None
+    for ln in lines:
+        if not ln:
+            continue
+        if _URL.fullmatch(ln):                                   # a link on its own line belongs to the item above
+            if item:
+                item["links"].append(_link(ln))
+            else:
+                out.append(f'<div class="lk">{_link(ln)}</div>')
+            continue
+        m = re.match(r"^(\d{1,2})[.)]\s+(.*)$", ln)
+        b = re.match(r"^[•·\-–—*]\s+(.*)$", ln)
+        if m or b:
+            close()
+            rest, mark, style, head, src = (m.group(2) if m else b.group(1)), "", "", "", ""
+            if m:
+                mark = f'<span class="n">{m.group(1)}</span>'
+                t = re.match(r"^\[([A-Za-z]{2,3})\]\s*(.*)$", rest)
+                tag = ""
+                if t:
+                    tag, rest = f'<span class="tag">{_flag(t.group(1).upper())} {escape(t.group(1).upper())}</span>', t.group(2)
+                src, sep, title = rest.partition(" · ")
+                if sep and len(src) <= 40 and title:
+                    head, rest = f'<div class="src">{tag}{escape(src)}</div>', title
+                elif tag:
+                    head = f'<div class="src">{tag}</div>'
+            else:
+                if rest[:1] in _DOTS:
+                    style, rest = f' style="border-left-color:{_DOTS[rest[0]]}"', rest[1:].lstrip("️ ").strip()
+                mark = '<span class="n d"></span>'
+                topic, sep, title = rest.partition(": ")
+                if sep and len(topic) <= 60 and title and "http" not in topic:
+                    head, rest = f'<div class="src"><span class="tag">{escape(topic)}</span></div>', title
+            src2 = ""
+            k = rest.rfind(" - ")
+            if k > 8 and 0 < len(rest) - k - 3 <= 40 and "http" not in rest[k:]:
+                tail, rest = rest[k + 3:], rest[:k]
+                known = (m and src.lower().startswith(tail.lower().rstrip("…. "))) if m else False   # «Title - Sourc» cut by the feed
+                src2 = "" if known else f' <span class="by">{escape(tail)}</span>'
+            item = {"mark": mark, "style": style, "head": head, "body": _inline(rest) + src2, "links": []}
+            continue
+        close()
+        if first:
+            out.append(f'<div class="ttl">{_inline(ln)}</div>')
+        elif ln.endswith(":") and len(ln) <= 60:
+            out.append(f'<div class="sec">{escape(ln[:-1])}</div>')
+        else:
+            out.append(f'<p>{_inline(ln)}</p>')
+        first = False
+    close()
+    return "".join(out)
+
+
+RICH_CSS = """.t{word-wrap:break-word;overflow-wrap:anywhere}.t p{margin:6px 0}.ttl{font-weight:700;font-size:17px;margin:0 0 6px}
+.sec{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--acc);border-top:1px solid var(--line);margin:14px 0 8px;padding-top:12px}
+.it{display:flex;gap:10px;align-items:flex-start;border-left:3px solid var(--line);background:rgba(128,140,170,.09);border-radius:0 10px 10px 0;padding:9px 10px;margin:0 0 8px}
+.it .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--acc);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.it .n.d{display:none}.ib{min-width:0;flex:1}.src{font-size:12px;color:var(--mut);margin:0 0 3px}.tag{display:inline-block;font-weight:700;color:var(--ink);background:rgba(128,140,170,.2);border-radius:6px;padding:1px 7px;margin-right:6px}
+.tt{font-weight:600;line-height:1.35}.by{font-weight:400;color:var(--mut);font-size:13px;white-space:nowrap}.by:before{content:"· "}
+.lk{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap}.lnk{display:inline-block;font-size:13px;font-weight:600;color:var(--acc);text-decoration:none;border:1px solid var(--acc);border-radius:999px;padding:3px 11px}"""
+
 CSS = """:root{--bg:#f3f3f3;--card:#fff;--ink:#1A365D;--mut:#717171;--ok:#4A9928;--no:#717171;--acc:#8B5CF6;--line:#e3e3e3}
 @media (prefers-color-scheme:dark){:root{--bg:#0f1724;--card:#17223a;--ink:#e8eef8;--mut:#9aa6b8;--line:#2a3756}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,system-ui,Segoe UI,Arial,sans-serif;padding:0 16px 40px}
 header{display:flex;align-items:center;gap:10px;padding:16px 0 8px}header img{width:34px;height:34px;border-radius:8px}h1{font-size:20px;margin:0}
 h2{font-size:15px;margin:22px 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 10px}.t{white-space:pre-wrap;word-wrap:break-word}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 10px}
 .muted{color:var(--mut);font-size:13px}.big{font-size:22px}.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .b{flex:1;min-width:120px;border:0;border-radius:10px;padding:12px 10px;font-size:16px;font-weight:600;color:#fff;cursor:pointer}
 .b.y{background:var(--ok)}.b.n{background:var(--no)}.b.w{background:#1A365D}.b.p{background:#2563c9}
 .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}.seg button{flex:1;border:0;background:var(--card);color:var(--ink);padding:11px 4px;font-size:15px}
 .seg button.on{background:#1A365D;color:#fff;font-weight:600}.closed{opacity:.6}.undo{background:none;border:0;color:var(--acc);font-size:14px;padding:0;margin-top:6px}
 details summary{cursor:pointer;color:var(--mut);margin:18px 0 8px}code{font-size:13px;word-break:break-all}label{display:flex;gap:10px;align-items:center;margin-top:12px}
-#msg{position:fixed;left:16px;right:16px;bottom:16px;background:#1A365D;color:#fff;border-radius:10px;padding:12px 14px;display:none}"""
+#msg{position:fixed;left:16px;right:16px;bottom:16px;background:#1A365D;color:#fff;border-radius:10px;padding:12px 14px;display:none}""" + RICH_CSS
 
 
 def L(cfg):
@@ -93,7 +189,7 @@ def card(cfg, it):
     t = L(cfg)
     b = it.get("buttons") or []
     ts = str(it.get("ts", ""))
-    txt = f'<div class="t">{escape(it["text"])}</div><div class="muted">{escape(ts[8:10])}.{escape(ts[5:7])} {escape(ts[11:16])}</div>'
+    txt = f'<div class="t">{rich(it["text"])}</div><div class="muted">{escape(ts[8:10])}.{escape(ts[5:7])} {escape(ts[11:16])}</div>'
     p0 = C.parse(b[0][1]) if b else None
     if not p0:
         return f'<div class="card">{txt}</div>'
@@ -266,7 +362,7 @@ def make_handler(cfg):
                 return self._send(403, shell(cfg, "—", f"<p>{t['bad']}</p>"))
             if method == "GET":
                 it = next((x for x in C.feed(cfg, pid) if x.get("buttons") and (C.parse(x["buttons"][0][1]) or ())[:2] == (kind, key)), None)
-                txt = f'<div class="card"><div class="t">{escape(it["text"])}</div></div>' if it else ""
+                txt = f'<div class="card"><div class="t">{rich(it["text"])}</div></div>' if it else ""
                 hidden = "".join(f'<input type="hidden" name="{n}" value="{escape(v, True)}">' for n, v in (("p", pid), ("k", ks), ("a", ans), ("s", sig)))
                 form = f'<form method="post" action="/a">{hidden}<button class="b {ans}" type="submit">{t["yes"] if ans == "y" else t["not_needed"]}</button></form>'
                 return self._send(200, shell(cfg, t["confirm"], txt + form))
