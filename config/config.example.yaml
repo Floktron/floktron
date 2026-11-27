@@ -239,6 +239,12 @@ worktime:                  # work time: ▶ Start / ⏸ Pause / ⏹ End in the b
   night: ["22:00", "06:00"]
   holidays: []                  # your public holidays, "YYYY-MM-DD"
 
+meetings:                  # online meetings on the dashboard with their official join link (docs/MEETINGS.md)
+  enabled: false
+  mail: true                    # also look in the inbox (read only) for invitations with a Zoom / Teams / Meet link
+  mail_days: 30
+  days_ahead: 14
+
 cameras:                   # site cameras on the dashboard: online?, the latest frame, a link (docs/CAMERAS.md) — security only
   enabled: false
   every_minutes: 15             # scripts/cameras.py snap runs this often; one latest frame per camera, overwritten

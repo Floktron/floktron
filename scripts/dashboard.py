@@ -23,6 +23,7 @@ import re
 import sys
 
 import cameras
+import meeting_links
 import worktime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -347,8 +348,15 @@ def collect(cfg, data=DATA, now=None):
     if (cfg.get("cameras") or {}).get("enabled"):
         D["cameras"] = cameras.collect(cfg, data, now, D.get("lang", "en"))
         D["attention"] += D["cameras"]["attention"]
+    # online meetings with their official join link (data/meetings.json from scripts/meeting_links.py — docs/MEETINGS.md)
+    D["meetings"] = None
+    if (cfg.get("meetings") or {}).get("enabled") or os.path.exists(meeting_links.out_path(data)):
+        D["meetings"] = meeting_links.collect(cfg, data, now, D.get("lang", "en"))
+        D["meetings"]["on"] = bool((cfg.get("meetings") or {}).get("enabled"))
     D["score"] = dict(ok=sum(1 for p in D["pulse"] if p["st"] == "ok"), n=len(D["pulse"]))
     D["attention"].sort(key=lambda a: {"bad": 0, "warn": 1}.get(a["lvl"], 2))
+    if D["meetings"]:                     # a meeting within the hour and a trick link — always on top
+        D["attention"][:0] = D["meetings"]["attention"]
     return D
 
 
@@ -392,6 +400,9 @@ main{max-width:1180px;margin:-40px auto 40px;padding:0 14px}
 .cam .ph .tag{position:absolute;top:8px;left:8px}.cam .ph .ex{left:auto;right:8px;background:#8B5CF6;color:#fff}
 .cam .cb{padding:10px 12px;display:flex;flex-direction:column;gap:4px;flex:1}.cam .cb b{font-weight:600}.cam .go{margin-top:auto;padding-top:6px;font-weight:600;color:var(--acc);text-decoration:none}
 .camnote{font-size:12px;color:var(--mut);margin:10px 0 0}
+.meet{display:block;margin-top:3px;font:12.5px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--main);text-decoration:underline;word-break:break-all}
+.meet:hover{color:var(--acc)}.mwarn{display:block;margin-top:4px;font-size:12.5px;font-weight:600;color:var(--bad)}
+@media (prefers-color-scheme:dark){.meet{color:#9cc2f0}}
 @media (max-width:520px){.kpis{grid-template-columns:1fr 1fr}.rays{grid-template-columns:1fr 1fr;gap:8px}.list li{flex-wrap:wrap}.act{flex-basis:100%;padding-left:19px}}
 """
 
@@ -412,6 +423,14 @@ CAM_PH = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" aria-hi
 
 def esc(s):
     return html.escape(str(s or ""), quote=True)
+
+
+def meet_link(url):
+    """An online meeting link, shown IN FULL as its own text (what you see is where it goes); only official addresses pass."""
+    ok = meeting_links.check(url)
+    if not ok:
+        return ""
+    return (f'<a class="meet" href="{esc(ok[1])}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">{esc(ok[1])}</a>')
 
 
 def link(url, text):
@@ -512,6 +531,26 @@ def render(D, colors=None):
             (f'{cm["on"]}/{len(live)}' if live else "—", CL["k_on"]), (cm["off"], CL["k_off"]), (cm["n"], CL["k_all"])))
         cams_html = (f'<div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px">{kc}</div>'
                      f'<div class="cams">{cards}</div>' if cm["cams"] else lst([], CL["none"])) + f'<p class="camnote">🛡 {CL["rule"]}</p>'
+    mt = D.get("meetings")
+    meets_html = ""
+    if mt is not None:
+        ML = meeting_links.texts(D["lang"])
+
+        def mline(x):
+            when = x["day"].strftime("%d.%m") + (" " + x["time"] if x["time"] else "")
+            src = ML["from_mail"].format(w=x["frm"]) if x["frm"] else ML["cal"] if x["src"] == "calendar" else ML["mail"]
+            sub_ = " · ".join(v for v in (when, x["svc"], src, ML["nodate"] if x["nodate"] else "") if v)
+            if x["warn"]:
+                body = f'<span class="mwarn">⚠ {esc(ML["warn"].format(svc=x["warn"].get("svc", "?"), real=x["warn"].get("real", "?")))}</span>'
+            else:
+                ex = x["extra"] or {}
+                idc = " · ".join(v for v in ((f'{ML["mid"]} {ex["mid"]}' if ex.get("mid") else ""), (f'{ML["code"]} {ex["code"]}' if ex.get("code") else "")) if v)
+                body = meet_link(x["url"]) + (f'<span class="sub">{esc(idc)}</span>' if idc else "")
+            dot = "bad" if x["warn"] else "warn" if x["days"] <= 0 else "wait"
+            return (f'<li><span class="dot {dot}"></span><span class="t"><b>🎥 {esc(x["title"])}</b>'
+                    f'<span class="sub">{esc(sub_)}</span>{body}</span></li>')
+        meets_html = lst([mline(x) for x in mt["items"][:10]], ML["none"] if mt.get("on") else ML["off"]) + \
+            f'<p class="camnote">🛡 {esc(ML["rule"])}</p>'
     ch = D["chain"]
     chain = (f'<div class="chips" style="margin-bottom:8px"><span class="chip ok">🟢 {ch["g"]}</span><span class="chip warn">🟡 {ch["y"]}</span>'
              f'<span class="chip bad">🔴 {ch["r"]}</span><span class="sub">{esc(ch["date"])}</span></div>'
@@ -523,8 +562,9 @@ def render(D, colors=None):
 <link rel="icon" href="{FAVICON}"><title>FLOKTRON · {esc(D['org'])}</title><style>{css}</style></head><body>
 <header><div class="top"><div class="logo">{MARK}</div><div><h1>FLOKTRON · {L['title']}</h1><small>{esc(D['org'])}</small></div><div class="upd">{L['upd']}<br><b>{esc(D['updated'])}</b></div></div></header>
 <main><section class="hero">{ring}<div><h2>{head}</h2><p>{sub}</p><div class="chips">{chips}</div>{audio}</div></section><div class="grid">
-<div class="card w8"><h3>⚡ {L['att']}</h3>{lst([li(a['lvl'], esc(a['text']), '', f'<span class=act>{esc(a["act"])}</span>' if a['act'] else '') for a in att[:8]], L['none_att'])}</div>
+<div class="card w8"><h3>⚡ {L['att']}</h3>{lst([li(a['lvl'], esc(a['text']), meet_link(a['link']) if a.get('link') else '', f'<span class=act>{esc(a["act"])}</span>' if a['act'] else '') for a in att[:8]], L['none_att'])}</div>
 <div class="card w4"><h3>📅 {L['next']}</h3>{nxt}</div>
+{f'<div class="card w12" id="meetings"><h3>🎥 {meeting_links.texts(D["lang"])["title"]}</h3>{meets_html}</div>' if meets_html else ''}
 <div class="card w12"><div class="kpis">{kp}</div></div>
 {f'<div class="card w12" id="cameras"><h3>📹 {cameras.texts(D["lang"])["title"]}</h3>{cams_html}</div>' if cams_html else ''}
 {f'<div class="card w12"><h3>⏱ {worktime.texts(D["lang"])["title"]}</h3>{work}</div>' if work else ''}
