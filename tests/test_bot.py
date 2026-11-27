@@ -32,7 +32,7 @@ class FakeApi:
 def bot(tmp_path):
     flow = yaml.safe_load(open(FLOW, encoding="utf-8"))
     api = FakeApi()
-    b = tb.Bot(api, flow, {"manager_chat_ids": [999]}, tb.Store(data_dir=str(tmp_path)))
+    b = tb.Bot(api, flow, {"manager_chat_ids": [999], "strangers": "dialog"}, tb.Store(data_dir=str(tmp_path)))
     return b, api, tmp_path
 
 

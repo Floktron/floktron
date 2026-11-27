@@ -12,7 +12,11 @@ Each script then applies its own kind of presses to its own sheet on its next ru
 
 callback_data: fk:<kind>:<key>:<y|n> (Telegram allows 64 bytes). Kinds: mail · prospect · gw.
 No text about sheets or columns goes to Telegram: only the fact and the two buttons.
-Network: none here — the message goes through the bot's Api (scripts/bot/telegram_bot.py)."""
+Network: none here — the message goes through the bot's Api (scripts/bot/telegram_bot.py).
+Minimum data (0.38): before a task leaves the computer, e-mail addresses, phone numbers, IBANs, card numbers and
+personal codes in its text are hidden (telegram.mask_personal, on by default) — names and subjects stay, so the task
+is still clear; the details stay on the computer. The message goes with protect_content (telegram.protect_content,
+on by default): it cannot be forwarded or saved from the chat."""
 import hashlib
 import json
 import os
@@ -29,6 +33,28 @@ LABELS = {  # kind → (✅, ⛔) per company.language
     "et": {"mail": ("✅ Vastasin", "⛔ Pole vaja"), "prospect": ("✅ Raamatusse", "⛔ Ei sobi"), "gw": ("✅ Leidsin", "⛔ Pole vaja")},
     "lt": {"mail": ("✅ Atsakiau", "⛔ Nereikia"), "prospect": ("✅ Į knygą", "⛔ Netinka"), "gw": ("✅ Radau", "⛔ Nereikia")},
 }
+
+
+_MASKS = [
+    # e-mail: first letter + domain — «a…@demo.lv»
+    (re.compile(r"\b([A-Za-z0-9])[A-Za-z0-9._%+-]*@([A-Za-z0-9.-]+\.[A-Za-z]{2,24})\b"), lambda m: f"{m.group(1)}…@{m.group(2)}"),
+    # IBAN: country + last 4 — «LV…1234»
+    (re.compile(r"\b([A-Z]{2})\d{2}(?:[ ]?[A-Z0-9]){11,30}\b"), lambda m: m.group(1) + "…" + re.sub(r"\W", "", m.group(0))[-4:]),
+    # card number (13–19 digits, spaces or dashes)
+    (re.compile(r"\b(?:\d[ -]?){12,18}\d\b"), lambda m: "••••" + re.sub(r"\D", "", m.group(0))[-4:]),
+    # personal code: LV 6+5 digits, LT/EE 11 digits starting 3–6
+    (re.compile(r"\b\d{6}-[0-9]\d{4}\b|\b[3-6]\d{10}\b"), lambda m: "<personal code>"),
+    # phone with a country code: +371 2…  → «+371 …67»
+    (re.compile(r"\+\d{1,3}[ ()-]{0,2}\d(?:[ ()-]?\d){5,13}"), lambda m: m.group(0)[:4].rstrip() + " …" + re.sub(r"\D", "", m.group(0))[-2:]),
+]
+
+
+def mask_personal(text):
+    """Hide contact and payment details in a task text; names, subjects and amounts stay."""
+    s = str(text)
+    for rx, fn in _MASKS:
+        s = rx.sub(fn, s)
+    return s
 
 
 def via_telegram(cfg, section_cfg=None):
@@ -61,6 +87,9 @@ def actions_path(cfg):
 
 
 def _deliver(cfg, text, markup, outbox):
+    tg = cfg.get("telegram") or {}
+    if tg.get("mask_personal", True) is not False:
+        text = mask_personal(text)
     if outbox:   # tests and trial runs: a file instead of Telegram
         os.makedirs(outbox, exist_ok=True)
         with open(os.path.join(outbox, "telegram_tasks.jsonl"), "a", encoding="utf-8") as f:
@@ -77,6 +106,8 @@ def _deliver(cfg, text, markup, outbox):
         return f"Telegram: {e}"[:120]
     for cid in ids:
         p = {"chat_id": cid, "text": text[:3900], "disable_web_page_preview": True}
+        if tg.get("protect_content", True) is not False:
+            p["protect_content"] = True
         if markup:
             p["reply_markup"] = {"inline_keyboard": markup}
         try:

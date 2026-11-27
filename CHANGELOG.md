@@ -4,6 +4,32 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.38.0 — 27.11.2026 · bot security
+A review of every way into the Telegram bot, done in the operating company first. What changed:
+- **Strangers get nothing.** New `telegram.strangers`, default `ignore`: the bot answers only the team (managers,
+  `team_chat_ids`, voice users, people who joined with a valid invite). Anyone else gets no answer, no dialog, no
+  buttons, and nothing about them is kept — only a count per day in the log. `/id` answers a stranger only while
+  `manager_chat_ids` is empty (first setup). The client dialog (leads) is now opt-in: `strangers: dialog`.
+  **If you use the client dialog, add `strangers: dialog` to `telegram:` before updating.**
+- **A button counts only from its own chat:** a press made by another person than the chat owner (groups) and presses
+  on inline / vanished messages do nothing.
+- **Invite links work once, for one person, and expire.** `worktime.py invite --name "Anna" --days 7` makes a long
+  random link; the first chat that opens it owns it, a second person is refused and the managers are told. Codes in
+  `worktime.invites` may carry `until`; a code used before 0.38 belongs to whoever joined with it.
+  `/remove <chat id>` (managers) or `worktime.py remove --who …` takes a person out at once, no restart.
+- **Token in the system store on every system.** New `scripts/secret_store.py`: environment variable → macOS
+  Keychain → `keyring` (Windows Credential Manager, Linux Secret Service) → Linux `secret-tool`; never a file.
+  `telegram_bot.py --set-token` asks for the token hidden, checks it with Telegram and saves it — the one step after
+  BotFather's *Revoke*. Mac: `scripts/install/telegram/6_new_token.command` also restarts the bot.
+- **No token in logs:** the bot's console and `data/bot.log` pass through a filter that hides anything that looks like
+  a bot token.
+- **Minimum data in Telegram:** task messages hide e-mail addresses, phone numbers, IBANs, card numbers and personal
+  codes (`telegram.mask_personal`, on); tasks, leads and voice notes are sent with `protect_content` — they cannot be
+  forwarded or saved from the chat (`telegram.protect_content`, on).
+- docs/TELEGRAM.md: who the bot talks to, a new risk table, **«Protect your own Telegram account»** (cloud password,
+  passkey, active sessions) and **«If the bot is taken over»** — revoke, one command, restart, check the team.
+- New tests: `tests/test_bot_security.py` (15, fictional chats and data).
+
 ## 0.37.3 — 27.11.2026 · honest run numbers
 - Correction: README said "about 1,460 automatic runs since 8 November, about 2 % failed". That counted lines of the
   run log — one run writes several lines (mail → tasks → routes). Counted per run, 08.11–27.11.2026: 860 runs, 28

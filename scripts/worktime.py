@@ -17,6 +17,10 @@ Every mark is one line in data/worktime.jsonl (append-only; corrections are new 
     python3 scripts/worktime.py remind                     # ask open days (scheduler at remind_at)
     python3 scripts/worktime.py mark --who "Anna" --action start --by dashboard   # any other channel (no Telegram)
     python3 scripts/worktime.py fix --who "Anna" --date 2026-11-26 --end 17:30 --why "forgot to tap"
+    python3 scripts/worktime.py invite --name "Anna" [--days 7]   # one-time link for ONE person, expires
+    python3 scripts/worktime.py remove --who "Anna"                # out of the team (or /remove <chat id> in the bot)
+Invite links (0.38): one code = one person — the first chat that opens it owns it, anyone else is refused and the
+manager is told; a code with `until` stops working after that day.
 Network: none here; reminders go through the bot's Api (scripts/bot/telegram_bot.py).
 """
 import argparse
@@ -41,7 +45,10 @@ TEXT = {
                ask_geo="Tap «▶ Start» — Telegram will ask once to share your location at this moment (only this point is kept).",
                remind="⏰ Still at work? Started {t}, {h} so far.", still="▶ Still working", stop_now="⏹ End now",
                keep="👍 OK, the day stays open.", mine="⏱ Today {h} · this week {w} · this month {m}",
-               joined="👋 Hello, {n}! You are in the work-time record now. Mark your day with the buttons below.", joined_mgr="👤 {n} joined work time (chat id {c}).",
+               joined="👋 Hello, {n}! You are in the work-time record now. Mark your day with the buttons below.", joined_mgr="👤 {n} joined work time (chat id {c}). Not them? Send /remove {c}",
+               invite_bad="⚠️ This invite link no longer works (it was used or it expired). Ask your manager for a new one.",
+               invite_used_mgr="⚠️ Someone else opened the invite link of {n} (chat id {c}) — refused. The link is used up; if {n} needs it again, make a new one: worktime.py invite --name …",
+               removed_mgr="✅ chat id {c} ({n}) removed from the team and work time.", not_found="ℹ️ No such person in the team: {c}",
                who_head="👷 At work now", nobody="Nobody is at work now.", forwarded="⚠️ A forwarded location is not accepted — tap «▶ Start».",
                title="Work time", k_now="at work now", k_today="hours today", k_month="hours this month", k_flags="to check",
                since="since {t}", paused_s="on pause since {t}", done_s="{a}–{b}", absent="no mark today", none="No work-time marks yet. "
@@ -55,7 +62,10 @@ TEXT = {
                ask_geo="Нажми «▶ Начал работу» — Telegram один раз спросит разрешение отправить место в эту минуту (хранится только эта точка).",
                remind="⏰ Ты ещё на работе? Начало {t}, уже {h}.", still="▶ Ещё работаю", stop_now="⏹ Закончил сейчас",
                keep="👍 Хорошо, день остаётся открытым.", mine="⏱ Сегодня {h} · неделя {w} · месяц {m}",
-               joined="👋 Здравствуйте, {n}! Вы подключены к учёту рабочего времени. Отмечайте день кнопками внизу.", joined_mgr="👤 {n} подключился к учёту времени (chat id {c}).",
+               joined="👋 Здравствуйте, {n}! Вы подключены к учёту рабочего времени. Отмечайте день кнопками внизу.", joined_mgr="👤 {n} подключился к учёту времени (chat id {c}). Это не он? Отправь /remove {c}",
+               invite_bad="⚠️ Эта ссылка-приглашение больше не действует (уже использована или срок вышел). Попросите новую у управляющего.",
+               invite_used_mgr="⚠️ Ссылку-приглашение «{n}» открыл кто-то другой (chat id {c}) — отказано. Ссылка уже использована; если {n} нужна новая: worktime.py invite --name …",
+               removed_mgr="✅ chat id {c} ({n}) убран из команды и учёта времени.", not_found="ℹ️ В команде такого нет: {c}",
                who_head="👷 Сейчас на работе", nobody="Сейчас на работе никого.", forwarded="⚠️ Пересланное место не принимается — нажми «▶ Начал работу».",
                title="Учёт рабочего времени", k_now="сейчас на работе", k_today="часов сегодня", k_month="часов за месяц", k_flags="проверить",
                since="с {t}", paused_s="пауза с {t}", done_s="{a}–{b}", absent="сегодня не отмечался", none="Отметок пока нет. "
@@ -69,7 +79,10 @@ TEXT = {
                ask_geo="Spied «▶ Sāku darbu» — Telegram vienreiz pajautās atļauju nosūtīt atrašanās vietu šajā brīdī (glabā tikai šo punktu).",
                remind="⏰ Vēl esi darbā? Sākums {t}, jau {h}.", still="▶ Vēl strādāju", stop_now="⏹ Beidzu tagad",
                keep="👍 Labi, diena paliek atvērta.", mine="⏱ Šodien {h} · nedēļā {w} · mēnesī {m}",
-               joined="👋 Sveiki, {n}! Jūs esat pievienots darba laika uzskaitei. Atzīmējiet dienu ar pogām apakšā.", joined_mgr="👤 {n} pievienojās darba laika uzskaitei (chat id {c}).",
+               joined="👋 Sveiki, {n}! Jūs esat pievienots darba laika uzskaitei. Atzīmējiet dienu ar pogām apakšā.", joined_mgr="👤 {n} pievienojās darba laika uzskaitei (chat id {c}). Tas nav viņš? Sūti /remove {c}",
+               invite_bad="⚠️ Šī uzaicinājuma saite vairs nedarbojas (jau izmantota vai beidzies termiņš). Palūdziet jaunu vadītājam.",
+               invite_used_mgr="⚠️ Uzaicinājuma saiti «{n}» atvēra kāds cits (chat id {c}) — atteikts. Saite jau izmantota; ja {n} vajag jaunu: worktime.py invite --name …",
+               removed_mgr="✅ chat id {c} ({n}) izņemts no komandas un darba laika uzskaites.", not_found="ℹ️ Komandā tāda nav: {c}",
                who_head="👷 Tagad darbā", nobody="Tagad darbā neviena nav.", forwarded="⚠️ Pārsūtīta vieta netiek pieņemta — spied «▶ Sāku darbu».",
                title="Darba laika uzskaite", k_now="tagad darbā", k_today="stundas šodien", k_month="stundas mēnesī", k_flags="pārbaudīt",
                since="kopš {t}", paused_s="pauze kopš {t}", done_s="{a}–{b}", absent="šodien nav atzīmējies", none="Atzīmju vēl nav. "
@@ -326,19 +339,97 @@ def joined(log):
         return {}
 
 
-def join(log, w, code, chat_id):
-    """Invite link t.me/<bot>?start=<code>: the code from worktime.invites gives the name. '' = unknown code."""
-    invites = {str(k): str(v) for k, v in (w.get("invites") or {}).items()}
-    name = invites.get(str(code), "")
-    if not name:
-        return ""
-    d = joined(log)
-    d[str(chat_id)] = name
-    os.makedirs(os.path.dirname(os.path.abspath(log)), exist_ok=True)
-    tmp = joined_path(log) + ".tmp"
+def invites_path(log):
+    """Invites made with `worktime.py invite` (long random code, expiry) — kept next to the log."""
+    return os.path.join(os.path.dirname(os.path.abspath(log)), "worktime_invites.json")
+
+
+def used_path(log):
+    """Which chat used which invite code — an invite works for ONE person only."""
+    return os.path.join(os.path.dirname(os.path.abspath(log)), "worktime_invites_used.json")
+
+
+def _read_json(path):
+    try:
+        with open(path, encoding="utf-8") as f:
+            d = json.load(f)
+        return d if isinstance(d, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _write_json(path, d):
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(d, f, ensure_ascii=False, indent=1)
-    os.replace(tmp, joined_path(log))
+    os.replace(tmp, path)
+
+
+def invites(log, w):
+    """code → {name, until} from worktime.invites (config: "code": "Name" or "code": {name, until}) + made by the CLI."""
+    out = {}
+    for src in ((w or {}).get("invites") or {}, _read_json(invites_path(log))):
+        for k, v in src.items():
+            if isinstance(v, dict):
+                out[str(k)] = {"name": str(v.get("name") or ""), "until": str(v.get("until") or "")}
+            else:
+                out[str(k)] = {"name": str(v), "until": str((w or {}).get("invites_until") or "")}
+    return {k: v for k, v in out.items() if v["name"]}
+
+
+def join_check(log, w, code, chat_id, now=None):
+    """Invite link t.me/<bot>?start=<code>. → (name, status): ok · again (same person) · unknown · used · expired.
+    One code = one person: the first chat that opens it owns it; any other chat is refused (and the manager told).
+    Expired (until < today) = refused. Only status ok/again joins."""
+    inv = invites(log, w).get(str(code))
+    if not inv:
+        return "", "unknown"
+    name, chat = inv["name"], str(chat_id)
+    used = _read_json(used_path(log))
+    people_ = joined(log)
+    if str(code) not in used:   # joined before invites were one-time (0.38): the person with that name owns the code
+        owner = next((c for c, n in people_.items() if n == name), "")
+        if owner:
+            used[str(code)] = {"chat": owner, "ts": "before 0.38"}
+            _write_json(used_path(log), used)
+    if str(code) in used:
+        return (name, "again") if str(used[str(code)].get("chat")) == chat else (name, "used")
+    today = (now or datetime.datetime.now()).strftime("%Y-%m-%d")
+    if inv["until"] and inv["until"] < today:
+        return name, "expired"
+    used[str(code)] = {"chat": chat, "ts": (now or datetime.datetime.now()).strftime(FMT)}
+    _write_json(used_path(log), used)
+    people_[chat] = name
+    _write_json(joined_path(log), people_)
+    return name, "ok"
+
+
+def join(log, w, code, chat_id):
+    """Old call: the name when the code lets this chat in, else ''."""
+    name, st = join_check(log, w, code, chat_id)
+    return name if st in ("ok", "again") else ""
+
+
+def new_invite(log, name, days=7, now=None):
+    """A new one-time invite: long random code, valid `days` days. → (code, until)."""
+    import secrets
+    code = "wt-" + secrets.token_hex(8)
+    until = ((now or datetime.datetime.now()) + datetime.timedelta(days=max(1, int(days)))).strftime("%Y-%m-%d")
+    d = _read_json(invites_path(log))
+    d[code] = {"name": clean(name, 60), "until": until}
+    _write_json(invites_path(log), d)
+    return code, until
+
+
+def remove(log, who):
+    """Take a person out of the team (joined by invite): chat id or name. → name removed or ''."""
+    people_ = joined(log)
+    chat = next((c for c, n in people_.items() if c == str(who) or n.lower() == str(who).lower()), "")
+    if not chat:
+        return ""
+    name = people_.pop(chat)
+    _write_json(joined_path(log), people_)
     return name
 
 
@@ -588,7 +679,9 @@ def load_cfg(path):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="FLOKTRON work time")
-    ap.add_argument("cmd", choices=["status", "month", "remind", "fix", "mark"])
+    ap.add_argument("cmd", choices=["status", "month", "remind", "fix", "mark", "invite", "remove"])
+    ap.add_argument("--name", default="", help="invite: the person's name as it should appear")
+    ap.add_argument("--days", type=int, default=7, help="invite: how many days the link works (one person only)")
     ap.add_argument("--action", choices=["start", "pause", "back", "end"], default="")
     ap.add_argument("--by", default="cli", help="mark: the channel — dashboard, mail, sms, kiosk… (shown to the manager)")
     ap.add_argument("--lat", type=float)
@@ -627,6 +720,20 @@ def main(argv=None):
         lang = (cfg.get("company") or {}).get("language", "en")
         print(mark(cfg, path, who, team.get(who, a.who), a.action, location=loc, lang=lang, by=clean(a.by, 20) or "cli")[0])
         return 0
+    if a.cmd == "invite":
+        if not a.name.strip():
+            sys.exit("invite needs --name \"Name Surname\"")
+        code, until = new_invite(path, a.name, a.days)
+        bot = (cfg.get("telegram") or {}).get("bot_username") or "<your_bot>"
+        print(f"Invite for {clean(a.name, 60)} — works once, for one person, until {until}:\n  https://t.me/{bot}?start={code}\n"
+              "Send it to that person only (not to a group). No restart needed.")
+        return 0
+    if a.cmd == "remove":
+        if not a.who:
+            sys.exit("remove needs --who <chat id or name>")
+        name = remove(path, a.who)
+        print(f"worktime: {name} removed from the team — restart the bot (or send /remove in Telegram)" if name else "worktime: no such person")
+        return 0 if name else 1
     if a.cmd == "fix":
         if not (a.who and a.why and (a.start or a.end) and re.match(r"^\d{4}-\d{2}-\d{2}$", a.date or "")):
             sys.exit("fix needs --who, --date YYYY-MM-DD, --start and/or --end HH:MM, and --why (kept in the log)")

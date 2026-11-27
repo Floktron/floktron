@@ -199,7 +199,14 @@ updates:                   # new FLOKTRON versions: once a day, one anonymous re
 telegram:                  # optional bot: dialog → leads (scripts/bot/telegram_bot.py); off until a token exists
   enabled: false
   token_env: "FLOKTRON_TG_TOKEN"   # bot token from @BotFather comes from this environment variable...
-  keychain_service: "FLOKTRON_TG_BOT"  # ...or from macOS Keychain (scripts/install/telegram/1_token.command saves it here)
+  keychain_service: "FLOKTRON_TG_BOT"  # ...or from the system store under this name: macOS Keychain, Windows Credential
+                                       # Manager / Linux Secret Service (package keyring). Save or replace it, hidden:
+                                       # python3 scripts/bot/telegram_bot.py --set-token   (never into this file)
+  bot_username: ""              # e.g. demo_company_bot — only to print invite links (worktime.py invite)
+  strangers: ignore             # ignore = the bot answers only the team, keeps nothing about anyone else (0.38 default)
+                                # dialog = strangers get the client dialog (flow) and become leads — personal data
+  protect_content: true         # tasks, leads, voice notes: cannot be forwarded or saved from the chat
+  mask_personal: true           # tasks: e-mails, phones, IBANs, card numbers, personal codes are hidden
   flow: "bot_flow.yaml"         # the dialog, next to this config (copy config/bot_flow.example.yaml)
   manager_chat_ids: []          # who gets new leads and may use /leads /funnel — write /id to the bot to see yours
   team_chat_ids: []             # more team members: like managers, never the client dialog; tasks with ✅ / ⛔
