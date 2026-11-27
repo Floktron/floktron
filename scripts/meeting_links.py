@@ -256,7 +256,7 @@ def _squash(t):
 
 
 def key_of(s):
-    return hashlib.sha1(str(s).encode("utf-8"), usedforsecurity=False).hexdigest()[:10]   # a short key, not security
+    return hashlib.sha256(str(s).encode("utf-8")).hexdigest()[:12]   # a short dedupe key, not security
 
 
 TODAY_RX = re.compile(r"(?i)\b(today|tonight|šodien|сегодня|heute|täna|šiandien)\b[^.\n]{0,40}?(?:at|plkst\.?|в|um|kell|kl\.?|\s)\s*(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?")
