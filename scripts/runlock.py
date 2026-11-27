@@ -21,6 +21,10 @@ except ImportError:          # Windows
     fcntl = None
     import msvcrt
 
+# Windows locks byte ranges, and a locked byte cannot even be read by another handle: lock one byte far past the text,
+# so the PID line stays readable for people (locking past the end of a file is allowed)
+WIN_OFFSET = 1 << 30
+
 
 class RunLock:
     def __init__(self, path):
@@ -36,7 +40,7 @@ class RunLock:
             if fcntl:
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             else:
-                os.lseek(fd, 0, os.SEEK_SET)
+                os.lseek(fd, WIN_OFFSET, os.SEEK_SET)
                 msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)
         except OSError:
             os.close(fd)
@@ -57,7 +61,7 @@ class RunLock:
             if fcntl:
                 fcntl.flock(self._fd, fcntl.LOCK_UN)
             else:
-                os.lseek(self._fd, 0, os.SEEK_SET)
+                os.lseek(self._fd, WIN_OFFSET, os.SEEK_SET)
                 msvcrt.locking(self._fd, msvcrt.LK_UNLCK, 1)
         except OSError:
             pass
