@@ -124,7 +124,7 @@ def test_page(web):
     assert "HttpOnly" in hd["Set-Cookie"] and "Secure" in hd["Set-Cookie"]
     assert 'data-t="start"' not in body and 'data-ch="email"' in body
     st, b2, _ = req("GET", "/m?k=" + k2)
-    assert "d1" not in b2 and 'data-t="start"' in b2                                       # own tasks only, time buttons
+    assert 'data-k="mail:d1"' in body and 'data-k="mail:d1"' not in b2 and 'data-t="start"' in b2   # own tasks only, time buttons
     st, man, _ = req("GET", "/m/manifest.webmanifest?k=" + k)
     assert json.loads(man)["start_url"] == "/m?k=" + k
     assert req("POST", "/m/act", {"k": "mail:d1", "ans": "y"})[0] == 403                    # no key header
