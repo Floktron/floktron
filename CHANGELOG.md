@@ -4,6 +4,32 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.40.0 — 28.11.2026 · channels: each person chooses Telegram, their own page or e-mail (+ push)
+Asked for in the operating company: «whoever wants Telegram — Telegram; whoever wants their own page — please; mail
+plus push too — give the choice at once, and let people switch». Works there first (the manager now uses the page as
+an app on the phone), then here.
+- **New `scripts/channels.py`** (`config.yaml → channels`, off by default — then tasks go to Telegram exactly as
+  before): every task from `scripts/task_notice.py` (mail watch, prospects, gateways) goes to each person in
+  `channels.people` through the channel they chose — `telegram`, `web` (their own page) or `email`. A silent channel →
+  the next one in the person's backup list (default page → e-mail). Every task is also kept in
+  `data/channels_feed.jsonl`, so the page shows everything.
+- **One place for every press:** a button in any channel writes the same line to `data/task_actions.jsonl` as the
+  Telegram buttons (`by: telegram | web | email`, `person`). The modules read their presses as before.
+- **New `scripts/channels_web.py` — the person's own page** (`python3 scripts/channels.py serve`, 127.0.0.1): open
+  tasks with ✅ / ⛔, the channel switch and push on / off, ▶ Start / ⏸ Pause / ⏹ End for work time (with one
+  location point at the start; marks go to the same work-time log, `by: web`). Add to Home Screen → opens like an app
+  (manifest and icon). A private key per person; serves only `/m…` and `/a`, only for 127.0.0.1, your
+  `public_url` host and (with `web.lan`) your local network. From outside: your own Cloudflare Tunnel that lets only
+  the page through (docs/CHANNELS.md).
+- **E-mail:** one summary letter with all new tasks and signed buttons (HMAC). With `public_url` a button opens the
+  page with **«Confirm»** (a mail scanner that opens links closes nothing); without it, a reply letter with a ready
+  subject «FLOKTRON-ACT …» that the next run reads — only from that person's address, once. New
+  `mail/read.py → subject_mail` (read only). `scripts/run.py` sends the letters and reads replies with «collect».
+- **Push (ntfy, optional):** only «New task: letter / new client / payment without a document» — no names, subjects,
+  amounts or addresses; a long random topic per person; your own ntfy server possible.
+- New tests: `tests/test_channels.py` (8, fictional people and companies; push and mail go to an outbox folder).
+  Run numbers recounted from the run log: 874 runs 08.11–28.11.2026, 28 failed (3.2 %).
+
 ## 0.39.0 — 28.11.2026 · online meetings: the join link on the dashboard
 Asked for in the operating company: «the meeting is on the dashboard — let its Zoom / Teams link be right there, in
 full, as in the letter; one click and I am in». Works there first, then here.

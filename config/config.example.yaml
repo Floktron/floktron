@@ -251,6 +251,18 @@ cameras:                   # site cameras on the dashboard: online?, the latest 
   items: []                     # e.g. - {id: gate, name: "Gate", place: "Site Park 12", snapshot: "http://192.168.1.20/snapshot.jpg"}
                                 #      - {id: yard, name: "Yard", snapshot: "rtsp://user:pass@192.168.1.21:554/stream2"}  (needs ffmpeg)
 
+channels:                  # each person chooses where tasks come: Telegram, their own page, e-mail (+ push) — docs/CHANNELS.md
+  enabled: false                # false = tasks go to Telegram exactly as before
+  people: {}                    # e.g. manager: {name: "Anna", channel: telegram, backup: [web, email], email: "anna@demo.lv"}
+                                #      site1: {name: "Jānis", channel: web, time: true, worktime_who: "123456789", tasks: false}
+                                # channel: telegram | web | email; people switch it themselves on their page
+  web:
+    port: 8765                  # python3 scripts/channels.py serve — the page, on 127.0.0.1 (this computer only)
+    public_url: ""              # e.g. https://tasks.yourcompany.com — your own Cloudflare Tunnel to the page (docs/CHANNELS.md)
+    lan: false                  # true = the page also answers phones in the same Wi-Fi
+  ntfy:
+    server: "https://ntfy.sh"   # push: only «New task: letter» goes out, no names or amounts; or your own ntfy server
+
 site_module:
   enabled: false
   bot: "telegram"          # telegram | whatsapp

@@ -45,6 +45,9 @@ kiosk tablet at the entrance, an e-mail or SMS gateway you already have — mark
 
 The mark goes to the same log and the same hours; the dashboard shows which channel it came from.
 
+With [channels](CHANNELS.md) a person who chose their own page gets ▶ Start / ⏸ Pause / ⏹ End right there
+(`time: true` and `worktime_who` in `channels.people`) — with one location point at the start if the phone allows it; marks come `by: web`.
+
 ## Corrections — only by the manager, always with a reason
 
     python3 scripts/worktime.py fix --who "Anna" --date 2026-11-26 --end 17:30 --why "forgot to tap End"
