@@ -38,6 +38,12 @@ waiting 6 d.
 - No text about sheets or columns; summaries with nothing to do come without buttons.
 - Your own words: `telegram.team_texts` (help, closed_y, closed_n, toast, reply_closed, already).
 
+## Work time: start, pause, end
+
+With `worktime.enabled` the team gets three buttons under the message field: ▶ Start (with one location point when
+`worktime.geo` is on) · ⏸ Pause · ⏹ End. `/hours` — my hours; `/who` — who is at work now (managers). The bot asks
+«Still at work?» at `worktime.remind_at`. Details and what is kept: [WORKTIME](WORKTIME.md).
+
 ## Security
 | Risk | What happens | Protection in FLOKTRON |
 |---|---|---|

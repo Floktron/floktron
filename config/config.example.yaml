@@ -219,6 +219,16 @@ telegram:                  # optional bot: dialog → leads (scripts/bot/telegra
     tts_engine: auto            # auto = system voice; or elevenlabs
     tts_lang: en
 
+worktime:                  # work time: ▶ Start / ⏸ Pause / ⏹ End in the bot, hours on the dashboard (docs/WORKTIME.md)
+  enabled: false
+  geo: false                    # true = one location point at «Start» (the phone asks); never during the day
+  people: {}                    # chat id: "Name" — who marks work time (write /id to the bot)
+  sites: []                     # e.g. - {name: "Site Park 12", lat: 56.951, lon: 24.113, radius_m: 250}
+  remind_at: "20:00"            # «Still at work?» to whoever has not ended
+  day_hours: 8                  # more in one day = overtime
+  night: ["22:00", "06:00"]
+  holidays: []                  # your public holidays, "YYYY-MM-DD"
+
 site_module:
   enabled: false
   bot: "telegram"          # telegram | whatsapp

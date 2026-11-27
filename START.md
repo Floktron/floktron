@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.35.1. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.36.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -143,7 +143,7 @@ Status: in daily use in an operating company since October 2026, public since No
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.35.1 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.36.0 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
@@ -155,6 +155,7 @@ Every morning each department gets its tasks; people answer with one button; blo
 Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) shows your day in the morning message, and due dates come as a calendar file you add with one tap ([CALENDAR](docs/CALENDAR.md)).
 A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big producers, listed companies, freight routes, reference prices and currencies — it speaks up only when something moves ([SUPPLY_CHAIN](docs/SUPPLY_CHAIN.md)).
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
+**Work time — start, pause, end with one tap**: your team marks the working day with three buttons in the work chat with your bot; with one location point at the start (if you switch it on) the manager sees who is on which site. The dashboard shows who is at work now, today's and the month's hours, overtime, night and weekend hours and what needs a look; once a month a table for the accountant. Hours are never made up: a day without an end mark waits for the manager's correction, and every correction keeps its reason ([WORKTIME](docs/WORKTIME.md)).
 Your team can **report by voice** — the bot turns a voice message into text on your own computer; the manager gets a **morning audio summary** to listen to in the car ([VOICE](docs/VOICE.md)).
 **Your own website before marketing**: the assistant leads you through a safe site on Cloudflare (free certificates, protection, one-click undo) — or on the hosting you already like, such as Namecheap or GoDaddy ([WEBSITE](docs/WEBSITE.md)).
 **Supplier invoices → accounting**: your assistant reads invoices in any language (PDF, scan, photo), FLOKTRON checks each one against your bank statement and gives the finance ray short tasks — what to pay, what to check, which final invoice to ask for; duplicates and delivery notes are caught ([INVOICES](docs/INVOICES.md)).
@@ -816,6 +817,12 @@ waiting 6 d.
 - **Reply** to a task message with text (swipe → Reply) → ✅ with your comment.
 - No text about sheets or columns; summaries with nothing to do come without buttons.
 - Your own words: `telegram.team_texts` (help, closed_y, closed_n, toast, reply_closed, already).
+
+## Work time: start, pause, end
+
+With `worktime.enabled` the team gets three buttons under the message field: ▶ Start (with one location point when
+`worktime.geo` is on) · ⏸ Pause · ⏹ End. `/hours` — my hours; `/who` — who is at work now (managers). The bot asks
+«Still at work?» at `worktime.remind_at`. Details and what is kept: [WORKTIME](WORKTIME.md).
 
 ## Security
 | Risk | What happens | Protection in FLOKTRON |
@@ -1960,6 +1967,100 @@ no text of other people's messages.
 - Tests: `tests/test_voice.py` (no network, fake engines).
 
 
+===== FILE: docs/WORKTIME.md =====
+
+# Work time — start, pause, end in Telegram; hours on the dashboard
+
+Your team marks the working day with three buttons in the work chat with your bot. The manager sees who is at work
+now, the hours of today and of the month, and what needs a look. Once a month there is a table for the accountant.
+Everything runs on your computer and stays in your `data/` folder.
+
+## What a team member sees
+
+Three buttons always stay under the message field:
+
+| Button | What happens |
+|---|---|
+| **▶ Start** | the shift starts. With `worktime.geo: true` the phone asks once to share its location **at this moment**: one point is kept, nothing during the day |
+| **⏸ Pause** / **▶ Back** | a break; the pause is not counted as work |
+| **⏹ End** | the shift ends; the bot answers with today's hours |
+
+`/hours` shows my hours today, this week and this month. The morning task (mail or Telegram) stays as before: the
+person gets the task, then taps **▶ Start**.
+
+At `worktime.remind_at` (default 20:00) the bot asks whoever has not ended: *"Still at work? Started 07:48, 12 h so far."*
+with **⏹ End now** / **▶ Still working**. If nobody answers, the shift is marked **"no end mark"** and its hours are
+**not counted**: FLOKTRON never makes hours up. The manager corrects the day.
+
+A night shift (22:00 → 06:30) is one shift on the day it started; night hours are counted separately.
+
+## What the manager sees
+
+On the dashboard ([DASHBOARD](DASHBOARD.md)), the block **⏱ Work time**:
+
+- four numbers: at work now (3/6), hours today, hours this month, marks to check;
+- every person: green = working, blue = on pause, grey = finished or not here today; the site from the start mark
+  — green ✓ when inside the site radius, orange with the distance when far;
+- the month: days, hours, overtime (over `day_hours` a day), night hours, weekend and holiday hours;
+- **to check**: no end mark, started far from the site, a very long day, every manager correction with its reason.
+  The first ones also go to "Needs your attention".
+
+In the bot, `/who` (managers only) lists who is at work now.
+
+## Corrections — only by the manager, always with a reason
+
+    python3 scripts/worktime.py fix --who "Anna" --date 2026-11-26 --end 17:30 --why "forgot to tap End"
+
+The original marks are never changed: the log `data/worktime.jsonl` only grows; a correction is a new line with who,
+when and why. The dashboard and the month table show that the day was corrected.
+
+## The month for the accountant
+
+    python3 scripts/worktime.py month --month 2026-11      # → data/worktime_2026-11.xlsx
+
+Sheet **Month**: person, days, hours, overtime, night, weekend/holiday, days without an end mark, corrected days.
+Sheet **Days**: every shift with start, end, pause, hours, site and notes. Your accountant applies your own rules
+(summed working time, rates, rest periods) — FLOKTRON gives the facts, it does not calculate pay.
+
+## Setup
+
+In `config/config.yaml`:
+
+```yaml
+worktime:
+  enabled: true
+  geo: true                    # one location point at «Start» (the phone asks); false = buttons only
+  people:                      # Telegram chat id: name (write /id to the bot to see an id)
+    "123456789": "Anna"
+  sites:                       # optional: where work happens; the start point is compared with these
+    - {name: "Site Park 12", lat: 56.9510, lon: 24.1130, radius_m: 250}
+  remind_at: "20:00"
+  day_hours: 8
+  night: ["22:00", "06:00"]
+  holidays: ["2026-11-18"]     # your public holidays (weekends are counted by themselves)
+```
+
+The bot must be running ([TELEGRAM](TELEGRAM.md)); the people above join the team automatically and never get the
+client dialog. Reminders are sent by the bot itself; `python3 scripts/worktime.py remind` does the same from a scheduler.
+
+## Personal data — keep it small
+
+Working-time records are an employer's duty in many countries (in the EU see the Court of Justice judgment C-55/18,
+2019; in Latvia the Labour Law requires a record of hours worked). FLOKTRON keeps only what that record needs:
+
+| Kept | Not kept |
+|---|---|
+| name (from your config), chat id, start / pause / back / end times | personal code, photos, face or fingerprint (biometrics) |
+| one location point at «Start», only with `geo: true`; the site name and the distance | location during the day, routes, live tracking |
+| manager corrections with the reason | anything from the phone besides the tapped button |
+
+Before you switch `geo` on, tell the team in writing what is kept, why and for how long (your privacy notice or work
+rules), and decide how long you keep `data/worktime.jsonl`. A forwarded location is refused; a location chosen by hand
+on the map cannot be told from a real one by Telegram, so the point is a check, not proof.
+
+Camera monitoring of workplaces is **not** part of FLOKTRON.
+
+
 ===== FILE: docs/DASHBOARD.md =====
 
 # Dashboard — the whole system on one page
@@ -1986,6 +2087,7 @@ if the Mac asks, right-click the icon → Open → Open. The page itself also sh
 | Needs your attention | failed or late runs, overdue tasks, questions from people, deadlines within 3 days |
 | Coming up | open consultations with a deadline (radar) |
 | Rays — who confirmed today's tasks | sheets Rays / Tasks / Receipts of `floktron_base.xlsx` (test rays are marked) |
+| Work time — at work now, hours today and this month, overtime, night, weekend, what to check | `data/worktime.jsonl`, marks from the bot ([WORKTIME](WORKTIME.md)); no end mark or a start far from the site also goes to *Needs your attention* |
 | Open tasks · answers for 14 days | Tasks, Receipts |
 | Voice reports · audio summary player | `voice_reports.xlsx`, `pulse_*.m4a` ([VOICE](VOICE.md)) |
 | Invoices → accounting | sheet Invoices ([INVOICES](INVOICES.md)) |
