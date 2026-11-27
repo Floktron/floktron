@@ -88,3 +88,12 @@ def test_no_block_when_off(tmp_path):
     D = db.collect({"company": {"language": "en"}}, str(tmp_path), NOW)
     D["_outdir"] = str(tmp_path)
     assert 'id="cameras"' not in db.render(D)
+
+
+def test_button_labels():
+    """Own camera → «View site»; a link-only public example keeps «Open camera» (TEST · FICTIONAL)."""
+    import cameras
+    for lang, own, demo in (("en", "View site", "Open camera"), ("ru", "Смотреть объект", "Открыть камеру"),
+                            ("lv", "Skatīt objektu", "Atvērt kameru")):
+        L = cameras.texts(lang)
+        assert (L["open"], L["open_demo"]) == (own, demo)
