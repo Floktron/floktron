@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.38.0. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.38.1. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -143,7 +143,7 @@ Status: in daily use in an operating company since October 2026, public since No
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.38.0 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.38.1 · last update 27.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
@@ -313,6 +313,21 @@ FLOKTRON reads text written by other people every day: e-mail replies, news feed
 Some of it may be written on purpose to trick a script or an AI agent. This page says what FLOKTRON protects
 against, how, and what it cannot protect against.
 
+## For security reviewers — start here
+We take every piece of data seriously: the company's, its team's and its customers'. Where to look first:
+
+| Topic | What to check | Where |
+|---|---|---|
+| Data we keep | Minimum by default: no customer form in the Telegram bot (opt-in only), nothing kept about strangers, contact and payment details hidden in Telegram tasks | [Personal data — the minimum](#personal-data--the-minimum), `config/config.example.yaml` |
+| Secrets | Bot token and passwords only in the system store (macOS Keychain, Windows Credential Manager, Linux Secret Service) or an environment variable — never in a file, log, backup or git | `scripts/secret_store.py`, `tests/test_bot_security.py` |
+| Telegram bot | Who it answers, how buttons and invite links are checked, what to do if the bot is taken over | [docs/TELEGRAM.md#security](docs/TELEGRAM.md#security) |
+| Network | Every outside address FLOKTRON connects to; nothing goes to the authors | [docs/TRANSPARENCY.md](docs/TRANSPARENCY.md), `tests/test_network.py` |
+| Automated scans | OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot on every change | [docs/SECURITY_SCANS.md](docs/SECURITY_SCANS.md) |
+| Outside reviews | Every point received, checked in the code, what was fixed and the test that guards it | [docs/CODE_REVIEW.md](docs/CODE_REVIEW.md) |
+| The user's computer | Read-only checkup at the end of every setup | [docs/SECURITY_CHECKUP.md](docs/SECURITY_CHECKUP.md) |
+
+There is no independent audit yet. Findings are welcome — see [Report a problem](#report-a-problem).
+
 ## What is protected and how
 
 | Risk | Protection | Where |
@@ -324,6 +339,10 @@ against, how, and what it cannot protect against.
 | A hostile news server sends a huge file | Feeds over 5 MB are skipped and recorded in Gaps | `news_slice.py` |
 | Someone in the middle of the mail connection (fake mail server) | Every mail server's certificate is checked. The only exception is Proton Mail Bridge, which runs on your own computer with a self-signed certificate: the check is relaxed only for the address of this computer (127.0.0.1 / localhost) — or, better, pinned to Bridge's exported certificate (`mail.tls_cert`). A Bridge address on another computer without the pinned certificate is refused | `scripts/mail/send.py` → `tls_context`, `tests/test_audit_fixes.py` |
 | Two runs write the base at the same time (data lost) | One run at a time: an operating-system lock, taken in one atomic step and freed by the system even if a run crashes; `invoices.py --apply` waits for it too | `scripts/runlock.py`, `scripts/run.py`, test |
+| A stranger writes to the Telegram bot or presses its buttons | The bot answers only the team (`telegram.strangers: ignore`, default); a press counts only from the chat that owns the message; nothing about strangers is kept, only a count per day | `scripts/bot/telegram_bot.py`, `tests/test_bot_security.py` |
+| An invite link for a team member is forwarded | One link = one person, works once and expires; a second person is refused and the managers are told; `/remove` takes a person out at once | `scripts/worktime.py`, `docs/WORKTIME.md` |
+| The bot token leaks or the bot is taken over | Token only in the system store; anything that looks like a token is hidden in the console and `data/bot.log`; one command after BotFather's *Revoke* puts a new token in | `scripts/secret_store.py`, `telegram_bot.py --set-token`, [docs/TELEGRAM.md](docs/TELEGRAM.md#if-the-bot-is-taken-over-or-the-token-may-have-leaked) |
+| Personal data leaves the computer in a Telegram message | E-mail addresses, phone numbers, IBANs, card numbers and personal codes are hidden in task texts; tasks, leads and voice notes are sent with `protect_content` (no forwarding or saving) | `scripts/task_notice.py`, `telegram.mask_personal`, `telegram.protect_content` |
 | Passwords leak | No password in files or chat: environment variable or system keychain only; `config.yaml`, `.env`, `data/`, `*.eml` never committed | `scripts/mail/send.py`, `.gitignore` + test |
 | Dangerous code slips into the scripts | No `eval`, `exec`, `os.system`, `shell=True`, `pickle`, `curl | sh` — checked on every change | `tests/test_safety.py`, GitHub Actions |
 | Outside packages | Only `openpyxl` and `PyYAML` from pypi.org, versions pinned; known vulnerabilities checked by pip-audit on every change, updates proposed by Dependabot | `requirements.txt`, `.github/workflows/security.yml` |
@@ -354,6 +373,15 @@ News can be wrong or deliberately false, even on official sites. FLOKTRON never 
 used for a post gets a light check first — echo in other outlets, primary source, fact-checkers — shown as a status
 (✅ / ℹ️ / ⚠️ / ⛔); corrections of news already used in posts are watched for 14 days and reported to the manager
 (`prompts/31_news_check.md`). One source is normal for local news; the person decides.
+
+## Personal data — the minimum
+FLOKTRON is built to keep as little personal data as the work needs, and to keep it on the company's own computer.
+- The Telegram bot collects no customer data by default: the customer form is off (`telegram.strangers: ignore`);
+  a company that wants it turns it on (`strangers: dialog`) and is then responsible for the form.
+- Telegram tasks carry the fact and the name, not the details: contacts and payment details stay on the computer.
+- No secret in files, logs, backups or git (`tests/test_safety.py` and `tests/test_bot_security.py` check this).
+- Bases (`data/`, `.xlsx`) stay in the company's folder; they are never committed and never sent to the authors.
+- Tests use only fictional companies and data (`TEST · FICTIONAL`).
 
 ## Automated security checks
 OpenSSF Scorecard, GitHub CodeQL, Bandit, pip-audit and Dependabot run on every change and once a week; what the first

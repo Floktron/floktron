@@ -4,6 +4,13 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.38.1 — 27.11.2026 · security page for reviewers
+- `SECURITY.md` starts with **«For security reviewers — start here»**: where to check data, secrets, the Telegram bot,
+  network, scans and outside reviews, in one table.
+- New section **«Personal data — the minimum»**: what FLOKTRON keeps, what it does not, and where that is tested.
+- The risk table now lists the Telegram bot protections from 0.38.0 (strangers, invite links, token, minimum data).
+- Documentation only; no code changed. One test (`test_dashboard_block_and_attention`) no longer fails in the evening.
+
 ## 0.38.0 — 27.11.2026 · bot security
 A review of every way into the Telegram bot, done in the operating company first. What changed:
 - **Strangers get nothing.** New `telegram.strangers`, default `ignore`: the bot answers only the team (managers,
