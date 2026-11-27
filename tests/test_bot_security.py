@@ -67,6 +67,14 @@ def test_strangers_get_nothing_and_nothing_is_kept(tmp_path):
     assert not os.path.exists(tmp_path / "task_actions.jsonl") and not os.path.exists(tmp_path / "voice")
 
 
+def test_old_stranger_dialogs_are_dropped(tmp_path):
+    st = tb.Store(data_dir=str(tmp_path))
+    st.state["sessions"] = {"555": {"fields": {"phone": "+371 20000000"}}, "999": {"fields": {}}}
+    st.save_state()
+    tb.Bot(FakeApi(), FLOW, {"manager_chat_ids": [999]}, tb.Store(data_dir=str(tmp_path)))
+    assert list(tb.Store(data_dir=str(tmp_path)).state["sessions"]) == ["999"]
+
+
 def test_id_only_for_the_first_setup(tmp_path):
     b, api = make(tmp_path, manager_chat_ids=[])
     b.handle(msg(555, "/id"))

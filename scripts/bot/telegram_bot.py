@@ -385,6 +385,13 @@ class Bot:
                                                                      **(self.wt["worktime"].get("people") or {})}}
             self.team |= {str(k) for k in self.wt["worktime"].get("people") or {}}
             self._people_mtime = self._people_stamp()
+        if self.strangers == "ignore":   # minimum data: unfinished client dialogs of strangers are not kept
+            old = [c for c in list(self.store.state.get("sessions") or {}) if c not in self.team]
+            for c in old:
+                self.store.state["sessions"].pop(c, None)
+            if old:
+                self.store.save_state()
+                print(f"{now_str()} strangers: ignore — {len(old)} old client dialog(s) removed from bot_state.json")
 
     def _people_stamp(self):
         import worktime

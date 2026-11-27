@@ -8,7 +8,8 @@ Project started 2026-10-10 (first ray in production in an operating company); pu
 A review of every way into the Telegram bot, done in the operating company first. What changed:
 - **Strangers get nothing.** New `telegram.strangers`, default `ignore`: the bot answers only the team (managers,
   `team_chat_ids`, voice users, people who joined with a valid invite). Anyone else gets no answer, no dialog, no
-  buttons, and nothing about them is kept — only a count per day in the log. `/id` answers a stranger only while
+  buttons, and nothing about them is kept — only a count per day in the log; unfinished client dialogs of strangers
+  are removed from `data/bot_state.json` at start. `/id` answers a stranger only while
   `manager_chat_ids` is empty (first setup). The client dialog (leads) is now opt-in: `strangers: dialog`.
   **If you use the client dialog, add `strangers: dialog` to `telegram:` before updating.**
 - **A button counts only from its own chat:** a press made by another person than the chat owner (groups) and presses
@@ -28,7 +29,7 @@ A review of every way into the Telegram bot, done in the operating company first
   forwarded or saved from the chat (`telegram.protect_content`, on).
 - docs/TELEGRAM.md: who the bot talks to, a new risk table, **«Protect your own Telegram account»** (cloud password,
   passkey, active sessions) and **«If the bot is taken over»** — revoke, one command, restart, check the team.
-- New tests: `tests/test_bot_security.py` (15, fictional chats and data).
+- New tests: `tests/test_bot_security.py` (16, fictional chats and data).
 
 ## 0.37.3 — 27.11.2026 · honest run numbers
 - Correction: README said "about 1,460 automatic runs since 8 November, about 2 % failed". That counted lines of the
