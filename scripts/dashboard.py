@@ -504,7 +504,8 @@ def render(D, colors=None):
             meta = " · ".join(v for v in (x["place"], CL["shot"].format(t=x["when"]) if x["when"] else "") if v)
             src = f'<span class="sub">{esc(CL["demo_note"].format(src=x["source"] or "—"))}</span>' if x["demo"] else ""
             go = f'<a class="go" href="{esc(x["url"])}" target="_blank" rel="noopener noreferrer">{CL["open"]} ↗</a>' if x["url"] else ""
-            cards += (f'<div class="cam"><div class="ph">{ph}{ex or f'<span class="tag {x["st"]}">● {esc(x["stx"])}</span>'}</div>'
+            ex = ex or f'<span class="tag {x["st"]}">● {esc(x["stx"])}</span>'
+            cards += (f'<div class="cam"><div class="ph">{ph}{ex}</div>'
                       f'<div class="cb"><b>{esc(x["name"])}</b>{f"<span class=sub>{esc(meta)}</span>" if meta else ""}{src}{go}</div></div>')
         live = [x for x in cm["cams"] if not x["demo"]]
         kc = "".join(f'<div class="kpi"><b>{v}</b><span>{esc(t)}</span></div>' for v, t in (
