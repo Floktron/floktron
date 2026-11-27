@@ -14,7 +14,9 @@ Project started 2026-10-10 (first ray in production in an operating company); pu
 - Dashboard: a new block «Work time» — at work now, hours today and this month, overtime, night, weekend/holiday hours,
   what to check; the warnings also go to «Needs your attention». Bot: `/hours` for everyone, `/who` for managers.
 - `worktime.py month` → `data/worktime_<YYYY-MM>.xlsx` for the accountant (sheets Month and Days).
-- New tests: `tests/test_worktime.py` (15, fictional company), demo data `tests/fixtures/worktime/make_demo.py`.
+- Not tied to Telegram: `worktime.py mark --who … --action start --by kiosk` marks from any other channel (dashboard,
+  kiosk, e-mail or SMS gateway); the dashboard shows the channel.
+- New tests: `tests/test_worktime.py` (16, fictional company), demo data `tests/fixtures/worktime/make_demo.py`.
 
 ## 0.35.1 — 27.11.2026 · where to follow FLOKTRON
 - README and the footer of floktron.com (9 languages) now link to the FLOKTRON pages: YouTube (step-by-step guides),

@@ -15,6 +15,7 @@ Every mark is one line in data/worktime.jsonl (append-only; corrections are new 
     python3 scripts/worktime.py status                     # who is at work now
     python3 scripts/worktime.py month [--month 2026-11]    # → data/worktime_2026-11.xlsx
     python3 scripts/worktime.py remind                     # ask open days (scheduler at remind_at)
+    python3 scripts/worktime.py mark --who "Anna" --action start --by dashboard   # any other channel (no Telegram)
     python3 scripts/worktime.py fix --who "Anna" --date 2026-11-26 --end 17:30 --why "forgot to tap"
 Network: none here; reminders go through the bot's Api (scripts/bot/telegram_bot.py).
 """
@@ -45,7 +46,7 @@ TEXT = {
                since="since {t}", paused_s="on pause since {t}", done_s="{a}–{b}", absent="no mark today", none="No work-time marks yet. "
                "The team taps «▶ Start» in the bot (docs/WORKTIME.md).", month_head="This month", days="days", hours="hours",
                over="overtime", night="night", weekend="weekend/holiday", flag_noend="no end mark {d}", flag_far="started {dist} m from {site} ({d})",
-               flag_nogeo="started without location ({d})", flag_fix="corrected by manager {d}: {why}", flag_long="{h} in one day ({d})"),
+               flag_nogeo="started without location ({d})", flag_fix="corrected by manager {d}: {why}", flag_long="{h} in one day ({d})", flag_via="marked via {via} ({d})"),
     "ru": dict(start="▶ Начал работу", pause="⏸ Пауза", back="▶ Продолжил", end="⏹ Закончил",
                started="✅ Начало работы · {t}{site}", paused="⏸ Пауза · {t}", backed="▶ Снова на работе · {t}",
                ended="⏹ День закончен · {t} · сегодня {h}", already="ℹ️ Ты уже на работе с {t}.", not_started="ℹ️ Сегодня нет отметки начала — сначала «▶ Начал работу».",
@@ -58,7 +59,7 @@ TEXT = {
                since="с {t}", paused_s="пауза с {t}", done_s="{a}–{b}", absent="сегодня не отмечался", none="Отметок пока нет. "
                "Сотрудники нажимают «▶ Начал работу» в боте (docs/WORKTIME.md).", month_head="За месяц", days="дней", hours="часов",
                over="сверхурочно", night="ночью", weekend="выходные/праздники", flag_noend="нет отметки ухода {d}", flag_far="начал в {dist} м от «{site}» ({d})",
-               flag_nogeo="начал без места ({d})", flag_fix="исправлено управляющим {d}: {why}", flag_long="{h} за один день ({d})"),
+               flag_nogeo="начал без места ({d})", flag_fix="исправлено управляющим {d}: {why}", flag_long="{h} за один день ({d})", flag_via="отметка через {via} ({d})"),
     "lv": dict(start="▶ Sāku darbu", pause="⏸ Pauze", back="▶ Turpinu", end="⏹ Beidzu",
                started="✅ Darba sākums · {t}{site}", paused="⏸ Pauze · {t}", backed="▶ Atkal darbā · {t}",
                ended="⏹ Diena beigta · {t} · šodien {h}", already="ℹ️ Tu jau esi darbā kopš {t}.", not_started="ℹ️ Šodien nav sākuma atzīmes — vispirms «▶ Sāku darbu».",
@@ -71,7 +72,7 @@ TEXT = {
                since="kopš {t}", paused_s="pauze kopš {t}", done_s="{a}–{b}", absent="šodien nav atzīmējies", none="Atzīmju vēl nav. "
                "Darbinieki spiež «▶ Sāku darbu» botā (docs/WORKTIME.md).", month_head="Mēnesī", days="dienas", hours="stundas",
                over="virsstundas", night="naktī", weekend="brīvdienas/svētki", flag_noend="nav beigu atzīmes {d}", flag_far="sāka {dist} m no «{site}» ({d})",
-               flag_nogeo="sāka bez vietas ({d})", flag_fix="labojis vadītājs {d}: {why}", flag_long="{h} vienā dienā ({d})"),
+               flag_nogeo="sāka bez vietas ({d})", flag_fix="labojis vadītājs {d}: {why}", flag_long="{h} vienā dienā ({d})", flag_via="atzīme caur {via} ({d})"),
 }
 
 
@@ -284,6 +285,8 @@ def days(evs, now=None, w=None, holidays=()):
                 flags.append(("far", {"dist": start["dist"], "site": start["site"]}))
             if w.get("geo") and start.get("lat") is None and start.get("by") == "bot":
                 flags.append(("nogeo", {}))
+            if start.get("by") not in (None, "bot", "manager"):
+                flags.append(("via", {"via": start["by"]}))
             for f in fixes:
                 if f["who"] == who and (f.get("date") or f["ts"][:10]) == d:
                     flags.append(("fix", {"why": f.get("why", "")}))
@@ -412,7 +415,7 @@ def which_button(text):
     return {"/in": "start", "/start_work": "start", "/pause": "pause", "/back": "back", "/out": "end", "/end": "end"}.get(text.split("@")[0], "")
 
 
-def mark(cfg, path, who, name, action, now=None, location=None, lang="en"):
+def mark(cfg, path, who, name, action, now=None, location=None, lang="en", by="bot"):
     """One button press → (reply text, new state). location = Telegram location dict or None."""
     now = now or datetime.datetime.now()
     w = wcfg(cfg)
@@ -432,7 +435,7 @@ def mark(cfg, path, who, name, action, now=None, location=None, lang="en"):
             site, dist, inside = nearest_site(w, lat, lon)
             if location.get("horizontal_accuracy"):
                 extra["acc"] = int(location["horizontal_accuracy"])
-        rec = add(path, who, name, "start", ts, lat, lon, site, dist, inside=inside, **extra)
+        rec = add(path, who, name, "start", ts, lat, lon, site, dist, by=by, inside=inside, **extra)
         if rec.get("site"):
             where = L["on_site"].format(site=site) if inside else L["off_site"].format(d=dist, site=site)
         else:
@@ -444,17 +447,17 @@ def mark(cfg, path, who, name, action, now=None, location=None, lang="en"):
         if st == "pause":
             action = "back"
         else:
-            add(path, who, name, "pause", ts)
+            add(path, who, name, "pause", ts, by=by)
             return L["paused"].format(t=ts[11:]), "pause"
     if action == "back":
         if st != "pause":
             return L["already"].format(t=t0), st
-        add(path, who, name, "back", ts)
+        add(path, who, name, "back", ts, by=by)
         return L["backed"].format(t=ts[11:]), "work"
     if action == "end":
         if st == "pause":
-            add(path, who, name, "back", ts)
-        add(path, who, name, "end", ts)
+            add(path, who, name, "back", ts, by=by)
+        add(path, who, name, "end", ts, by=by)
         t, _, _ = person_totals(read(path), who, now, w)
         return L["ended"].format(t=ts[11:], h=hm(t)), "done"
     return "", st
@@ -551,7 +554,11 @@ def load_cfg(path):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="FLOKTRON work time")
-    ap.add_argument("cmd", choices=["status", "month", "remind", "fix"])
+    ap.add_argument("cmd", choices=["status", "month", "remind", "fix", "mark"])
+    ap.add_argument("--action", choices=["start", "pause", "back", "end"], default="")
+    ap.add_argument("--by", default="cli", help="mark: the channel — dashboard, mail, sms, kiosk… (shown to the manager)")
+    ap.add_argument("--lat", type=float)
+    ap.add_argument("--lon", type=float)
     ap.add_argument("--config", default=os.path.join(ROOT, "config", "config.yaml"))
     ap.add_argument("--data", default=DATA)
     ap.add_argument("--month", default="")
@@ -576,6 +583,15 @@ def main(argv=None):
         out = a.out or os.path.join(a.data, f"worktime_{month}.xlsx")
         n = month_xlsx(cfg, out, month, a.data)
         print(f"worktime: {out} · {n} day rows")
+        return 0
+    if a.cmd == "mark":
+        if not (a.who and a.action):
+            sys.exit("mark needs --who and --action start|pause|back|end")
+        team = people(cfg)
+        who = next((k for k, v in team.items() if v.lower() == a.who.lower()), a.who)
+        loc = {"latitude": a.lat, "longitude": a.lon} if a.lat is not None and a.lon is not None else None
+        lang = (cfg.get("company") or {}).get("language", "en")
+        print(mark(cfg, path, who, team.get(who, a.who), a.action, location=loc, lang=lang, by=clean(a.by, 20) or "cli")[0])
         return 0
     if a.cmd == "fix":
         if not (a.who and a.why and (a.start or a.end) and re.match(r"^\d{4}-\d{2}-\d{2}$", a.date or "")):

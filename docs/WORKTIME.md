@@ -36,6 +36,15 @@ On the dashboard ([DASHBOARD](DASHBOARD.md)), the block **⏱ Work time**:
 
 In the bot, `/who` (managers only) lists who is at work now.
 
+## Without Telegram
+
+Telegram is the easiest channel, not the only one. Any other channel — the dashboard on the office computer, a
+kiosk tablet at the entrance, an e-mail or SMS gateway you already have — marks the same way with one command:
+
+    python3 scripts/worktime.py mark --who "Anna" --action start --by kiosk     # start | pause | back | end
+
+The mark goes to the same log and the same hours; the dashboard shows which channel it came from.
+
 ## Corrections — only by the manager, always with a reason
 
     python3 scripts/worktime.py fix --who "Anna" --date 2026-11-26 --end 17:30 --why "forgot to tap End"
