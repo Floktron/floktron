@@ -4,6 +4,20 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.36.0 — 27.11.2026 · work time
+- New `scripts/worktime.py` and docs/WORKTIME.md: the team marks ▶ Start / ⏸ Pause / ⏹ End with buttons in the work
+  chat with the bot. Optional: one location point at «Start» (`worktime.geo`), compared with your sites — inside ✓ or the
+  distance. Nothing is tracked during the day; no photos, no biometrics.
+- The bot asks «Still at work?» at `worktime.remind_at`; a shift without an end mark is flagged and NOT counted — hours
+  are never made up. Night shifts count as one shift with separate night hours.
+- Manager corrections only with a reason (`worktime.py fix`), kept as new lines: the log `data/worktime.jsonl` only grows.
+- Dashboard: a new block «Work time» — at work now, hours today and this month, overtime, night, weekend/holiday hours,
+  what to check; the warnings also go to «Needs your attention». Bot: `/hours` for everyone, `/who` for managers.
+- `worktime.py month` → `data/worktime_<YYYY-MM>.xlsx` for the accountant (sheets Month and Days).
+- Not tied to Telegram: `worktime.py mark --who … --action start --by kiosk` marks from any other channel (dashboard,
+  kiosk, e-mail or SMS gateway); the dashboard shows the channel.
+- New tests: `tests/test_worktime.py` (16, fictional company), demo data `tests/fixtures/worktime/make_demo.py`.
+
 ## 0.35.1 — 27.11.2026 · where to follow FLOKTRON
 - README and the footer of floktron.com (9 languages) now link to the FLOKTRON pages: YouTube (step-by-step guides),
   LinkedIn, Facebook and X. Nothing changes in the program; support stays in Issues and support@floktron.com.

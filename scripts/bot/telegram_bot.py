@@ -31,6 +31,8 @@ Manager commands (only from manager_chat_ids): /leads — last 10 leads · /funn
 /backup — password-protected backup of the whole setup now, kept on the computer (docs/MOVE.md) ·
 /version — this FLOKTRON version and the newest one (docs/UPDATES.md); a new version is told to the managers once
 /words — radar keywords now searched · /addword <words> — add one · /delword <words> — pause one (docs/INDUSTRY_PACKS.md)
+Work time (worktime.enabled, docs/WORKTIME.md): the team gets three buttons — ▶ Start (one location point when worktime.geo) ·
+⏸ Pause · ⏹ End; /hours — my hours · /who — who is at work now (managers)
 Anyone: /start (optionally /start <source>, e.g. t.me/<bot>?start=qr_bucket) · /menu · /privacy · /forget · /id
 """
 import argparse
@@ -339,11 +341,19 @@ class Bot:
         # the team: managers + team_chat_ids + voice users — tasks, buttons ✅/⛔, never the client funnel
         self.team = self.managers | {str(x) for x in cfg.get("team_chat_ids") or []} | {str(k) for k in voice_users}
         self.ttext = {**TEAM_TEXT, **(cfg.get("team_texts") or {})}
+        # work time (scripts/worktime.py, docs/WORKTIME.md): top-level worktime: of config.yaml, passed in by main()
+        self.wt = {"worktime": cfg.get("_worktime") or {}, "company": cfg.get("_company") or {},
+                   "telegram": {"voice": {"users": voice_users}}}
+        self.wt_on = bool(self.wt["worktime"].get("enabled"))
+        if self.wt_on:
+            self.team |= {str(k) for k in self.wt["worktime"].get("people") or {}}
 
     # ---- sending
-    def send(self, chat_id, text, keyboard=None, contact_button=None):
+    def send(self, chat_id, text, keyboard=None, contact_button=None, markup=None):
         p = {"chat_id": chat_id, "text": text[:4000], "disable_web_page_preview": True}
-        if keyboard:
+        if markup:
+            p["reply_markup"] = markup
+        elif keyboard:
             p["reply_markup"] = {"inline_keyboard": keyboard}
         elif contact_button:
             p["reply_markup"] = {"keyboard": [[{"text": contact_button, "request_contact": True}]],
@@ -424,6 +434,8 @@ class Bot:
             chat_id = q["message"]["chat"]["id"]
             if str(q.get("data", "")).startswith("fk:"):     # task buttons ✅ / ⛔ (scripts send them to the team)
                 return self.on_task_button(q)
+            if str(q.get("data", "")).startswith("wt:"):     # work-time reminder: ⏹ end now / ▶ still working
+                return self.on_wt_button(q)
             try:
                 self.api.call("answerCallbackQuery", callback_query_id=q["id"])
             except BotError:
@@ -445,6 +457,15 @@ class Bot:
         if msg.get("voice") or msg.get("audio") or msg.get("video_note"):
             return self.on_voice(chat_id, user, msg)
         team = str(chat_id) in self.team
+        if team and self.wt_on:
+            if msg.get("location"):
+                return self.wt_mark(chat_id, msg, "start", location=msg["location"])
+            import worktime
+            act = worktime.which_button(text)
+            if act:
+                return self.wt_mark(chat_id, msg, act)
+            if text.split("@")[0] in ("/hours", "/who"):
+                return self.wt_info(chat_id, text.split("@")[0])
         if team and text in ("/start", "/menu", "/help") or (team and text.startswith("/start ")):
             return self.team_help(chat_id)
         if team and text == "/client":
@@ -497,7 +518,83 @@ class Bot:
 
     def team_help(self, chat_id):
         self.store.state["sessions"].pop(str(chat_id), None)   # an unfinished client dialog of a team member — gone
+        if self.wt_on:
+            import worktime
+            lang = self.wt["company"].get("language", "en")
+            st, _ = worktime.state_of(worktime.read(self.wt_path()), chat_id, datetime.datetime.now())
+            tip = "\n\n" + worktime.texts(lang)["ask_geo"] if self.wt["worktime"].get("geo") else ""
+            return self.send(chat_id, self.ttext["help"] + tip,
+                             markup=worktime.keyboard(lang, self.wt["worktime"].get("geo"), st))
         return self.send(chat_id, self.ttext["help"])
+
+    # ---- work time: Start (one location point when worktime.geo) · Pause/Back · End — scripts/worktime.py
+    def wt_path(self):
+        import worktime
+        f = self.wt["worktime"].get("file")
+        return os.path.expanduser(f) if f else os.path.join(os.path.dirname(self.store.state_path), "worktime.jsonl")
+
+    def wt_name(self, chat_id, frm):
+        people = {str(k): str(v) for k, v in (self.wt["worktime"].get("people") or {}).items()}
+        return people.get(str(chat_id)) or ("@" + frm["username"] if frm.get("username") else str(frm.get("first_name") or chat_id))
+
+    def wt_mark(self, chat_id, msg, act, location=None):
+        import worktime
+        lang = self.wt["company"].get("language", "en")
+        if location is not None and (msg.get("forward_origin") or msg.get("forward_from") or msg.get("forward_date")):
+            return self.send(chat_id, worktime.texts(lang)["forwarded"])
+        reply, st = worktime.mark(self.wt, self.wt_path(), chat_id, self.wt_name(chat_id, msg.get("from") or {}), act,
+                                  location=location, lang=lang)
+        return self.send(chat_id, reply, markup=worktime.keyboard(lang, self.wt["worktime"].get("geo"), st))
+
+    def wt_info(self, chat_id, cmd):
+        import worktime
+        lang = self.wt["company"].get("language", "en")
+        L = worktime.texts(lang)
+        now = datetime.datetime.now()
+        if cmd == "/hours":
+            t, w, m = worktime.person_totals(worktime.read(self.wt_path()), chat_id, now, worktime.wcfg(self.wt))
+            return self.send(chat_id, L["mine"].format(h=worktime.hm(t, lang), w=worktime.hm(w, lang), m=worktime.hm(m, lang)))
+        if str(chat_id) not in self.managers:
+            return self.team_help(chat_id)
+        D = worktime.collect(self.wt, os.path.dirname(self.wt_path()), now)
+        lines = [f'{x["name"]} · {x["when"]}' + (f' · 📍 {x["site"]}' if x["site"] else "") for x in D["on"] if x["state"] in ("work", "pause")]
+        return self.send(chat_id, L["who_head"] + "\n" + ("\n".join(lines) if lines else L["nobody"]))
+
+    def wt_due(self):
+        """At worktime.remind_at: «Still at work?» to whoever has not ended — once a day per person."""
+        if not self.wt_on:
+            return
+        import worktime
+        lang = self.wt["company"].get("language", "en")
+        try:
+            for chat, text in worktime.due_reminders(self.wt, self.wt_path()):
+                try:
+                    self.send(int(chat) if str(chat).lstrip("-").isdigit() else chat, text, keyboard=worktime.remind_buttons(lang))
+                except BotError as e:
+                    print(f"{now_str()} worktime reminder {chat}: {e}")
+        except Exception as e:  # noqa: BLE001 — never stop the bot
+            print(f"{now_str()} worktime: {e}")
+
+    def on_wt_button(self, q):
+        import worktime
+        chat_id = q["message"]["chat"]["id"]
+        lang = self.wt["company"].get("language", "en")
+        toast = ""
+        if self.wt_on and str(chat_id) in self.team and not self.flood(chat_id):
+            if q.get("data") == "wt:end":
+                reply, _ = worktime.mark(self.wt, self.wt_path(), chat_id, self.wt_name(chat_id, q.get("from") or {}), "end", lang=lang)
+            else:
+                reply = worktime.texts(lang)["keep"]
+            try:   # the reminder turns into the answer, its buttons go away
+                self.api.call("editMessageText", chat_id=chat_id, message_id=q["message"]["message_id"],
+                              text=((q["message"].get("text") or "") + "\n\n" + reply)[:4000])
+            except (BotError, KeyError):
+                pass
+            toast = "✅"
+        try:
+            self.api.call("answerCallbackQuery", callback_query_id=q["id"], text=toast)
+        except BotError:
+            pass
 
     def close_task(self, chat_id, msg, data, frm, comment=""):
         parts = str(data).split(":")
@@ -819,6 +916,7 @@ class Bot:
             self.watch_due()
             self.pulse_due()
             self.update_due()
+            self.wt_due()
             try:
                 ups = self.api.call("getUpdates", offset=self.store.state["offset"], timeout=timeout,
                                     allowed_updates=["message", "callback_query"])
@@ -849,7 +947,9 @@ def main():
     g.add_argument("--check", action="store_true")
     g.add_argument("--flow-check", action="store_true")
     a = ap.parse_args()
-    cfg = load_yaml(a.config).get("telegram") or {}
+    full = load_yaml(a.config)
+    cfg = full.get("telegram") or {}
+    cfg["_worktime"], cfg["_company"] = full.get("worktime") or {}, full.get("company") or {}
     flow_path = a.flow or cfg.get("flow") or os.path.join(ROOT, "config", "bot_flow.yaml")
     flow_path = os.path.expanduser(flow_path)
     if not os.path.isabs(flow_path):          # relative to the config file (or to the box without one)

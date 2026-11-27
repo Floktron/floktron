@@ -22,6 +22,8 @@ import os
 import re
 import sys
 
+import worktime
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DATA = os.path.join(ROOT, "data")
@@ -334,6 +336,11 @@ def collect(cfg, data=DATA, now=None):
     au = sorted(glob.glob(os.path.join(os.path.expanduser(pdir), "pulse_*.m4a"))) if pdir and os.path.isabs(os.path.expanduser(pdir)) else \
         sorted(glob.glob(os.path.join(data, "audio", "pulse_*.m4a")))
     D["audio"] = au[-1] if au else ""
+    # work time (data/worktime.jsonl, marks from the bot — scripts/worktime.py, docs/WORKTIME.md)
+    D["worktime"] = None
+    if (cfg.get("worktime") or {}).get("enabled") or os.path.exists(worktime.events_path(cfg, data)):
+        D["worktime"] = worktime.collect(cfg, data, now)
+        D["attention"] += D["worktime"]["attention"]
     D["score"] = dict(ok=sum(1 for p in D["pulse"] if p["st"] == "ok"), n=len(D["pulse"]))
     D["attention"].sort(key=lambda a: {"bad": 0, "warn": 1}.get(a["lvl"], 2))
     return D
@@ -369,7 +376,11 @@ main{max-width:1180px;margin:-40px auto 40px;padding:0 14px}
 .bars{display:flex;gap:4px;align-items:flex-end;height:74px}.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:2px}
 .bar i{display:block;border-radius:3px 3px 0 0;min-height:2px}.bar i.o{background:var(--okc)}.bar i.x{background:#d69e2e;border-radius:0}
 .legend{display:flex;gap:12px;font-size:11.5px;color:var(--mut);margin-top:6px}.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px}
-.empty{color:var(--mut);font-size:13.5px}footer{text-align:center;color:var(--mut);font-size:12px;margin:24px 0 10px}
+.empty{color:var(--mut);font-size:13.5px}
+.wt{display:grid;grid-template-columns:1fr 1fr;gap:18px}.wt h4{margin:2px 0 8px;font-size:13.5px;color:var(--mut)}.tw{overflow-x:auto}
+.tb{width:100%;border-collapse:collapse;font-size:13.5px}.tb th{font-size:11.5px;color:var(--mut);font-weight:600;text-align:right;padding:4px 6px}
+.tb td{border-top:1px solid var(--line);padding:6px;text-align:right}.tb td:first-child,.tb th:first-child{text-align:left;white-space:nowrap}
+@media (max-width:860px){.wt{grid-template-columns:1fr}}footer{text-align:center;color:var(--mut);font-size:12px;margin:24px 0 10px}
 @media (max-width:520px){.kpis{grid-template-columns:1fr 1fr}.rays{grid-template-columns:1fr 1fr;gap:8px}.list li{flex-wrap:wrap}.act{flex-basis:100%;padding-left:19px}}
 """
 
@@ -447,6 +458,21 @@ def render(D, colors=None):
             [li("ok" if x["p"] == 1 else "wait", link(x["url"], x["text"]), esc(x["sub"]), f'<span class="tag idle">{L["test"]}</span>' if x["test"] else "") for x in pr_["items"][:6]], L["none_prosp"])
     else:
         prosp = lst([], L["no_prosp"])
+    wt = D.get("worktime")
+    work = ""
+    if wt:
+        WL = worktime.texts(D["lang"])
+        kw = "".join(f'<div class="kpi"><b>{v}</b><span>{esc(t)}</span></div>' for v, t in (
+            (f'{wt["now"]}/{wt["team"]}' if wt["team"] else wt["now"], WL["k_now"]), (wt["today"], WL["k_today"]),
+            (worktime.hnum(wt["month"] * 60), WL["k_month"]), (len([f for f in wt["flags"] if f["lvl"] == "warn"]), WL["k_flags"])))
+        ppl = lst([li(x["st"], esc(x["name"]), esc(x["when"]) + (f' · <span class="tag {"warn" if x["far"] else "ok"}">📍 {esc(x["site"])}</span>' if x["site"] else ""),
+                      f'<span class="act"><b>{esc(x["h"])}</b></span>') for x in wt["on"]], WL["none"])
+        mrows = "".join(f'<tr><td>{esc(m["name"])}</td><td>{m["days"]}</td><td><b>{worktime.hnum(m["m"])}</b></td><td>{worktime.hnum(m["over"])}</td>'
+                        f'<td>{worktime.hnum(m["night"])}</td><td>{worktime.hnum(m["wk"])}</td></tr>' for m in wt["mon"])
+        mon = (f'<h4>{WL["month_head"]}</h4><div class="tw"><table class="tb"><tr><th></th><th>{WL["days"]}</th><th>{WL["hours"]}</th><th>{WL["over"]}</th>'
+               f'<th>{WL["night"]}</th><th>{WL["weekend"]}</th></tr>{mrows}</table></div>') if mrows else ""
+        fl = (f'<h4>⚠ {WL["k_flags"]}</h4>' + lst([li(f["lvl"], esc(f["name"]), esc(f["text"])) for f in wt["flags"]], "—")) if wt["flags"] else ""
+        work = f'<div class="kpis" style="margin-bottom:10px">{kw}</div><div class="wt"><div>{ppl}</div><div>{mon}{fl}</div></div>'
     ch = D["chain"]
     chain = (f'<div class="chips" style="margin-bottom:8px"><span class="chip ok">🟢 {ch["g"]}</span><span class="chip warn">🟡 {ch["y"]}</span>'
              f'<span class="chip bad">🔴 {ch["r"]}</span><span class="sub">{esc(ch["date"])}</span></div>'
@@ -461,6 +487,7 @@ def render(D, colors=None):
 <div class="card w8"><h3>⚡ {L['att']}</h3>{lst([li(a['lvl'], esc(a['text']), '', f'<span class=act>{esc(a["act"])}</span>' if a['act'] else '') for a in att[:8]], L['none_att'])}</div>
 <div class="card w4"><h3>📅 {L['next']}</h3>{nxt}</div>
 <div class="card w12"><div class="kpis">{kp}</div></div>
+{f'<div class="card w12"><h3>⏱ {worktime.texts(D["lang"])["title"]}</h3>{work}</div>' if work else ''}
 <div class="card w12"><h3>🧭 {L['rays']}</h3><div class="rays">{rays}</div></div>
 <div class="card"><h3>✅ {L['tasks']}</h3>{lst([li('bad' if t['over'] else 'wait', esc(t['text']), esc(t['ray'] + ' · ' + t['st'] + (' · ' + L['due'] + ' ' + t['due'] if t['due'] else ''))) for t in D['tasks']], L['none_tasks'])}{f'<p class=sub>{L["hidden"].format(n=D["tasks_test"])}</p>' if D['tasks_test'] else ''}</div>
 <div class="card w12"><h3>🧾 {L['bills']}</h3>{bills}</div>
