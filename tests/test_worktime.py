@@ -125,7 +125,7 @@ def test_weekend_holiday_and_month_xlsx(tmp_path):
 
 
 def test_dashboard_block_and_attention(tmp_path):
-    put(tmp_path / "worktime.jsonl", "1", "start", datetime.datetime.now().strftime("%Y-%m-%d 00:01"))
+    put(tmp_path / "worktime.jsonl", "1", "start", max(datetime.datetime.now().replace(hour=0, minute=1), datetime.datetime.now() - datetime.timedelta(hours=1)).strftime("%Y-%m-%d %H:%M"))   # today, at most an hour ago: passes at any time of day
     put(tmp_path / "worktime.jsonl", "2", "start", "2026-01-05 08:00")     # long ago, no end
     cfg = dict(CFG, company={"language": "ru", "name": "TEST · FICTIONAL"})
     D = db.collect(cfg, str(tmp_path))
