@@ -49,7 +49,7 @@ waiting 6 d.
 - **Reply** to a task message with text (swipe → Reply) → ✅ with your comment.
 - No text about sheets or columns; summaries with nothing to do come without buttons.
 - Your own words: `telegram.team_texts` (help, closed_y, closed_n, toast, reply_closed, already).
-- Not everyone wants Telegram: with [channels](CHANNELS.md) each person chooses Telegram, their own page (an app on
+- Another channel for some people: with [channels](CHANNELS.md) each person chooses Telegram, their own page (an app on
   the phone) or e-mail (+ push), and the same buttons work there; if Telegram is silent, the task goes to the backup channel.
 
 ## Work time: start, pause, end
