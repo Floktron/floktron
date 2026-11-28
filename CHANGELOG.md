@@ -18,6 +18,7 @@ Asked for in the operating company: «the morning audio report — can it be in 
 - Texts in EN / LV / RU. Docs: [CHANNELS](docs/CHANNELS.md). New test `test_audio_summary_on_the_page` (fictional
   data); 310 tests.
 - Run numbers recounted: 885 runs 08.11–28.11.2026, 28 failed (3.2 %).
+- `docs/FLOKTRON_overview.pdf` = overview 1.30 (25 pages): page 22 «Channels» now shows the player of the morning summary.
 
 ## 0.41.0 — 28.11.2026 · the page: swipe a task, and the manager's day in three lines
 Asked for in the operating company on the first day with the page as an app on the phone. Works there first.
