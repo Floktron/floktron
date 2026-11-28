@@ -4,6 +4,19 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.41.0 — 28.11.2026 · the page: swipe a task, and the manager's day in three lines
+Asked for in the operating company on the first day with the page as an app on the phone. Works there first.
+- **Swipe** (`scripts/channels_web.py`): a task on the person's page goes right — done ✅, left — not needed ⛔. An «Undo»
+  button stays for 6 seconds (it writes the same `u` press as «undo» under a closed task). A short or slanting move
+  closes nothing; the buttons work as before. The press lands in `data/task_actions.jsonl` like any other.
+- **«For the manager»** — only on the page of a person with `channels.people.<id>.manager: true`: who is at work now
+  (first name, since when, hours today — no surname, no location), the next online meeting with a button and the full
+  link (only links that pass `meeting_links.check` again; on a phone it opens the meeting app), and «needs attention»
+  as **kind and count only**. `scripts/dashboard.py` writes that count to `data/channels_brief.json` at every build
+  (each attention item now carries its kind); task texts, names, companies and amounts stay on the dashboard.
+- Texts in EN / LV / RU. Docs: [CHANNELS](docs/CHANNELS.md). New tests `test_swipe_and_undo`,
+  `test_manager_block_minimum_data` (fictional people and companies); 309 tests.
+
 ## 0.40.2 — 28.11.2026 · a news item carries the country of its publisher, not of the feed
 Seen in the operating company on the first evening report on the phone: a German regional paper was marked `[CH]`.
 - **`scripts/news_slice.py`: the country in `Signal_feed` is now the publisher's.** A Google News search «Switzerland,

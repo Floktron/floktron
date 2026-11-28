@@ -189,7 +189,7 @@ def collect(cfg, data=DATA, now=None):
                                fix="" if ok else L["fixbot"]))
     for p in D["pulse"]:
         if p["st"] != "ok":
-            D["attention"].append(dict(lvl=p["st"], text=f"{p['name']}: {p['note']}", act=p["fix"]))
+            D["attention"].append(dict(cat="systems", lvl=p["st"], text=f"{p['name']}: {p['note']}", act=p["fix"]))
 
     # rays and tasks
     rays, tasks, rec = sheet(base, "Rays"), sheet(base, "Tasks"), sheet(base, "Receipts")
@@ -211,9 +211,9 @@ def collect(cfg, data=DATA, now=None):
                               answer=tr(lang, a[0]) if a else (L["waiting"] if last else L["nolet"]), when=(a[1][5:16] if a else ""),
                               open=len(open_), over=len(over)))
         if over and not test:
-            D["attention"].append(dict(lvl="warn", text=f"{rid} {g(r, 'Ray')}: {L['late']} {len(over)}", act=L["tasks_act"]))
+            D["attention"].append(dict(cat="tasks", lvl="warn", text=f"{rid} {g(r, 'Ray')}: {L['late']} {len(over)}", act=L["tasks_act"]))
         if st == "warn" and not test:
-            D["attention"].append(dict(lvl="warn", text=f"{rid} {g(r, 'Responsible')}: «{tr(lang, a[0])}»", act=""))
+            D["attention"].append(dict(cat="tasks", lvl="warn", text=f"{rid} {g(r, 'Responsible')}: «{tr(lang, a[0])}»", act=""))
     openall = [t for t in tasks if str(g(t, "Status")) not in DONE]
     D["kpi"] = dict(open=len(openall), done=sum(1 for t in tasks if str(g(t, "Status")) in ("Done", "Accepted")))
     real = [t for t in openall if not str(g(t, "Task")).upper().startswith("TEST")]
@@ -245,7 +245,7 @@ def collect(cfg, data=DATA, now=None):
             lvl = "bad" if st.startswith("Not found") else "warn" if "no final invoice" in st else "wait"
             B["items"].append(dict(lvl=lvl, test=is_test, text=f'{g(r, "Supplier")} · {typ} {g(r, "Document no.")} · {tot:.2f} EUR', sub=st))
             if lvl == "bad" and not is_test:
-                D["attention"].append(dict(lvl="warn", text=f'{L["bills"]}: {g(r, "Supplier")} {g(r, "Document no.")} — {st}', act=""))
+                D["attention"].append(dict(cat="bills", lvl="warn", text=f'{L["bills"]}: {g(r, "Supplier")} {g(r, "Document no.")} — {st}', act=""))
     B["items"].sort(key=lambda x: {"bad": 0, "warn": 1}.get(x["lvl"], 2))
     D["bills"] = B
 
@@ -277,7 +277,7 @@ def collect(cfg, data=DATA, now=None):
         MB["items"].append(dict(lvl=lvl, test=is_test, d=str(g(r, "Date")), text=f'{"⭐ " if star and need else ""}{tr(lang, need or "starred, waiting")} · {who[:40]}',
                                 sub=f'«{str(g(r, "Subject"))[:90]}» · {dd.strftime("%d.%m") if dd else ""} {str(g(r, "Date"))[11:16]}' + (f' · {L["i_rem"]} {g(r, "Reminded")}' if g(r, "Reminded") else "")))
         if lvl == "bad" and not is_test and dd and dd <= today - datetime.timedelta(days=1):
-            D["attention"].append(dict(lvl="warn", text=f'{L["i_att"]}: {tr(lang, need)} — {who[:30]}: «{str(g(r, "Subject"))[:50]}»', act=""))
+            D["attention"].append(dict(cat="mail", lvl="warn", text=f'{L["i_att"]}: {tr(lang, need)} — {who[:30]}: «{str(g(r, "Subject"))[:50]}»', act=""))
     MB["items"].sort(key=lambda x: ({"bad": 0, "warn": 1}.get(x["lvl"], 2), x["d"]))
     D["inbox"] = MB
 
@@ -310,7 +310,7 @@ def collect(cfg, data=DATA, now=None):
     D["next"] = sorted(nxt, key=lambda x: x["days"])[:6]
     for n in D["next"]:
         if n["days"] <= 3:
-            D["attention"].append(dict(lvl="warn", text=f"{L['due']} {n['t']}: {n['title'][:60]}", act=""))
+            D["attention"].append(dict(cat="due", lvl="warn", text=f"{L['due']} {n['t']}: {n['title'][:60]}", act=""))
 
     # supply chain (sheet written by supply_watch.py)
     sc = sheet(radar, "Watch_log")
@@ -342,12 +342,12 @@ def collect(cfg, data=DATA, now=None):
     D["worktime"] = None
     if (cfg.get("worktime") or {}).get("enabled") or os.path.exists(worktime.events_path(cfg, data)):
         D["worktime"] = worktime.collect(cfg, data, now)
-        D["attention"] += D["worktime"]["attention"]
+        D["attention"] += [dict(a, cat="worktime") for a in D["worktime"]["attention"]]
     # site cameras (config cameras:, frames from scripts/cameras.py snap — docs/CAMERAS.md)
     D["cameras"] = None
     if (cfg.get("cameras") or {}).get("enabled"):
         D["cameras"] = cameras.collect(cfg, data, now, D.get("lang", "en"))
-        D["attention"] += D["cameras"]["attention"]
+        D["attention"] += [dict(a, cat="cameras") for a in D["cameras"]["attention"]]
     # online meetings with their official join link (data/meetings.json from scripts/meeting_links.py — docs/MEETINGS.md)
     D["meetings"] = None
     if (cfg.get("meetings") or {}).get("enabled") or os.path.exists(meeting_links.out_path(data)):
@@ -356,7 +356,7 @@ def collect(cfg, data=DATA, now=None):
     D["score"] = dict(ok=sum(1 for p in D["pulse"] if p["st"] == "ok"), n=len(D["pulse"]))
     D["attention"].sort(key=lambda a: {"bad": 0, "warn": 1}.get(a["lvl"], 2))
     if D["meetings"]:                     # a meeting within the hour and a trick link — always on top
-        D["attention"][:0] = D["meetings"]["attention"]
+        D["attention"][:0] = [dict(a, cat="meetings") for a in D["meetings"]["attention"]]
     return D
 
 
@@ -582,6 +582,31 @@ def render(D, colors=None):
 </div><footer>FLOKTRON · {L['foot']}</footer></main></body></html>"""
 
 
+def brief(cfg, D, now=None):
+    """For the manager's own page (scripts/channels_web.py, docs/CHANNELS.md): «needs your attention» as kind + count only.
+    The page can be opened from outside the office, so no task text, name, company or amount goes into this file."""
+    import channels
+    if not channels.enabled(cfg):
+        return None
+    cats = {}
+    for a in D.get("attention") or []:
+        if a.get("lvl") not in ("bad", "warn"):
+            continue
+        x = cats.setdefault(a.get("cat") or "other", dict(cat=a.get("cat") or "other", n=0, lvl="warn"))
+        x["n"] += 1
+        if a["lvl"] == "bad":
+            x["lvl"] = "bad"
+    d = dict(updated=(now or datetime.datetime.now()).strftime("%Y-%m-%d %H:%M"),
+             cats=sorted(cats.values(), key=lambda x: (x["lvl"] != "bad", -x["n"], x["cat"])))
+    path = channels.paths(cfg)["brief"]
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(d, f, ensure_ascii=False)
+    os.replace(tmp, path)
+    return d
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="FLOKTRON dashboard")
     ap.add_argument("--config", default=os.path.join(ROOT, "config", "config.yaml"))
@@ -594,6 +619,7 @@ def main(argv=None):
     if a.json:
         print(json.dumps(D, ensure_ascii=False, indent=1, default=str))
         return 0
+    brief(cfg, D)
     out = a.out or os.path.join(a.data, "dashboard.html")
     D["_outdir"] = os.path.dirname(os.path.abspath(out))
     os.makedirs(D["_outdir"], exist_ok=True)
