@@ -37,3 +37,15 @@ def test_plain_feed_still_reads():
           b"<link>https://x.example/a</link><pubDate>Thu, 19 Nov 2026 10:00:00 GMT</pubDate></item></channel></rss>")
     items = news_slice.parse_feed(ok)
     assert items and items[0][1] == "Steel price up"
+
+
+def test_country_is_the_publishers_not_the_feeds():
+    """TEST · FICTIONAL: a «Switzerland, in German» news search also returns German papers."""
+    feed = (b'<?xml version="1.0"?><rss><channel><item><title>Demo bridge TEST - Demo Zeitung</title>'
+            b'<link>https://news.example/a</link><source url="https://www.demo-zeitung.de">Demo Zeitung</source></item>'
+            b"<item><title>No source TEST</title><link>https://news.example/b</link></item></channel></rss>")
+    items = news_slice.parse_feed(feed, with_source=True)
+    assert items[0][4] == "https://www.demo-zeitung.de" and items[1][4] == "" and len(news_slice.parse_feed(feed)[0]) == 4
+    pc = news_slice.publisher_country
+    assert pc("CH", items[0][4]) == "DE" and pc("CH", "https://demo.ch") == "CH" and pc("CH", "https://demo.co.uk") == "UK"
+    assert pc("CH", "https://demo-wire.com") == "CH" and pc("LV", "") == "LV" and pc("LV", "not an address") == "LV"

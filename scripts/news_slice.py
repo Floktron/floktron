@@ -81,8 +81,22 @@ def fetch(url, timeout=25):
     return data
 
 
-def parse_feed(data):
-    """Return [(date, title, link, summary)] from RSS or Atom."""
+TLD_COUNTRY = {"lv": "LV", "lt": "LT", "ee": "EE", "de": "DE", "ch": "CH", "at": "AT", "uk": "UK", "pl": "PL",
+               "fi": "FI", "se": "SE", "no": "NO", "dk": "DK", "nl": "NL", "be": "BE", "fr": "FR", "it": "IT",
+               "es": "ES", "pt": "PT", "ie": "IE", "li": "LI", "lu": "LU", "cz": "CZ", "sk": "SK", "hu": "HU"}
+
+
+def publisher_country(feed_country, source_url):
+    """The country of the publisher, not of the feed. A Google News feed «Switzerland, in German» also returns
+    German and Austrian papers, so a German paper was marked CH. The publisher's own address decides (.de → DE);
+    for .com / .org / .net nothing can be told, and the feed's country stays."""
+    host = (urllib.parse.urlsplit(str(source_url or "")).hostname or "").lower()
+    return TLD_COUNTRY.get(host.rsplit(".", 1)[-1], feed_country) if "." in host else feed_country
+
+
+def parse_feed(data, with_source=False):
+    """Return [(date, title, link, summary)] from RSS or Atom; with_source adds the publisher's address
+    (<source url="…"> in Google News, "" when the feed does not say) as a fifth value."""
     # A news feed never needs its own XML entities; a feed that declares them could blow up memory
     # ("billion laughs") or point at local files, so it is skipped before any parsing.
     if re.search(rb"<!ENTITY", data, re.I):
@@ -118,7 +132,9 @@ def parse_feed(data):
             except ValueError:
                 d = None
         clean = lambda t: re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", t or ""))).strip()
-        items.append((d, clean(title), link.strip(), clean(summ)[:300]))
+        one = (d, clean(title), link.strip(), clean(summ)[:300])
+        src = get["source"].attrib.get("url", "") if get.get("source") is not None else ""
+        items.append(one + (src,) if with_source else one)
     return items
 
 
@@ -215,7 +231,7 @@ def main():
             items = []
             for u in urls:
                 raw = fetch(u)
-                items += parse_tg_preview(raw) if ftype == "T" else parse_feed(raw)
+                items += [x + ("",) for x in parse_tg_preview(raw)] if ftype == "T" else parse_feed(raw, with_source=True)
             answered += 1
             result = f"{len(items)} items" + (f" ({len(urls)} queries)" if len(urls) > 1 else "")
         except Exception as e:  # noqa: BLE001 — any network/parse problem is a gap, not a crash
@@ -227,7 +243,7 @@ def main():
             print(f"{fid}: {result}")
             items = []
         new_here = 0
-        for d, title, link, summ in items:
+        for d, title, link, summ, src in items:
             if d and d.tzinfo is None:
                 d = d.replace(tzinfo=now.tzinfo)
             if d and d < since:
@@ -243,7 +259,7 @@ def main():
             new_here += 1
             found += 1
             if not a.dry:
-                ws_sig.append([(d or now).strftime("%Y-%m-%d"), country, "News", name, title, link, summ,
+                ws_sig.append([(d or now).strftime("%Y-%m-%d"), publisher_country(country, src), "News", name, title, link, summ,
                                "; ".join(hits[:5]), "", "", "PUBLIC", "", "To score", "No"])
             print(f"{fid}: + {title[:90]}")
         if not a.dry and not result.startswith("error"):
