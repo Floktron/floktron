@@ -549,7 +549,8 @@ def make_handler(cfg):
                 return self._send(403, "forbidden", "text/plain")
             t = L(cfg)
             if path == "/m/sw.js":
-                return self._send(200, "self.addEventListener('fetch',function(){});", "application/javascript")
+                return self._send(200, "self.addEventListener('fetch',function(){});", "application/javascript",
+                                  {"Service-Worker-Allowed": "/m"})   # the worker lives in /m/, the page is /m
             if path in ("/m/icon.png", "/m/icon.svg"):
                 f = os.path.join(BRAND, "floktron-512.png" if path.endswith(".png") else "favicon.svg")
                 if os.path.isfile(f):

@@ -15,6 +15,8 @@ Asked for in the operating company: «the morning audio report — can it be in 
 - The file is served with `Range` (206) — an iPhone plays sound only that way.
 - **`python3 scripts/channels.py newkey <id>`** — a lost phone or a leaked link: a new private page link and push
   address, the old ones stop at once.
+- Fixed: the page's service worker was never registered (it lives in `/m/`, the page is `/m`); `/m/sw.js` now answers
+  with `Service-Worker-Allowed: /m`. Found while checking the page in Chrome's Android profiles (Galaxy, Pixel).
 - Texts in EN / LV / RU. Docs: [CHANNELS](docs/CHANNELS.md). New test `test_audio_summary_on_the_page` (fictional
   data); 310 tests.
 - Run numbers recounted: 885 runs 08.11–28.11.2026, 28 failed (3.2 %).

@@ -286,4 +286,5 @@ def test_audio_summary_on_the_page(web, tmp_path):
     assert raw(f + "?k=" + k, {"Host": "evil.example"})[0] == 403
     assert C.new_key(cfg, "nobody") is None and C.new_key(cfg, "manager")["key"] != k            # lost phone: the old link stops
     assert raw(f + "?k=" + k)[0] == 403 and raw(f + "?k=" + C.people(cfg)["manager"]["key"])[0] == 200
+    assert raw("/m/sw.js")[2]["Service-Worker-Allowed"] == "/m"                           # Android «Install app»
     assert CW.audio_range("bytes=5-", 10) == (5, 9) and CW.audio_range("items=1-2", 10) is None and CW.audio_range("bytes=10-", 10) is False
