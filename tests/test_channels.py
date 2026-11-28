@@ -110,6 +110,7 @@ def web(tmp_path):
         cn.request(method, path, body=body, headers=h)
         r = cn.getresponse()
         return r.status, r.read().decode("utf-8", "replace"), dict(r.getheaders())
+    req.port = port
     yield cfg, req
     srv.shutdown()
 
@@ -238,3 +239,52 @@ def test_manager_block_minimum_data(web, tmp_path):
     cfg2 = make_cfg(tmp_path / "off")
     cfg2["channels"]["enabled"] = False
     assert dashboard.brief(cfg2, D) is None and not os.path.exists(C.paths(cfg2)["brief"])
+
+
+def test_audio_summary_on_the_page(web, tmp_path):
+    """TEST · FICTIONAL: the morning audio summary plays on the page of a person with audio: true — and of nobody else."""
+    import datetime
+    cfg, req = web
+
+    def raw(path, headers=None):
+        cn = http.client.HTTPConnection("127.0.0.1", req.port, timeout=5)
+        cn.request("GET", path, headers={"Host": "127.0.0.1", **(headers or {})})
+        r = cn.getresponse()
+        return r.status, r.read(), dict(r.getheaders())
+    k, k2 = C.people(cfg)["manager"]["key"], C.people(cfg)["site1"]["key"]
+    assert 'id="au"' not in req("GET", "/m?k=" + k)[1]                                    # off until audio: true
+    cfg["channels"]["people"]["manager"]["audio"] = True
+    assert "It appears here after the first morning summary" in req("GET", "/m?k=" + k)[1]
+    d = CW.audio_dir(cfg)
+    os.makedirs(d, exist_ok=True)
+    today = datetime.date.today()
+    sound = bytes(range(256)) * 40
+    for back in (0, 1, 3, 9):
+        with open(os.path.join(d, f"pulse_{today - datetime.timedelta(days=back)}.m4a"), "wb") as f:
+            f.write(sound)
+    for name, data in ((f"pulse_{today - datetime.timedelta(days=1)}.mp3", b"mp3"), ("secret.m4a", b"x"), (f"pulse_{today}.txt", b"TEST summary text")):
+        with open(os.path.join(d, name), "wb") as f:
+            f.write(data)
+    body = req("GET", "/m?k=" + k)[1]
+    assert "Morning summary" in body and f'data-f="pulse_{today}.m4a"' in body and body.count("data-src=") == 3      # 7 days only
+    assert f"pulse_{today - datetime.timedelta(days=1)}.mp3" not in body and "TEST summary text" not in body
+    assert "!(au&&!au.paused)" in body                                                    # no reload while it plays
+    assert 'id="au"' not in req("GET", "/m?k=" + k2)[1]
+    f = f"/m/audio/pulse_{today}.m4a"
+    st, b, hd = raw(f + "?k=" + k)
+    assert st == 200 and b == sound and hd["Content-Type"] == "audio/mp4" and hd["Accept-Ranges"] == "bytes"
+    st, b, hd = raw(f + "?k=" + k, {"Range": "bytes=0-1"})                                # an iPhone asks like this first
+    assert st == 206 and b == sound[:2] and hd["Content-Range"] == f"bytes 0-1/{len(sound)}"
+    assert raw(f + "?k=" + k, {"Range": "bytes=1000-"})[:2] == (206, sound[1000:])
+    assert raw(f + "?k=" + k, {"Range": "bytes=-100"})[:2] == (206, sound[-100:])
+    assert raw(f + "?k=" + k, {"Range": "bytes=999999-"})[0] == 416
+    assert raw(f, {"Cookie": "fk_k=" + k})[:2] == (200, sound)                            # the home-screen app
+    assert raw(f)[0] == 403 and raw(f + "?k=wrong")[0] == 403 and raw(f + "?k=" + k2)[0] == 404
+    for bad in ("secret.m4a", "../config.yaml", "%2e%2e/config.yaml", f"pulse_{today}.txt", f"pulse_{today - datetime.timedelta(days=9)}.m4a"):
+        st, b, _ = raw("/m/audio/" + bad + "?k=" + k)
+        assert st in (403, 404) and b != sound, bad
+    assert raw(f + "?k=" + k, {"Host": "evil.example"})[0] == 403
+    assert C.new_key(cfg, "nobody") is None and C.new_key(cfg, "manager")["key"] != k            # lost phone: the old link stops
+    assert raw(f + "?k=" + k)[0] == 403 and raw(f + "?k=" + C.people(cfg)["manager"]["key"])[0] == 200
+    assert raw("/m/sw.js")[2]["Service-Worker-Allowed"] == "/m"                           # Android «Install app»
+    assert CW.audio_range("bytes=5-", 10) == (5, 9) and CW.audio_range("items=1-2", 10) is None and CW.audio_range("bytes=10-", 10) is False

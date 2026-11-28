@@ -51,6 +51,7 @@ always shows everything — whichever channel delivered it.
      `worktime.people` (the Telegram chat id or the name) — marks go to the same log and the same hours ([WORKTIME](WORKTIME.md)).
    - `backup: [web, email]` — the backup list (default).
    - `manager: true` — this person's page also shows the block «For the manager» (below).
+   - `audio: true` — this person's page also plays the morning audio summary (below).
 
 2. `python3 scripts/channels.py` — lists everyone with their channel and **their private page link**. Send each person
    their own link privately (it is their key; whoever has it sees their tasks).
@@ -81,6 +82,21 @@ Only on the page of a person with `manager: true`, above the tasks:
 - **Needs attention** — kind and count only («Mail 2 · Invoices 1»), from the last dashboard build
   (`data/channels_brief.json`). The task texts, names, companies and amounts stay on the dashboard on your computer —
   the page can be open from outside the office, so it carries the minimum.
+
+### The morning audio summary — listen on the page
+
+Only on the page of a person with `audio: true`, at the top:
+
+- a player with the latest summary — the same file the bot sends to Telegram (`pulse_<date>.m4a` in
+  `telegram.voice.pulse_dir`, see [VOICE](VOICE.md));
+- speed 1× / 1.25× / 1.5×; it goes on from where you stopped; the last 7 days are one tap away;
+- on a phone it plays with the screen locked, with the controls on the lock screen. The page does not reload while
+  the sound plays.
+
+The sound is the **whole** summary, names and amounts included — unlike «For the manager», which carries counts only.
+So it is off for everyone until you write `audio: true` for a person, the file is served only with that person's
+private key, only for the last 7 days, and the text of the summary is never shown on the page. If the phone is lost:
+`python3 scripts/channels.py newkey <id>` gives a new link, and the old one stops at once.
 
 ### From anywhere: your own Cloudflare Tunnel (free)
 

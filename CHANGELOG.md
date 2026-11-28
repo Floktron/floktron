@@ -4,6 +4,24 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.42.0 — 28.11.2026 · the morning audio summary plays on the page
+Asked for in the operating company: «the morning audio report — can it be in the app on the phone?» Works there first.
+- **A player on the person's page** (`scripts/channels_web.py`): at the top, the latest morning summary — the same file
+  the bot sends to Telegram (`pulse_<date>.m4a` in `telegram.voice.pulse_dir`). Speed 1× / 1.25× / 1.5×, it goes on
+  from where you stopped, the last 7 days one tap away, lock-screen controls; the page does not reload while it plays.
+- **Off until you say so**: only for a person with `channels.people.<id>.audio: true`. The sound is the whole summary
+  (names and amounts included), so the file is served only with that person's private key, only for the last 7 days,
+  only `pulse_<date>.m4a|mp3` from that one folder; the text of the summary is never shown on the page.
+- The file is served with `Range` (206) — an iPhone plays sound only that way.
+- **`python3 scripts/channels.py newkey <id>`** — a lost phone or a leaked link: a new private page link and push
+  address, the old ones stop at once.
+- Fixed: the page's service worker was never registered (it lives in `/m/`, the page is `/m`); `/m/sw.js` now answers
+  with `Service-Worker-Allowed: /m`. Found while checking the page in Chrome's Android profiles (Galaxy, Pixel).
+- Texts in EN / LV / RU. Docs: [CHANNELS](docs/CHANNELS.md). New test `test_audio_summary_on_the_page` (fictional
+  data); 310 tests.
+- Run numbers recounted: 885 runs 08.11–28.11.2026, 28 failed (3.2 %).
+- `docs/FLOKTRON_overview.pdf` = overview 1.30 (25 pages): page 22 «Channels» now shows the player of the morning summary.
+
 ## 0.41.0 — 28.11.2026 · the page: swipe a task, and the manager's day in three lines
 Asked for in the operating company on the first day with the page as an app on the phone. Works there first.
 - **Swipe** (`scripts/channels_web.py`): a task on the person's page goes right — done ✅, left — not needed ⛔. An «Undo»

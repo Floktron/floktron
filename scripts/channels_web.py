@@ -5,6 +5,8 @@
     GET  /m?k=<private key>          the person's tasks with ✅ / ⛔, channel switch, push, work-time buttons
     GET  /m/manifest.webmanifest?k=  name and icon for «Add to Home Screen» (start_url carries the key: an iPhone
                                      home-screen app keeps its own cookies, so the key lives in the shortcut address)
+    GET  /m/audio/pulse_<date>.m4a   the morning audio summary — only for a person with audio: true, last 7 days,
+                                     with Range (an iPhone plays sound only that way)
     GET  /m/sw.js                    an empty service worker (Android «Install app»)
     GET  /m/icon.png  /m/icon.svg    the FLOKTRON mark
     POST /m/act    {k, ans}          a press → data/task_actions.jsonl (by=web, person)
@@ -13,7 +15,7 @@
     GET  /a?p&k&a&s                  a button from a letter: a «Confirm» page only — mail scanners open links by
                                      themselves, so only the press on the page closes the task
     POST /a                          signature (HMAC) right → press (by=email)
-Nothing else is served: no dashboard, no files, no base. Each person sees only their own tasks (a private key of 32
+Nothing else is served: no dashboard, no other files, no base. Each person sees only their own tasks (a private key of 32
 random characters each). A press needs the key in the X-Floktron-Key header, which another web site cannot know.
 From the phone outside this computer: channels.web.public_url (your own Cloudflare Tunnel, docs/CHANNELS.md) or
 channels.web.lan: true (same Wi-Fi). Task text is data, never instructions."""
@@ -207,6 +209,17 @@ W2 = {   # 0.41: swipe and the manager's block
 for _k, _v in W2.items():
     W[_k].update(_v)
 
+W3 = {   # 0.42: the morning audio summary on the page
+    'en': dict(au='Morning summary', au_none='🎧 It appears here after the first morning summary.', au_wait="Today's summary is not here yet.",
+               au_arch='Last 7 days', au_today='Today', au_yest='Yesterday', wd=('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')),
+    'lv': dict(au='Rīta kopsavilkums', au_none='🎧 Parādīsies šeit pēc pirmā rīta kopsavilkuma.', au_wait='Šodienas kopsavilkuma vēl nav.',
+               au_arch='Pēdējās 7 dienas', au_today='Šodien', au_yest='Vakar', wd=('P', 'O', 'T', 'C', 'Pk', 'S', 'Sv')),
+    'ru': dict(au='Утренняя сводка', au_none='🎧 Появится здесь после первой утренней сводки.', au_wait='Сегодняшней сводки ещё нет.',
+               au_arch='Архив за 7 дней', au_today='Сегодня', au_yest='Вчера', wd=('Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс')),
+}
+for _k, _v in W3.items():
+    W[_k].update(_v)
+
 
 def L(cfg):
     return W.get(C.lang_of(cfg)) or W["en"]
@@ -290,6 +303,103 @@ def boss_block(cfg, now=None):
     return f'<h2>{t["boss"]}</h2><div class="card boss">{h}</div>'
 
 
+# ---------------------------------------------------------------- the morning audio summary (people.<id>.audio: true)
+# The bot writes pulse_<date>.m4a (docs/VOICE.md); the page only reads. The sound is the whole summary, so it is served
+# only to a person with audio: true, only with their private key, only for the last 7 days. The text is never shown.
+AUDIO_RX = re.compile(r"^pulse_(\d{4}-\d{2}-\d{2})\.(m4a|mp3)$")
+AUDIO_DAYS = 7
+AUDIO_MAX = 60 * 1024 * 1024
+
+
+def audio_dir(cfg):
+    d = os.path.expanduser(str(((cfg.get("telegram") or {}).get("voice") or {}).get("pulse_dir") or ""))
+    if d and not os.path.isabs(d) and cfg.get("_path"):
+        d = os.path.join(os.path.dirname(cfg["_path"]), d)
+    return d if d and os.path.isabs(d) else os.path.join(C.data_dir(cfg), "audio")
+
+
+def audio_list(cfg, today=None):
+    """[{day, file}] newest first; one file a day (m4a before mp3)."""
+    today = today or datetime.date.today()
+    d = audio_dir(cfg)
+    try:
+        names = os.listdir(d)
+    except OSError:
+        return []
+    best = {}
+    for n in names:
+        m = AUDIO_RX.match(n)
+        if not m:
+            continue
+        try:
+            day = datetime.date.fromisoformat(m.group(1))
+        except ValueError:
+            continue
+        f = os.path.join(d, n)
+        try:
+            if not (0 <= (today - day).days < AUDIO_DAYS) or os.path.islink(f) or not os.path.isfile(f) or not (0 < os.path.getsize(f) <= AUDIO_MAX):
+                continue
+        except OSError:
+            continue
+        if day not in best or n.endswith(".m4a"):
+            best[day] = n
+    return [dict(day=day, file=best[day]) for day in sorted(best, reverse=True)]
+
+
+def audio_range(header, n):
+    """A Range header → (first, last) | None (no range) | False (cannot be satisfied)."""
+    m = re.match(r"^\s*bytes=(\d*)-(\d*)\s*$", header or "")
+    if not m or not (m.group(1) or m.group(2)):
+        return None
+    if m.group(1):
+        a, b = int(m.group(1)), min(int(m.group(2)) if m.group(2) else n - 1, n - 1)
+    else:
+        a, b = max(0, n - int(m.group(2))), n - 1
+    return False if a >= n or a > b else (a, b)
+
+
+def audio_block(cfg, u):
+    if not u.get("audio"):
+        return ""
+    t = L(cfg)
+    lst = audio_list(cfg)
+    if not lst:
+        return f'<h2>{t["au"]}</h2><div class="card muted">{t["au_none"]}</div>'
+    today = datetime.date.today()
+    q = "?k=" + urllib.parse.quote(u["key"], safe="")
+
+    def lab(x):
+        dd = (today - x["day"]).days
+        return f'{t["au_today"] if dd == 0 else t["au_yest"] if dd == 1 else t["wd"][x["day"].weekday()]} {x["day"]:%d.%m}'
+    x = lst[0]
+    arch = "".join(f'<button class="ap{" on" if i == 0 else ""}" data-src="/m/audio/{escape(y["file"], True)}{escape(q, True)}" data-f="{escape(y["file"], True)}" '
+                   f'data-l="{escape(lab(y), True)}">▶ {escape(lab(y))}</button>' for i, y in enumerate(lst))
+    return (f'<h2>{t["au"]}</h2><div class="card au"><div class="at">🎧 <span id="aul">{escape(lab(x))}</span></div>'
+            f'<audio id="au" controls preload="metadata" src="/m/audio/{escape(x["file"], True)}{escape(q, True)}" data-f="{escape(x["file"], True)}"></audio>'
+            '<div class="seg sp" id="sp"><button data-r="1" class="on">1×</button><button data-r="1.25">1.25×</button><button data-r="1.5">1.5×</button></div>'
+            + ("" if x["day"] == today else f'<div class="muted" style="margin-top:6px">{t["au_wait"]}</div>')
+            + (f'<div class="muted" style="margin-top:10px">{t["au_arch"]}</div><div class="aps">{arch}</div>' if len(lst) > 1 else "") + "</div>")
+
+
+AUDIO_CSS = """.au .at{font-weight:700;margin:0 0 8px}.au audio{width:100%;display:block}.sp{margin-top:8px}.sp button{padding:8px 4px}
+.aps{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.ap{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px}
+.ap.on{border-color:var(--acc);color:var(--acc);font-weight:700}"""
+CSS += AUDIO_CSS
+
+AUDIO_JS = ("(function(){var a=document.getElementById('au');if(!a)return;var P='fk_pos_',R='fk_rate',N=%s;"
+            "function f(){return a.getAttribute('data-f')}"
+            "function rate(r){a.playbackRate=r;a.defaultPlaybackRate=r;document.querySelectorAll('#sp button').forEach(function(b){b.classList.toggle('on',+b.getAttribute('data-r')===r)});try{localStorage.setItem(R,r)}catch(e){}}"
+            "var r0=1;try{r0=+localStorage.getItem(R)||1}catch(e){}"
+            "document.querySelectorAll('#sp button').forEach(function(b){b.onclick=function(){rate(+b.getAttribute('data-r'))}});"
+            "a.addEventListener('loadedmetadata',function(){a.playbackRate=a.defaultPlaybackRate;var p=0;try{p=+localStorage.getItem(P+f())||0}catch(e){}if(p>5&&p<a.duration-5)a.currentTime=p});"
+            "var lt=0;a.addEventListener('timeupdate',function(){if(Date.now()-lt<3000)return;lt=Date.now();try{localStorage.setItem(P+f(),a.currentTime)}catch(e){}});"
+            "a.addEventListener('ended',function(){try{localStorage.removeItem(P+f())}catch(e){}});"
+            "a.addEventListener('play',function(){if('mediaSession' in navigator&&window.MediaMetadata){navigator.mediaSession.metadata=new MediaMetadata({title:N+' · '+document.getElementById('aul').textContent,artist:'FLOKTRON',artwork:[{src:'/m/icon.png',sizes:'512x512',type:'image/png'}]})}});"
+            "document.querySelectorAll('.ap').forEach(function(b){b.onclick=function(){document.querySelectorAll('.ap').forEach(function(x){x.classList.remove('on')});b.classList.add('on');"
+            "a.setAttribute('data-f',b.getAttribute('data-f'));document.getElementById('aul').textContent=b.getAttribute('data-l');a.src=b.getAttribute('data-src');a.defaultPlaybackRate=a.playbackRate;a.play().catch(function(){})}});"
+            "rate(r0)})();")
+
+
 def shell(cfg, title, inner, head=""):
     return (f'<!DOCTYPE html><html lang="{escape(C.lang_of(cfg))}"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">'
@@ -330,7 +440,7 @@ def page(cfg, u):
         tm = (f'<h2>{t["time"]}</h2><div class="card"><div class="row" style="margin-top:0"><button class="b y" data-t="start">{t["start"]}</button>'
               f'<button class="b p" data-t="pause">{t["pause"]}</button><button class="b w" data-t="end">{t["end"]}</button></div>'
               f'<div class="muted" id="tmsg" style="margin-top:8px">{t["geo"]}</div></div>')
-    inner = (f'<div class="muted">{escape(u["name"])} · {t["updated"]} {datetime.datetime.now():%H:%M}</div>' + tm
+    inner = (f'<div class="muted">{escape(u["name"])} · {t["updated"]} {datetime.datetime.now():%H:%M}</div>' + audio_block(cfg, u) + tm
              + (boss_block(cfg) if u.get("manager") else "")
              + f'<h2>{t["waiting"]} · {len(open_)}</h2>' + (f'<div class="muted" style="margin:-2px 0 8px">{t["swipe"]}</div>' if open_ else "")
              + ("".join(card(cfg, i) for i in open_) or f'<div class="card muted">{t["none"]}</div>')
@@ -365,8 +475,10 @@ def page(cfg, u):
           "function go(l){post('/m/time',{action:a,loc:l}).then(function(r){document.getElementById('tmsg').textContent=r.msg;msg(r.msg);b.disabled=false}).catch(function(){b.disabled=false;msg(T.offline)})}"
           "if(a==='start'&&navigator.geolocation){navigator.geolocation.getCurrentPosition(function(q){go({lat:q.coords.latitude,lon:q.coords.longitude,acc:q.coords.accuracy})},function(){go(null)},{timeout:8000,maximumAge:60000})}else go(null)}});"
           "if('serviceWorker' in navigator){navigator.serviceWorker.register('/m/sw.js',{scope:'/m'}).catch(function(){})}"
-          "setInterval(function(){if(!document.hidden&&document.getElementById('msg').style.display!=='flex')location.reload()},90000)})();</script>") % (
+          "var au=document.getElementById('au');"
+          "setInterval(function(){if(!document.hidden&&document.getElementById('msg').style.display!=='flex'&&!(au&&!au.paused))location.reload()},90000)})();") % (
         json.dumps(u["key"]), json.dumps({k: t[k] for k in ("ok_y", "ok_n", "ok_u", "offline", "channel", "undo_b", "back")}, ensure_ascii=False).replace("<", "\\u003c"))
+    js += AUDIO_JS % json.dumps(t["au"], ensure_ascii=False).replace("<", "\\u003c") + "</script>"
     head = (f'<link rel="manifest" href="/m/manifest.webmanifest?k={escape(u["key"], True)}"><meta name="theme-color" content="#1A365D">'
             '<meta name="apple-mobile-web-app-capable" content="yes">')
     return shell(cfg, t["waiting"], inner + js, head)
@@ -437,7 +549,8 @@ def make_handler(cfg):
                 return self._send(403, "forbidden", "text/plain")
             t = L(cfg)
             if path == "/m/sw.js":
-                return self._send(200, "self.addEventListener('fetch',function(){});", "application/javascript")
+                return self._send(200, "self.addEventListener('fetch',function(){});", "application/javascript",
+                                  {"Service-Worker-Allowed": "/m"})   # the worker lives in /m/, the page is /m
             if path in ("/m/icon.png", "/m/icon.svg"):
                 f = os.path.join(BRAND, "floktron-512.png" if path.endswith(".png") else "favicon.svg")
                 if os.path.isfile(f):
@@ -451,6 +564,8 @@ def make_handler(cfg):
             u = self._who()
             if not u:
                 return self._send(403, shell(cfg, "—", f"<p>{t['no']}</p>"))
+            if method == "GET" and path.startswith("/m/audio/"):
+                return self._audio(u, path[len("/m/audio/"):])
             if method == "GET" and path == "/m/manifest.webmanifest":
                 return self._send(200, json.dumps({"name": "FLOKTRON", "short_name": "FLOKTRON", "start_url": f"/m?k={u['key']}", "scope": "/m",
                                                    "display": "standalone", "background_color": "#f3f3f3", "theme_color": "#1A365D",
@@ -481,6 +596,25 @@ def make_handler(cfg):
                     return self._send(400, "bad request", "text/plain")
                 return self._send(200, json.dumps({"ok": True, "msg": time_mark(cfg, u, act, d.get("loc"))}, ensure_ascii=False), "application/json")
             return self._send(404, "not found", "text/plain")
+
+        def _audio(self, u, name):
+            # the file name is taken from the folder listing, never from the request: the request only chooses among them
+            own = next((x["file"] for x in audio_list(cfg) if x["file"] == name), None) if u.get("audio") else None
+            if not own:
+                return self._send(404, "not found", "text/plain")
+            name = own
+            try:
+                with open(os.path.join(audio_dir(cfg), own), "rb") as fh:
+                    data = fh.read()
+            except OSError:
+                return self._send(404, "not found", "text/plain")
+            ctype, n = ("audio/mp4" if name.endswith(".m4a") else "audio/mpeg"), len(data)
+            r = audio_range(self.headers.get("Range"), n)
+            if r is False:
+                return self._send(416, b"", ctype, {"Content-Range": f"bytes */{n}", "Accept-Ranges": "bytes"})
+            if r:
+                return self._send(206, data[r[0]:r[1] + 1], ctype, {"Content-Range": f"bytes {r[0]}-{r[1]}/{n}", "Accept-Ranges": "bytes"})
+            return self._send(200, data, ctype, {"Accept-Ranges": "bytes"})
 
         def _a(self, method, t):
             f = self._q() if method == "GET" else {k: v[0] for k, v in urllib.parse.parse_qs(self._body(2000)).items()}
