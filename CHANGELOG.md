@@ -16,6 +16,7 @@ Asked for in the operating company on the first day with the page as an app on t
   (each attention item now carries its kind); task texts, names, companies and amounts stay on the dashboard.
 - Texts in EN / LV / RU. Docs: [CHANNELS](docs/CHANNELS.md). New tests `test_swipe_and_undo`,
   `test_manager_block_minimum_data` (fictional people and companies); 309 tests.
+- `docs/FLOKTRON_overview.pdf` = overview 1.29 (25 pages): page 22 «Channels» now shows the swipe and the manager's block.
 
 ## 0.40.2 — 28.11.2026 · a news item carries the country of its publisher, not of the feed
 Seen in the operating company on the first evening report on the phone: a German regional paper was marked `[CH]`.
