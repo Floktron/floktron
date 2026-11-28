@@ -264,6 +264,10 @@ channels:                  # each person chooses where tasks come: Telegram, the
     port: 8765                  # python3 scripts/channels.py serve — the page, on 127.0.0.1 (this computer only)
     public_url: ""              # e.g. https://tasks.yourcompany.com — your own Cloudflare Tunnel to the page (docs/CHANNELS.md)
     lan: false                  # true = the page also answers phones in the same Wi-Fi
+    guard: {}                   # 0.43 — from outside only: limits, «new device» in Telegram, «Close the page», link 90 days
+                                #   e.g. {per_ip_min: 240, ban_min: 60, key_days: 90}; enabled: false = off (docs/CHANNELS.md)
+    passkey: {}                 # 0.43 — sign-in by Face ID / fingerprint / phone code, each person turns it on on the page
+                                #   {idle_min: 10, hours: 12}: phone put away 10 min → asks again; never longer than 12 h
   ntfy:
     server: "https://ntfy.sh"   # push: only «New task: letter» goes out, no names or amounts; or your own ntfy server
 

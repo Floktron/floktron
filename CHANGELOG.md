@@ -4,6 +4,34 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.43.0 — 28.11.2026 · the page from outside: a guard, and sign-in by Face ID
+Asked for in the operating company: «protect the app on the phone from attacks — a flood through the tunnel, a virus on
+an Android» and then «like a banking app: the phone lay unused — ask Face ID again, but don't nag». Works there first,
+checked on an iPhone (Face ID), a Samsung with Chrome and an older Android without Face ID (the phone code).
+- **The guard** (`scripts/page_guard.py`, on by default, only for requests through the tunnel — this computer and the
+  office network are never limited): requests a minute per address (240) and in total (900), 12 at the same time; an
+  address that tries 10 wrong keys in 10 minutes waits an hour; a stream of refused requests → «⚠️ close the page?» in
+  Telegram. The audio summary is now sent from disk in 256 KB pieces, never the whole file in memory.
+- **«Opened from a new device»**: a new «country · device» on a person's page (Cloudflare's country + phone/browser
+  type; no IP stored) → Telegram to the manager with «🔒 Not me — close» (a new link for that person, the old one stops,
+  the page is closed from outside) or «✅ It's me». A pinned message «🛡 page protection buttons»: «🔒 Sign out
+  everywhere» (new links for everyone, sent to Telegram), «⛔ Close the page», and «🔓 Open again» in the reply — no
+  computer needed. A link lives 90 days (only for people who open the page from outside): 7 days before — «🔄 New link»,
+  then it changes by itself; the push address stays.
+- **Sign-in by Face ID, fingerprint or phone code** (`scripts/passkey.py`, a passkey / WebAuthn, each person turns it
+  on on the page; the manager allows it in Telegram, so a stranger with a leaked link cannot add their own face). From
+  outside the page then first shows only «Open»; after the check — no questions while in use, the phone put away for
+  10 minutes → it asks again (`channels.web.passkey.idle_min`), never longer than 12 h. «➕ Add this device» for a second
+  phone; Telegram «🔐 Close sign-ins now» and «🔓 Turn off protection». The face or finger stays in the phone; only a
+  public P-256 key is kept, the signature is checked in plain Python — no new packages. Before the check: no tasks, no
+  presses, no audio.
+- Presses for the guard count only from a chat in `telegram.manager_chat_ids` — never from the page or a letter.
+- `scripts/channels.py`: `new_key(…, topic=False)` — the page key only (the scheduled change keeps push working).
+- Texts in EN / LV / RU. Docs: [CHANNELS](docs/CHANNELS.md#protection-from-outside-the-guard-and-sign-in-by-face-id),
+  [SECURITY](SECURITY.md). New tests `tests/test_page_guard.py` (fictional data; the «phone» is the test with its own
+  P-256 key); 317 tests.
+- Run numbers recounted: 898 runs 08.11–28.11.2026, 28 failed (3.1 %).
+
 ## 0.42.0 — 28.11.2026 · the morning audio summary plays on the page
 Asked for in the operating company: «the morning audio report — can it be in the app on the phone?» Works there first.
 - **A player on the person's page** (`scripts/channels_web.py`): at the top, the latest morning summary — the same file
