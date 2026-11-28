@@ -31,6 +31,7 @@ checked on an iPhone (Face ID), a Samsung with Chrome and an older Android witho
   [SECURITY](SECURITY.md). New tests `tests/test_page_guard.py` (fictional data; the «phone» is the test with its own
   P-256 key); 317 tests.
 - Run numbers recounted: 898 runs 08.11–28.11.2026, 28 failed (3.1 %).
+- `docs/FLOKTRON_overview.pdf` = overview 1.31 (25 pages): page 22 «Channels» now has the card «Protection from outside».
 
 ## 0.42.0 — 28.11.2026 · the morning audio summary plays on the page
 Asked for in the operating company: «the morning audio report — can it be in the app on the phone?» Works there first.
