@@ -9,6 +9,9 @@ their tasks come — and can switch at any time, by themselves, from their own p
 | **Their own page** | a private page with all their open tasks; added to the phone home screen it opens like an app (its own icon, full screen) | ✅ / ⛔ on each task, and ▶ Start / ⏸ Pause / ⏹ End for work time |
 | **E-mail** | one summary letter with all new tasks (not one letter per task) | ✅ / ⛔ under each task |
 
+On the page a task can also be **swiped**: right — done ✅, left — not needed ⛔. For 6 seconds an «Undo» button stays at
+the bottom; a short or slanting move closes nothing. The buttons work as before.
+
 **Push** (optional, per person, with the page or e-mail): the phone rings with «New task: letter» — nothing else.
 
 A press in **any** channel writes the same line to `data/task_actions.jsonl` as the Telegram buttons do (with
@@ -47,6 +50,7 @@ always shows everything — whichever channel delivered it.
    - `time: true` + `worktime_who` — work-time buttons on the page; `worktime_who` is the same id as in
      `worktime.people` (the Telegram chat id or the name) — marks go to the same log and the same hours ([WORKTIME](WORKTIME.md)).
    - `backup: [web, email]` — the backup list (default).
+   - `manager: true` — this person's page also shows the block «For the manager» (below).
 
 2. `python3 scripts/channels.py` — lists everyone with their channel and **their private page link**. Send each person
    their own link privately (it is their key; whoever has it sees their tasks).
@@ -65,6 +69,18 @@ Switch from the command line: `python3 scripts/channels.py set manager web` · `
 - Messages are shown as blocks: title, sections, news cards with the source and a short link button instead of a long
   address. No pictures are loaded from other sites.
 - In the same Wi-Fi only: set `web.lan: true` and open `http://<computer address>:8765/m?k=…`.
+
+### «For the manager» — the day in three lines
+
+Only on the page of a person with `manager: true`, above the tasks:
+
+- **At work** — who is at work now, since when, hours today (from [WORKTIME](WORKTIME.md)). First name only, no location.
+- **Next meeting** — the nearest online meeting with a button and the full link (from [MEETINGS](MEETINGS.md)); on a
+  phone the link opens the Zoom / Teams / Meet app if it is installed. Only links that pass the same check as on the
+  dashboard are shown; a trick link never gets here.
+- **Needs attention** — kind and count only («Mail 2 · Invoices 1»), from the last dashboard build
+  (`data/channels_brief.json`). The task texts, names, companies and amounts stay on the dashboard on your computer —
+  the page can be open from outside the office, so it carries the minimum.
 
 ### From anywhere: your own Cloudflare Tunnel (free)
 
@@ -113,6 +129,7 @@ own mail. The topic is a long random word per person. You can run your own ntfy 
 |---|---|
 | `data/channels_state.json` | each person's channel, push on/off, page key, push topic |
 | `data/channels_feed.jsonl` | the tasks shown on the pages (the same short text as in Telegram) |
+| `data/channels_brief.json` | «needs attention» for the manager's page: kind and count only, rewritten by `dashboard.py` |
 | `data/channels_mail_queue.jsonl` | tasks waiting for the next summary letter |
 | `data/.channels_secret` | the signing key for buttons |
 | `data/task_actions.jsonl` | the presses — the same file as for Telegram |

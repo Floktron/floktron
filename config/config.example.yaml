@@ -256,6 +256,8 @@ channels:                  # each person chooses where tasks come: Telegram, the
   people: {}                    # e.g. manager: {name: "Anna", channel: telegram, backup: [web, email], email: "anna@demo.lv"}
                                 #      site1: {name: "Jānis", channel: web, time: true, worktime_who: "123456789", tasks: false}
                                 # channel: telegram | web | email; people switch it themselves on their page
+                                # manager: true — this person's page also shows «For the manager»: who is at work, the next
+                                #   online meeting, «needs attention» as kind + count (no names, companies or amounts)
   web:
     port: 8765                  # python3 scripts/channels.py serve — the page, on 127.0.0.1 (this computer only)
     public_url: ""              # e.g. https://tasks.yourcompany.com — your own Cloudflare Tunnel to the page (docs/CHANNELS.md)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Channels (0.40): each person chooses Telegram, their own page or e-mail (+ push); a press anywhere lands in
+"""Channels (0.40, 0.41): each person chooses Telegram, their own page or e-mail (+ push); a press anywhere lands in
 data/task_actions.jsonl (scripts/channels.py, scripts/channels_web.py, scripts/task_notice.py).
 TEST · FICTIONAL — fictional people and companies; no network (push and mail go to an outbox folder)."""
 import http.client
@@ -25,7 +25,7 @@ def make_cfg(tmp_path, **web):
             "mail": {"user": "office@fictional.example", "reply_to": "office@fictional.example"},
             "worktime": {"enabled": True, "file": str(tmp_path / "data" / "worktime.jsonl"), "people": {"777": "Jānis TEST"}},
             "channels": {"enabled": True, "web": {"port": 0, **web},
-                         "people": {"manager": {"name": "Anna TEST (fictional)", "channel": "telegram", "email": "anna@fictional.example"},
+                         "people": {"manager": {"name": "Anna TEST (fictional)", "channel": "telegram", "email": "anna@fictional.example", "manager": True},
                                     "site1": {"name": "Jānis TEST (fictional)", "channel": "web", "time": True, "worktime_who": "777", "tasks": False}}}}
 
 
@@ -188,3 +188,53 @@ def test_off_by_default(tmp_path):
     out = str(tmp_path / "o")
     assert tn.send(cfg, "TEST", "mail", "z1", "en", outbox=out) == ""
     assert not os.path.exists(C.paths(cfg)["feed"])
+
+
+def test_swipe_and_undo(web):
+    cfg, req = web
+    C.deliver(cfg, "📬 TEST Bērzs SIA", tn.buttons("mail", "s1"), lambda t, m: "")
+    k = C.people(cfg)["manager"]["key"]
+    body = req("GET", "/m?k=" + k)[1]
+    assert "Swipe a task right" in body and "touchstart" in body and 'data-y="✅ done"' in body and '"undo_b": "Undo"' in body
+    assert req("POST", "/m/act", {"k": "mail:s1", "ans": "n"}, {"X-Floktron-Key": k})[0] == 200          # swiped left
+    assert C.feed(cfg, "manager")[0]["closed"]["ans"] == "n"
+    assert req("POST", "/m/act", {"k": "mail:s1", "ans": "u"}, {"X-Floktron-Key": k})[0] == 200          # «Undo»
+    assert not C.feed(cfg, "manager")[0].get("closed") and [a["ans"] for a in lines(C.paths(cfg)["actions"])[-2:]] == ["n", "u"]
+
+
+def test_manager_block_minimum_data(web, tmp_path):
+    """TEST · FICTIONAL: the manager's block shows who is at work, the next meeting and «needs attention» by kind only."""
+    import datetime
+    import dashboard
+    import worktime
+    cfg, req = web
+    cfg["calendar"] = {"timezone": "Europe/Riga"}
+    data = C.data_dir(cfg)
+    os.makedirs(data, exist_ok=True)
+    k, k2 = C.people(cfg)["manager"]["key"], C.people(cfg)["site1"]["key"]
+    assert "For the manager" in req("GET", "/m?k=" + k)[1] and "For the manager" not in req("GET", "/m?k=" + k2)[1]
+    worktime.mark(cfg, worktime.events_path(cfg), "777", "Jānis TESTS", "start", now=datetime.datetime.now() - datetime.timedelta(minutes=90),
+                  location={"latitude": 56.95, "longitude": 24.1, "horizontal_accuracy": 9})
+    now = datetime.datetime.now().astimezone()
+    soon = now + datetime.timedelta(hours=2)
+    items = [{"title": "TEST demo call with Fictional SIA", "start": soon.isoformat(), "day": soon.date().isoformat(), "svc": "Zoom",
+              "url": "https://zoom.us/j/1234567890?pwd=TESTtest"},
+             {"title": "TEST trick", "start": soon.isoformat(), "day": soon.date().isoformat(), "svc": "Zoom", "url": "",
+              "warn": {"svc": "Zoom", "real": "zoom.evil.example"}},
+             {"title": "TEST foreign host", "start": soon.isoformat(), "day": soon.date().isoformat(), "svc": "Zoom", "url": "https://zoom.us.evil.example/j/1"}]
+    with open(os.path.join(data, "meetings.json"), "w", encoding="utf-8") as f:
+        json.dump({"items": items}, f)
+    D = {"attention": [dict(lvl="warn", cat="bills", text="Invoices: TEST Supplier SIA T-1 — 1 234,56 €"), dict(lvl="bad", cat="mail", text="Jānis TESTS: «TEST subject»"),
+                       dict(lvl="warn", cat="mail", text="TEST two"), dict(lvl="idle", cat="tasks", text="TEST idle"), dict(lvl="warn", text="TEST no kind")]}
+    b = dashboard.brief(cfg, D)
+    raw = open(C.paths(cfg)["brief"], encoding="utf-8").read()
+    assert [(x["cat"], x["n"]) for x in b["cats"]] == [("mail", 2), ("bills", 1), ("other", 1)] and not re.search(r"TEST|Jānis|1 234|€", raw)
+    body = req("GET", "/m?k=" + k)[1]
+    blk = body.split("For the manager")[1].split("Waiting for you")[0]
+    assert "At work · 1 of 1" in blk and "<b>Jānis</b>" in blk and "TESTS" not in blk and "56.95" not in blk and "📍" not in blk
+    assert "TEST demo call" in blk and 'href="https://zoom.us/j/1234567890?pwd=TESTtest"' in blk and "Zoom ↗" in blk
+    assert "trick" not in blk and "evil.example" not in blk
+    assert "Needs attention · 4" in blk and "Mail <b>2</b>" in blk and "Invoices <b>1</b>" in blk and "Supplier" not in blk and "1 234" not in blk
+    cfg2 = make_cfg(tmp_path / "off")
+    cfg2["channels"]["enabled"] = False
+    assert dashboard.brief(cfg2, D) is None and not os.path.exists(C.paths(cfg2)["brief"])

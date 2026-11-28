@@ -105,7 +105,8 @@ def paths(cfg):
     d = data_dir(cfg)
     return {"feed": os.path.join(d, "channels_feed.jsonl"), "queue": os.path.join(d, "channels_mail_queue.jsonl"),
             "state": os.path.join(d, "channels_state.json"), "secret": os.path.join(d, ".channels_secret"),
-            "actions": task_notice.actions_path(cfg), "out": os.path.join(d, "channels_out")}
+            "actions": task_notice.actions_path(cfg), "out": os.path.join(d, "channels_out"),
+            "brief": os.path.join(d, "channels_brief.json")}
 
 
 # ---------------------------------------------------------------- people = config + what they chose on the page
@@ -151,7 +152,7 @@ def people(cfg):
             out[pid] = {"id": pid, "name": b.get("name") or pid, "channel": ch if ch in CHANNELS else "telegram",
                         "backup": [x for x in (b.get("backup") or ["web", "email"]) if x in CHANNELS],
                         "email": b.get("email") or "", "push": bool(s.get("push", b.get("push", False))),
-                        "tasks": b.get("tasks", True) is not False, "time": bool(b.get("time")),
+                        "tasks": b.get("tasks", True) is not False, "time": bool(b.get("time")), "manager": b.get("manager") is True,
                         "worktime_who": str(b.get("worktime_who") or pid), "key": s["key"], "topic": s["topic"]}
         if changed:
             _write_json(p["state"], st)
