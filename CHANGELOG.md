@@ -4,6 +4,15 @@ History of FLOKTRON. Newest first.
 Every change in this repository is also a git commit with date and description — the full archive.
 Project started 2026-10-10 (first ray in production in an operating company); public since 2026-11-18.
 
+## 0.40.2 — 28.11.2026 · a news item carries the country of its publisher, not of the feed
+Seen in the operating company on the first evening report on the phone: a German regional paper was marked `[CH]`.
+- **`scripts/news_slice.py`: the country in `Signal_feed` is now the publisher's.** A Google News search «Switzerland,
+  in German» also returns German and Austrian papers, and every item used to get the feed's country. Now the
+  publisher's own address decides (`<source url>` in the feed: `.de` → DE, `.ch` → CH, `.at` → AT, and so on for 24
+  countries — `publisher_country`). For `.com` / `.org` / `.net`, and for feeds that name no publisher, the feed's
+  country stays, as before. Nothing new is fetched.
+- New test `test_country_is_the_publishers_not_the_feeds` (fictional paper); 307 tests.
+
 ## 0.40.1 — 28.11.2026 · the page reads like a page, overview PDF 1.28
 Asked for in the operating company after the first evening with the page as an app: «long links, machine text —
 give the eye something to hold on to».
