@@ -160,14 +160,18 @@ def people(cfg):
     return out
 
 
-def new_key(cfg, pid):
-    """A lost phone or a leaked link: a new page key and push topic; the old link and cookie stop working at once."""
+def new_key(cfg, pid, topic=True):
+    """A lost phone or a leaked link: a new page key and push topic; the old link and cookie stop working at once.
+    topic=False — the page key only (the scheduled change by scripts/page_guard.py: push keeps working)."""
     if str(pid) not in people(cfg):
         return None
     p = paths(cfg)
     with LOCK:
         st = _read_json(p["state"])
-        st.setdefault(str(pid), {}).update(key=secrets.token_urlsafe(24), topic="floktron-" + secrets.token_hex(12))
+        new = {"key": secrets.token_urlsafe(24)}
+        if topic:
+            new["topic"] = "floktron-" + secrets.token_hex(12)
+        st.setdefault(str(pid), {}).update(new)
         _write_json(p["state"], st)
     return people(cfg)[str(pid)]
 

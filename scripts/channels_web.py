@@ -32,6 +32,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import channels as C  # noqa: E402
+import page_guard as PG  # noqa: E402
+import passkey as PK  # noqa: E402
 
 KEY_RX = re.compile(r"^[\w\-.]{1,60}$")
 KIND_RX = re.compile(r"^[a-z]{1,10}$")
@@ -425,7 +427,7 @@ def card(cfg, it):
     return f'<div class="card" data-k="{k}" data-y="{escape(t["s_y"], True)}" data-n="{escape(t["s_n"], True)}">{txt}<div class="row">{btns}</div></div>'
 
 
-def page(cfg, u):
+def page(cfg, u, protect=""):
     t = L(cfg)
     items = C.feed(cfg, u["id"])
     since3 = (datetime.datetime.now() - datetime.timedelta(days=3)).strftime("%Y-%m-%d")
@@ -446,7 +448,7 @@ def page(cfg, u):
              + ("".join(card(cfg, i) for i in open_) or f'<div class="card muted">{t["none"]}</div>')
              + (f'<h2>{t["msgs"]}</h2>' + "".join(card(cfg, i) for i in info[:10]) if info else "")
              + (f'<details><summary>{t["closed"]} · {len(done)}</summary>' + "".join(card(cfg, i) for i in done) + "</details>" if done else "")
-             + f'<h2>{t["where"]}</h2><div class="card"><div class="seg" id="seg">{seg}</div>'
+             + protect + f'<h2>{t["where"]}</h2><div class="card"><div class="seg" id="seg">{seg}</div>'
              f'<label><input type="checkbox" id="push" {"checked" if u["push"] else ""}> {t["push"]}</label>'
              f'<div class="muted" style="margin-top:8px">{t["push_how"].format(u="<code>" + escape(ntfy) + "</code>")}</div>'
              f'<div class="muted" style="margin-top:8px">{t["home"]}</div></div>')
@@ -508,8 +510,13 @@ def host_ok(cfg, host):
 
 
 def make_handler(cfg):
+    guard = PG.Guard(cfg)                 # 0.43: limits, new device, buttons in Telegram (scripts/page_guard.py)
+    pk = PK.Passkeys(cfg, guard)          # 0.43: Face ID / fingerprint / phone code from outside (scripts/passkey.py)
+    guard.passkeys = pk
+
     class H(BaseHTTPRequestHandler):
         server_version = "FLOKTRON-channels"
+        _pk_cookie = ""
 
         def log_message(self, *a):
             pass
@@ -520,6 +527,8 @@ def make_handler(cfg):
             for k, v in [("Content-Type", ctype), ("Content-Length", str(len(b))), ("Cache-Control", "no-store"),
                          ("X-Content-Type-Options", "nosniff"), ("Referrer-Policy", "no-referrer"), ("X-Frame-Options", "DENY")] + list((extra or {}).items()):
                 self.send_header(k, v)
+            if self._pk_cookie and code < 400 and "fk_s=" not in str((extra or {}).get("Set-Cookie", "")):
+                self.send_header("Set-Cookie", self._pk_cookie)       # 0.43: a live sign-in goes on for idle_min more
             self.end_headers()
             self.wfile.write(b)
 
@@ -538,10 +547,21 @@ def make_handler(cfg):
             return C.by_key(cfg, key)
 
         def do_GET(self):
-            self._route("GET")
+            self._guarded("GET")
 
         def do_POST(self):
-            self._route("POST")
+            self._guarded("POST")
+
+        def _guarded(self, method):
+            """0.43: first the guard (only requests from outside), then the page."""
+            self._pk_cookie = ""
+            g = guard.enter(self)
+            if g:
+                return self._send(g[0], g[1], "text/plain")
+            try:
+                self._route(method)
+            finally:
+                guard.leave(self)
 
         def _route(self, method):
             path = urllib.parse.urlsplit(self.path).path
@@ -563,7 +583,28 @@ def make_handler(cfg):
                 return self._send(404, "not found", "text/plain")
             u = self._who()
             if not u:
+                guard.bad_key(self)
                 return self._send(403, shell(cfg, "—", f"<p>{t['no']}</p>"))
+            if method == "GET" and path == "/m":
+                guard.seen(self, u)
+            if path.startswith("/m/pk/"):                 # sign-in protection: turn on / open (scripts/passkey.py)
+                if method != "POST" or not self.headers.get("X-Floktron-Key"):
+                    return self._send(403, "forbidden", "text/plain")
+                try:
+                    d = json.loads(self._body(20000) or "{}")
+                except ValueError:
+                    return self._send(400, "bad request", "text/plain")
+                code, res, extra = pk.api(self, path[len("/m/pk/"):], d if isinstance(d, dict) else {}, u, " · ".join(PG.device_of(self)))
+                return self._send(code, json.dumps(res, ensure_ascii=False), "application/json", extra)
+            sec = "; Secure" if (C.ccfg(cfg)["web"].get("public_url") or "").startswith("https") else ""
+            if pk.locked(self, u):                        # from outside: first Face ID / fingerprint / code
+                if method == "GET" and path == "/m":
+                    return self._send(200, shell(cfg, PK.TEXT.get(C.lang_of(cfg), PK.TEXT["en"])["h"], pk.lock_inner(u)),
+                                      extra={"Set-Cookie": f"fk_k={u['key']}; Path=/m; Max-Age=31536000; HttpOnly; SameSite=Strict{sec}"})
+                if path != "/m/manifest.webmanifest":
+                    return self._send(403, "locked", "text/plain")
+            else:
+                self._pk_cookie = pk.refresh(self, u)
             if method == "GET" and path.startswith("/m/audio/"):
                 return self._audio(u, path[len("/m/audio/"):])
             if method == "GET" and path == "/m/manifest.webmanifest":
@@ -571,8 +612,7 @@ def make_handler(cfg):
                                                    "display": "standalone", "background_color": "#f3f3f3", "theme_color": "#1A365D",
                                                    "icons": [{"src": "/m/icon.png", "sizes": "512x512", "type": "image/png"}]}), "application/manifest+json")
             if method == "GET" and path == "/m":
-                sec = "; Secure" if (C.ccfg(cfg)["web"].get("public_url") or "").startswith("https") else ""
-                return self._send(200, page(cfg, u), extra={"Set-Cookie": f"fk_k={u['key']}; Path=/m; Max-Age=31536000; HttpOnly; SameSite=Strict{sec}"})
+                return self._send(200, page(cfg, u, pk.page_block(u) if PG.tunnel(self) else ""), extra={"Set-Cookie": f"fk_k={u['key']}; Path=/m; Max-Age=31536000; HttpOnly; SameSite=Strict{sec}"})
             if method != "POST" or not self.headers.get("X-Floktron-Key"):
                 return self._send(403, "forbidden", "text/plain")
             try:
@@ -602,19 +642,42 @@ def make_handler(cfg):
             own = next((x["file"] for x in audio_list(cfg) if x["file"] == name), None) if u.get("audio") else None
             if not own:
                 return self._send(404, "not found", "text/plain")
-            name = own
+            fp = os.path.join(audio_dir(cfg), own)
             try:
-                with open(os.path.join(audio_dir(cfg), own), "rb") as fh:
-                    data = fh.read()
+                n = os.path.getsize(fp)
             except OSError:
                 return self._send(404, "not found", "text/plain")
-            ctype, n = ("audio/mp4" if name.endswith(".m4a") else "audio/mpeg"), len(data)
+            ctype = "audio/mp4" if own.endswith(".m4a") else "audio/mpeg"
             r = audio_range(self.headers.get("Range"), n)
             if r is False:
                 return self._send(416, b"", ctype, {"Content-Range": f"bytes */{n}", "Accept-Ranges": "bytes"})
             if r:
-                return self._send(206, data[r[0]:r[1] + 1], ctype, {"Content-Range": f"bytes {r[0]}-{r[1]}/{n}", "Accept-Ranges": "bytes"})
-            return self._send(200, data, ctype, {"Accept-Ranges": "bytes"})
+                return self._stream(206, fp, r[0], r[1], ctype, {"Content-Range": f"bytes {r[0]}-{r[1]}/{n}", "Accept-Ranges": "bytes"})
+            if n == 0:
+                return self._send(200, b"", ctype, {"Accept-Ranges": "bytes"})
+            return self._stream(200, fp, 0, n - 1, ctype, {"Accept-Ranges": "bytes"})
+
+        def _stream(self, code, fp, a, b, ctype, extra):
+            """0.43: the file from disk in 256 KB pieces, never the whole file in memory."""
+            self.send_response(code)
+            for k, v in [("Content-Type", ctype), ("Content-Length", str(b - a + 1)), ("Cache-Control", "no-store"),
+                         ("X-Content-Type-Options", "nosniff"), ("Referrer-Policy", "no-referrer"), ("X-Frame-Options", "DENY")] + list(extra.items()):
+                self.send_header(k, v)
+            if self._pk_cookie:
+                self.send_header("Set-Cookie", self._pk_cookie)
+            self.end_headers()
+            try:
+                with open(fp, "rb") as fh:
+                    fh.seek(a)
+                    left = b - a + 1
+                    while left > 0:
+                        ch = fh.read(min(262144, left))
+                        if not ch:
+                            break
+                        self.wfile.write(ch)
+                        left -= len(ch)
+            except (BrokenPipeError, ConnectionResetError):
+                pass                                   # the phone skipped ahead or closed — normal
 
         def _a(self, method, t):
             f = self._q() if method == "GET" else {k: v[0] for k, v in urllib.parse.parse_qs(self._body(2000)).items()}
@@ -623,6 +686,7 @@ def make_handler(cfg):
             ok = (KIND_RX.match(kind) and KEY_RX.match(key or "-") and ans in ("y", "n") and pid in C.people(cfg)
                   and C.check_sig(cfg, pid, kind, key, ans, sig))
             if not ok:
+                guard.bad_key(self)
                 return self._send(403, shell(cfg, "—", f"<p>{t['bad']}</p>"))
             if method == "GET":
                 it = next((x for x in C.feed(cfg, pid) if x.get("buttons") and (C.parse(x["buttons"][0][1]) or ())[:2] == (kind, key)), None)
@@ -632,6 +696,7 @@ def make_handler(cfg):
                 return self._send(200, shell(cfg, t["confirm"], txt + form))
             C.record(cfg, kind, key, ans, "email", pid)
             return self._send(200, shell(cfg, t["done"], f'<p class="big">{t["c_y"] if ans == "y" else t["c_n"]}</p><p class="muted">{t["done"]}</p>'))
+    H.guard, H.passkeys = guard, pk
     return H
 
 
@@ -642,6 +707,7 @@ def server(cfg, port=None):
 
 def serve(cfg):
     srv = server(cfg)
+    srv.RequestHandlerClass.guard.start_watch()      # 0.43: presses from Telegram every 10 s, link age once an hour
     print(f"FLOKTRON channels page: http://127.0.0.1:{srv.server_address[1]}/m  (each person — their own link: python3 scripts/channels.py)")
     try:
         srv.serve_forever()

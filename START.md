@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.42.0. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.43.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -143,11 +143,11 @@ Status: in daily use in an operating company since October 2026, public since No
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.42.0 · last update 28.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.43.0 · last update 28.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
-**Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company. In numbers (November 2026): about 30–45 letters a day go through FLOKTRON (paid Proton Mail via Bridge, read-only); about 5 % of incoming letters needed a person; 143 staff replies with one button; automatic runs 08.11–28.11.2026: 885, of them 28 failed (3.2 %) — almost always because Proton Mail Bridge was closed or the computer was asleep; 14 were fixed by the next run, and on three days (13.11, 21.11, 23.11) letters did not go out even after retries. Counted from the company's run log: one run = one start of a job; failed = the run logged an error; ok means the job finished without an error, not that every letter was read. Corrected in 0.37.3: earlier we said "about 1,460 runs, about 2 % failed" — that counted log lines, not runs. These numbers are recounted with every release (`scripts/run_stats.py` does the same for your own log) ([a month of mail](https://floktron.com/en/about/#keis-pochta)).
+**Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company. In numbers (November 2026): about 30–45 letters a day go through FLOKTRON (paid Proton Mail via Bridge, read-only); about 5 % of incoming letters needed a person; 143 staff replies with one button; automatic runs 08.11–28.11.2026: 898, of them 28 failed (3.1 %) — almost always because Proton Mail Bridge was closed or the computer was asleep; 14 were fixed by the next run, and on three days (13.11, 21.11, 23.11) letters did not go out even after retries. Counted from the company's run log: one run = one start of a job; failed = the run logged an error; ok means the job finished without an error, not that every letter was read. Corrected in 0.37.3: earlier we said "about 1,460 runs, about 2 % failed" — that counted log lines, not runs. These numbers are recounted with every release (`scripts/run_stats.py` does the same for your own log) ([a month of mail](https://floktron.com/en/about/#keis-pochta)).
 
 AI-assisted operations system for companies. Built for the owner or manager who runs teams, production and processes — departments, crews, sites, a fleet, a workshop — and wants to see it all in one place. B2B fields: construction, logistics and haulage, production, equipment rental, wholesale, services.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -156,7 +156,7 @@ Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) 
 A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big producers, listed companies, freight routes, reference prices and currencies — it speaks up only when something moves ([SUPPLY_CHAIN](docs/SUPPLY_CHAIN.md)).
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
 **Work time — start, pause, end with one tap**: your team marks the working day with three buttons in the work chat with your bot; with one location point at the start (if you switch it on) the manager sees who is on which site. The dashboard shows who is at work now, today's and the month's hours, overtime, night and weekend hours and what needs a look; once a month a table for the accountant. Hours are never made up: a day without an end mark waits for the manager's correction, and every correction keeps its reason ([WORKTIME](docs/WORKTIME.md)).
-**Each person chooses the channel — Telegram, their own page, or e-mail (+ push)**: not everyone wants Telegram. Each person gets tasks where they like and switches by themselves: Telegram as before, their own private page that opens like an app from the phone home screen (tasks with ✅ / ⛔ — or swipe a task right / left — and the work-time buttons; the manager's page also shows who is at work, the next online meeting and what needs attention, as counts only; and the morning audio summary can be played right on the page — with speed, the last 7 days, and the screen locked), or one summary letter with buttons; push to the phone only says «New task» — no names or amounts. The same buttons work everywhere and land in the same place; if Telegram is silent, the task goes to the backup channel. Off by default; the page runs on your computer, from outside only through your own tunnel ([CHANNELS](docs/CHANNELS.md)).
+**Each person chooses the channel — Telegram, their own page, or e-mail (+ push)**: not everyone wants Telegram. Each person gets tasks where they like and switches by themselves: Telegram as before, their own private page that opens like an app from the phone home screen (tasks with ✅ / ⛔ — or swipe a task right / left — and the work-time buttons; the manager's page also shows who is at work, the next online meeting and what needs attention, as counts only; and the morning audio summary can be played right on the page — with speed, the last 7 days, and the screen locked; from outside the page is guarded: limits, «opened from a new device» in Telegram with «Not me — close», and optional sign-in by Face ID, a fingerprint or the phone code, asked again after 10 minutes put away, like a banking app), or one summary letter with buttons; push to the phone only says «New task» — no names or amounts. The same buttons work everywhere and land in the same place; if Telegram is silent, the task goes to the backup channel. Off by default; the page runs on your computer, from outside only through your own tunnel ([CHANNELS](docs/CHANNELS.md)).
 **Online meetings — join from the dashboard**: a Zoom, Microsoft Teams or Google Meet meeting from your calendar or from an invitation letter shows on the dashboard with its official link in full, exactly as in the letter — one click opens the browser or the app; the meeting ID and passcode are there too, and a meeting within the hour goes to the top of «Needs your attention». Only official meeting addresses are shown; a link whose text says Zoom but leads elsewhere becomes a red warning. Mail is only read; nothing goes through FLOKTRON ([MEETINGS](docs/MEETINGS.md)).
 **Site cameras on the dashboard — security, not watching people**: gate, yard, warehouse — is each camera online, its latest frame and a button to open it live in the camera's own app; a camera that went quiet goes to «Needs your attention». One frame per camera is kept on your computer and overwritten: no recording, no video through anyone's server, no face recognition ([CAMERAS](docs/CAMERAS.md)).
 Your team can **report by voice** — the bot turns a voice message into text on your own computer; the manager gets a **morning audio summary** to listen to in the car ([VOICE](docs/VOICE.md)).
@@ -343,6 +343,7 @@ There is no independent audit yet. Findings are welcome — see [Report a proble
 | Two runs write the base at the same time (data lost) | One run at a time: an operating-system lock, taken in one atomic step and freed by the system even if a run crashes; `invoices.py --apply` waits for it too | `scripts/runlock.py`, `scripts/run.py`, test |
 | A stranger writes to the Telegram bot or presses its buttons | The bot answers only the team (`telegram.strangers: ignore`, default); a press counts only from the chat that owns the message; nothing about strangers is kept, only a count per day | `scripts/bot/telegram_bot.py`, `tests/test_bot_security.py` |
 | An invite link for a team member is forwarded | One link = one person, works once and expires; a second person is refused and the managers are told; `/remove` takes a person out at once | `scripts/worktime.py`, `docs/WORKTIME.md` |
+| A person's page link (`/m`) leaks, a phone is lost, or someone floods the page from the internet | From outside only: limits per address and in total, an address that guesses keys waits an hour; a new «country · device» → Telegram «Not me — close» (new link, page closed from outside); «Sign out everywhere», link changes every 90 days; optional sign-in by Face ID / fingerprint / phone code (passkey: the face stays in the phone, only a public key here; the phone put away 10 min → asks again) | `scripts/page_guard.py`, `scripts/passkey.py`, [docs/CHANNELS.md](docs/CHANNELS.md), `tests/test_page_guard.py` |
 | The bot token leaks or the bot is taken over | Token only in the system store; anything that looks like a token is hidden in the console and `data/bot.log`; one command after BotFather's *Revoke* puts a new token in | `scripts/secret_store.py`, `telegram_bot.py --set-token`, [docs/TELEGRAM.md](docs/TELEGRAM.md#if-the-bot-is-taken-over-or-the-token-may-have-leaked) |
 | Personal data leaves the computer in a Telegram message | E-mail addresses, phone numbers, IBANs, card numbers and personal codes are hidden in task texts; tasks, leads and voice notes are sent with `protect_content` (no forwarding or saving) | `scripts/task_notice.py`, `telegram.mask_personal`, `telegram.protect_content` |
 | Passwords leak | No password in files or chat: environment variable or system keychain only; `config.yaml`, `.env`, `data/`, `*.eml` never committed | `scripts/mail/send.py`, `.gitignore` + test |
@@ -456,7 +457,7 @@ Text from e-mails, attachments, web pages and Telegram is treated as data, never
 | Nothing outside your computer: the desktop icon (only if you make it) opens your own local `data/dashboard.html` (a `file://` page) in your default browser | open the dashboard with one double-click | `scripts/desktop_icon.py` |
 | YOUR own cameras in your own network, at the addresses you wrote in `cameras.items` (only if you switch cameras on). Cameras marked `demo: true` are never contacted | one latest frame per camera, saved in `data/cameras/` and overwritten; no video is streamed or recorded, nothing is sent anywhere | `scripts/cameras.py` |
 | The ntfy push server (ntfy.sh, or your own in `channels.ntfy.server`) — only if a person switches push on in channels | ring that person's phone: only «New task: letter / new client / payment without a document» goes out — no names, subjects, amounts or addresses | `scripts/channels.py` |
-| Nothing outside your computer: the channels page (only if you start `scripts/channels.py serve`) listens on 127.0.0.1 — on your own network only with `channels.web.lan: true`, and from outside only through a tunnel YOU set up (docs/CHANNELS.md). It serves only the people's own task pages, each with its private key | each person sees and closes their own tasks, marks work time | `scripts/channels_web.py` |
+| Nothing outside your computer: the channels page (only if you start `scripts/channels.py serve`) listens on 127.0.0.1 — on your own network only with `channels.web.lan: true`, and from outside only through a tunnel YOU set up (docs/CHANNELS.md). It serves only the people's own task pages, each with its private key. Its guard and the sign-in by Face ID add no new address: their messages go through your own Telegram bot, the face check runs in the phone and on your computer | each person sees and closes their own tasks, marks work time | `scripts/channels_web.py`, `scripts/page_guard.py`, `scripts/passkey.py` |
 | Latvian open data portal data.gov.lv (only if you switch the registry on) | new companies by words in the name | `scripts/registry_lv.py` |
 | data.gov.lv public procurement results (EIS) and the register (only if you switch prospects on) | who has just signed a contract of the kind you serve; form, town, registration date of those companies | `scripts/registry_lv.py` (used by `scripts/prospects.py`) |
 
@@ -2354,6 +2355,63 @@ Check: `https://tasks.yourcompany.com/m?k=<key>` opens the page; `https://tasks.
 The page server itself also serves only `/m…` and `/a`, answers only for `127.0.0.1`, your `public_url` host and (with
 `lan`) your local network, and needs the person's key for everything.
 
+### Protection from outside: the guard and sign-in by Face ID
+
+Once the page is reachable from the internet, two more things protect it. Both act **only on requests that come through
+the tunnel** (Cloudflare marks them with `Cf-Ray` / `Cf-Connecting-Ip`); this computer and the office network are never
+limited and never asked. Messages and buttons go to `telegram.manager_chat_ids` — past the page, so a stranger who has a
+link never sees them.
+
+**The guard** (`scripts/page_guard.py`, on by default; off: `channels.web.guard.enabled: false`):
+
+- **Limits** — requests a minute from one address (`per_ip_min`, 240) and from everyone together (`all_min`, 900),
+  requests at the same time (`concurrent`, 12). An iPhone playing the audio summary makes dozens of requests a minute,
+  so the limits leave room for that. A wrong key `bad_key_max` (10) times in 10 minutes from one address → that address
+  waits `ban_min` (60) minutes, even with a right key. The audio is sent from disk in small pieces, never the whole file
+  in memory.
+- **A new device** — a person's page opened from a new «country · device» (the country Cloudflare reports and the
+  phone/browser type; no IP address is stored) → «🔔 the page of Anna was opened from a new device · Android · Chrome,
+  country EE» with **«🔒 Not me — close»** (a new link for that person, the old one stops at once, and the page is closed
+  from outside) or **«✅ It's me»**. The very first device is remembered silently.
+- **The pinned message** «🛡 page protection buttons» (sent once): **«🔒 Sign out everywhere»** — new links for everyone,
+  the new links come to Telegram; **«⛔ Close the page»** — nobody opens it from outside, the links stay. **«🔓 Open
+  again»** comes in the reply — no computer needed. «Close» never touches your tunnel or this computer.
+- **The link lives `key_days` (90) days** — only for people who open the page from outside: 7 days before, «🔄 New
+  link»; then the page key changes by itself and the new link comes to Telegram. The push address stays. `0` = never.
+- **A stream of refused requests** (`flood_alert`, 300 in 10 minutes) → «⚠️ close the page?», once an hour at most.
+
+**Sign-in by Face ID, fingerprint or phone code** (`scripts/passkey.py`, a passkey / WebAuthn; each person turns it on
+for themselves; it needs `public_url` with https):
+
+1. On the page (opened through your address) — «🔐 Turn on sign-in protection». The manager gets «Allow?» in Telegram
+   with the device type — so a stranger with a leaked link cannot add their own face.
+2. «Continue» → the phone asks Face ID, a fingerprint or the screen-lock code (a phone without Face ID uses the
+   fingerprint or the code by itself) → done.
+3. From outside the page now first shows only «Open». After the check it works like a banking app: while it is in use —
+   no questions; the phone put away for `passkey.idle_min` (10) minutes or more — it asks again (a page back from the
+   background after that pause reloads and shows the lock); never longer than `passkey.hours` (12) after the last check.
+4. A second phone or a computer: «➕ Add this device» on the closed page (or «Another device? Add») — again with «Allow»
+   in Telegram.
+5. In Telegram: **«🔐 Close sign-ins now»** — every open session stops at once (a phone handed to someone);
+   **«🔓 Turn off protection»** — the phone was replaced and the page does not open.
+
+The secret of the face or finger never leaves the phone (iCloud Keychain / Google Password Manager); FLOKTRON keeps only
+the public P-256 key and checks the signature in plain Python, no extra libraries. A signature for another web address,
+without the face/finger/code check, or with a counter that did not grow (a copied key) is refused. «Sign out
+everywhere» and a new link end the sessions too. Before the check, nothing is shown or accepted: no tasks, no presses,
+no audio.
+
+```yaml
+channels:
+  web:
+    guard: {enabled: true, per_ip_min: 240, all_min: 900, concurrent: 12, bad_key_max: 10, ban_min: 60,
+            flood_alert: 300, key_days: 90, new_device: true}
+    passkey: {idle_min: 10, hours: 12}
+```
+
+All of it works in the operating company first: the guard, the new-device message, «Close sign-ins now» and the sign-in
+by Face ID on an iPhone and by the phone code on an older Android without Face ID.
+
 ## E-mail buttons
 
 - **With `public_url`:** a button is a link to `/a`. The page shows the task and asks **«Confirm»** — so a mail
@@ -2381,6 +2439,8 @@ own mail. The topic is a long random word per person. You can run your own ntfy 
 | `data/channels_mail_queue.jsonl` | tasks waiting for the next summary letter |
 | `data/.channels_secret` | the signing key for buttons |
 | `data/task_actions.jsonl` | the presses — the same file as for Telegram |
+| `data/page_guard.json` | the guard: known «country · device» per person (no IP), pending «Not me», closed or open, link age |
+| `data/passkeys.json` | sign-in protection: the public keys of the added devices, «Allow» requests, the «Close sign-ins now» counter |
 
 Nothing goes to the authors or anyone else ([TRANSPARENCY](TRANSPARENCY.md)). Task text is data, never instructions.
 

@@ -122,6 +122,63 @@ Check: `https://tasks.yourcompany.com/m?k=<key>` opens the page; `https://tasks.
 The page server itself also serves only `/m…` and `/a`, answers only for `127.0.0.1`, your `public_url` host and (with
 `lan`) your local network, and needs the person's key for everything.
 
+### Protection from outside: the guard and sign-in by Face ID
+
+Once the page is reachable from the internet, two more things protect it. Both act **only on requests that come through
+the tunnel** (Cloudflare marks them with `Cf-Ray` / `Cf-Connecting-Ip`); this computer and the office network are never
+limited and never asked. Messages and buttons go to `telegram.manager_chat_ids` — past the page, so a stranger who has a
+link never sees them.
+
+**The guard** (`scripts/page_guard.py`, on by default; off: `channels.web.guard.enabled: false`):
+
+- **Limits** — requests a minute from one address (`per_ip_min`, 240) and from everyone together (`all_min`, 900),
+  requests at the same time (`concurrent`, 12). An iPhone playing the audio summary makes dozens of requests a minute,
+  so the limits leave room for that. A wrong key `bad_key_max` (10) times in 10 minutes from one address → that address
+  waits `ban_min` (60) minutes, even with a right key. The audio is sent from disk in small pieces, never the whole file
+  in memory.
+- **A new device** — a person's page opened from a new «country · device» (the country Cloudflare reports and the
+  phone/browser type; no IP address is stored) → «🔔 the page of Anna was opened from a new device · Android · Chrome,
+  country EE» with **«🔒 Not me — close»** (a new link for that person, the old one stops at once, and the page is closed
+  from outside) or **«✅ It's me»**. The very first device is remembered silently.
+- **The pinned message** «🛡 page protection buttons» (sent once): **«🔒 Sign out everywhere»** — new links for everyone,
+  the new links come to Telegram; **«⛔ Close the page»** — nobody opens it from outside, the links stay. **«🔓 Open
+  again»** comes in the reply — no computer needed. «Close» never touches your tunnel or this computer.
+- **The link lives `key_days` (90) days** — only for people who open the page from outside: 7 days before, «🔄 New
+  link»; then the page key changes by itself and the new link comes to Telegram. The push address stays. `0` = never.
+- **A stream of refused requests** (`flood_alert`, 300 in 10 minutes) → «⚠️ close the page?», once an hour at most.
+
+**Sign-in by Face ID, fingerprint or phone code** (`scripts/passkey.py`, a passkey / WebAuthn; each person turns it on
+for themselves; it needs `public_url` with https):
+
+1. On the page (opened through your address) — «🔐 Turn on sign-in protection». The manager gets «Allow?» in Telegram
+   with the device type — so a stranger with a leaked link cannot add their own face.
+2. «Continue» → the phone asks Face ID, a fingerprint or the screen-lock code (a phone without Face ID uses the
+   fingerprint or the code by itself) → done.
+3. From outside the page now first shows only «Open». After the check it works like a banking app: while it is in use —
+   no questions; the phone put away for `passkey.idle_min` (10) minutes or more — it asks again (a page back from the
+   background after that pause reloads and shows the lock); never longer than `passkey.hours` (12) after the last check.
+4. A second phone or a computer: «➕ Add this device» on the closed page (or «Another device? Add») — again with «Allow»
+   in Telegram.
+5. In Telegram: **«🔐 Close sign-ins now»** — every open session stops at once (a phone handed to someone);
+   **«🔓 Turn off protection»** — the phone was replaced and the page does not open.
+
+The secret of the face or finger never leaves the phone (iCloud Keychain / Google Password Manager); FLOKTRON keeps only
+the public P-256 key and checks the signature in plain Python, no extra libraries. A signature for another web address,
+without the face/finger/code check, or with a counter that did not grow (a copied key) is refused. «Sign out
+everywhere» and a new link end the sessions too. Before the check, nothing is shown or accepted: no tasks, no presses,
+no audio.
+
+```yaml
+channels:
+  web:
+    guard: {enabled: true, per_ip_min: 240, all_min: 900, concurrent: 12, bad_key_max: 10, ban_min: 60,
+            flood_alert: 300, key_days: 90, new_device: true}
+    passkey: {idle_min: 10, hours: 12}
+```
+
+All of it works in the operating company first: the guard, the new-device message, «Close sign-ins now» and the sign-in
+by Face ID on an iPhone and by the phone code on an older Android without Face ID.
+
 ## E-mail buttons
 
 - **With `public_url`:** a button is a link to `/a`. The page shows the task and asks **«Confirm»** — so a mail
@@ -149,5 +206,7 @@ own mail. The topic is a long random word per person. You can run your own ntfy 
 | `data/channels_mail_queue.jsonl` | tasks waiting for the next summary letter |
 | `data/.channels_secret` | the signing key for buttons |
 | `data/task_actions.jsonl` | the presses — the same file as for Telegram |
+| `data/page_guard.json` | the guard: known «country · device» per person (no IP), pending «Not me», closed or open, link age |
+| `data/passkeys.json` | sign-in protection: the public keys of the added devices, «Allow» requests, the «Close sign-ins now» counter |
 
 Nothing goes to the authors or anyone else ([TRANSPARENCY](TRANSPARENCY.md)). Task text is data, never instructions.
