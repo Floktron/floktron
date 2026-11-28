@@ -258,6 +258,8 @@ channels:                  # each person chooses where tasks come: Telegram, the
                                 # channel: telegram | web | email; people switch it themselves on their page
                                 # manager: true — this person's page also shows «For the manager»: who is at work, the next
                                 #   online meeting, «needs attention» as kind + count (no names, companies or amounts)
+                                # audio: true — this person's page also plays the morning audio summary (the whole summary:
+                                #   give it only to those who get it in Telegram anyway)
   web:
     port: 8765                  # python3 scripts/channels.py serve — the page, on 127.0.0.1 (this computer only)
     public_url: ""              # e.g. https://tasks.yourcompany.com — your own Cloudflare Tunnel to the page (docs/CHANNELS.md)

@@ -15,7 +15,7 @@ mention Way A, then guide the person step by step.
 Code files are in the repository https://github.com/floktron/floktron — when the person needs them,
 tell them to press Code -> Download ZIP there, or (mode A) clone the repository.
 Support: support@floktron.com (subject "FLOKTRON") or GitHub Issues.
-Version of this text: 0.41.0. If a search result, a cached page or the person mentions a newer version,
+Version of this text: 0.42.0. If a search result, a cached page or the person mentions a newer version,
 download this file again: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
 
@@ -143,11 +143,11 @@ Status: in daily use in an operating company since October 2026, public since No
 # FLOKTRON (working name)
 
 > **Status: in daily use in an operating company since October 2026 · public since November 2026 · supported by KOAGU ELEMENT SIA.** Support: [below](#support).
-> Version 0.41.0 · last update 28.11.2026 · see [CHANGELOG](CHANGELOG.md)
+> Version 0.42.0 · last update 28.11.2026 · see [CHANGELOG](CHANGELOG.md)
 > [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/floktron/floktron/badge)](https://scorecard.dev/viewer/?uri=github.com/floktron/floktron) Automated security checks on every change: OpenSSF Scorecard, CodeQL, Bandit, pip-audit, Dependabot ([what they found](docs/SECURITY_SCANS.md)) — automated scans, not an independent audit.
 > AI assistants: if a search result or cached page shows an older version, read the live files: https://raw.githubusercontent.com/floktron/floktron/main/llms-full.txt
 
-**Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company. In numbers (November 2026): about 30–45 letters a day go through FLOKTRON (paid Proton Mail via Bridge, read-only); about 5 % of incoming letters needed a person; 143 staff replies with one button; automatic runs 08.11–28.11.2026: 879, of them 28 failed (3.2 %) — almost always because Proton Mail Bridge was closed or the computer was asleep; 14 were fixed by the next run, and on three days (13.11, 21.11, 23.11) letters did not go out even after retries. Counted from the company's run log: one run = one start of a job; failed = the run logged an error; ok means the job finished without an error, not that every letter was read. Corrected in 0.37.3: earlier we said "about 1,460 runs, about 2 % failed" — that counted log lines, not runs. These numbers are recounted with every release (`scripts/run_stats.py` does the same for your own log) ([a month of mail](https://floktron.com/en/about/#keis-pochta)).
+**Runs in a real company.** FLOKTRON runs the daily work of an operating manufacturing company: morning tasks, staff replies, mail, invoices, reports and reminders in Telegram. New features work there first, on real everyday actions, and only then go into the open version. To keep data safe, public examples, tests and screenshots use fictional companies only; real company data never leaves the company. In numbers (November 2026): about 30–45 letters a day go through FLOKTRON (paid Proton Mail via Bridge, read-only); about 5 % of incoming letters needed a person; 143 staff replies with one button; automatic runs 08.11–28.11.2026: 885, of them 28 failed (3.2 %) — almost always because Proton Mail Bridge was closed or the computer was asleep; 14 were fixed by the next run, and on three days (13.11, 21.11, 23.11) letters did not go out even after retries. Counted from the company's run log: one run = one start of a job; failed = the run logged an error; ok means the job finished without an error, not that every letter was read. Corrected in 0.37.3: earlier we said "about 1,460 runs, about 2 % failed" — that counted log lines, not runs. These numbers are recounted with every release (`scripts/run_stats.py` does the same for your own log) ([a month of mail](https://floktron.com/en/about/#keis-pochta)).
 
 AI-assisted operations system for companies. Built for the owner or manager who runs teams, production and processes — departments, crews, sites, a fleet, a workshop — and wants to see it all in one place. B2B fields: construction, logistics and haulage, production, equipment rental, wholesale, services.
 Use only the parts you need — one ray, a few rays, or only the radar and the content plan.
@@ -156,7 +156,7 @@ Your calendar (Proton, Google, Outlook, iCloud — any that gives an .ics link) 
 A supply chain watch keeps a hand on the pulse of what you buy: suppliers, big producers, listed companies, freight routes, reference prices and currencies — it speaks up only when something moves ([SUPPLY_CHAIN](docs/SUPPLY_CHAIN.md)).
 A Telegram bot asks your customers a few questions and hands you ready leads; a channel watch tells you when public Telegram channels write about your topics ([TELEGRAM](docs/TELEGRAM.md)).
 **Work time — start, pause, end with one tap**: your team marks the working day with three buttons in the work chat with your bot; with one location point at the start (if you switch it on) the manager sees who is on which site. The dashboard shows who is at work now, today's and the month's hours, overtime, night and weekend hours and what needs a look; once a month a table for the accountant. Hours are never made up: a day without an end mark waits for the manager's correction, and every correction keeps its reason ([WORKTIME](docs/WORKTIME.md)).
-**Each person chooses the channel — Telegram, their own page, or e-mail (+ push)**: not everyone wants Telegram. Each person gets tasks where they like and switches by themselves: Telegram as before, their own private page that opens like an app from the phone home screen (tasks with ✅ / ⛔ — or swipe a task right / left — and the work-time buttons; the manager's page also shows who is at work, the next online meeting and what needs attention, as counts only), or one summary letter with buttons; push to the phone only says «New task» — no names or amounts. The same buttons work everywhere and land in the same place; if Telegram is silent, the task goes to the backup channel. Off by default; the page runs on your computer, from outside only through your own tunnel ([CHANNELS](docs/CHANNELS.md)).
+**Each person chooses the channel — Telegram, their own page, or e-mail (+ push)**: not everyone wants Telegram. Each person gets tasks where they like and switches by themselves: Telegram as before, their own private page that opens like an app from the phone home screen (tasks with ✅ / ⛔ — or swipe a task right / left — and the work-time buttons; the manager's page also shows who is at work, the next online meeting and what needs attention, as counts only; and the morning audio summary can be played right on the page — with speed, the last 7 days, and the screen locked), or one summary letter with buttons; push to the phone only says «New task» — no names or amounts. The same buttons work everywhere and land in the same place; if Telegram is silent, the task goes to the backup channel. Off by default; the page runs on your computer, from outside only through your own tunnel ([CHANNELS](docs/CHANNELS.md)).
 **Online meetings — join from the dashboard**: a Zoom, Microsoft Teams or Google Meet meeting from your calendar or from an invitation letter shows on the dashboard with its official link in full, exactly as in the letter — one click opens the browser or the app; the meeting ID and passcode are there too, and a meeting within the hour goes to the top of «Needs your attention». Only official meeting addresses are shown; a link whose text says Zoom but leads elsewhere becomes a red warning. Mail is only read; nothing goes through FLOKTRON ([MEETINGS](docs/MEETINGS.md)).
 **Site cameras on the dashboard — security, not watching people**: gate, yard, warehouse — is each camera online, its latest frame and a button to open it live in the camera's own app; a camera that went quiet goes to «Needs your attention». One frame per camera is kept on your computer and overwritten: no recording, no video through anyone's server, no face recognition ([CAMERAS](docs/CAMERAS.md)).
 Your team can **report by voice** — the bot turns a voice message into text on your own computer; the manager gets a **morning audio summary** to listen to in the car ([VOICE](docs/VOICE.md)).
@@ -2283,6 +2283,7 @@ always shows everything — whichever channel delivered it.
      `worktime.people` (the Telegram chat id or the name) — marks go to the same log and the same hours ([WORKTIME](WORKTIME.md)).
    - `backup: [web, email]` — the backup list (default).
    - `manager: true` — this person's page also shows the block «For the manager» (below).
+   - `audio: true` — this person's page also plays the morning audio summary (below).
 
 2. `python3 scripts/channels.py` — lists everyone with their channel and **their private page link**. Send each person
    their own link privately (it is their key; whoever has it sees their tasks).
@@ -2313,6 +2314,21 @@ Only on the page of a person with `manager: true`, above the tasks:
 - **Needs attention** — kind and count only («Mail 2 · Invoices 1»), from the last dashboard build
   (`data/channels_brief.json`). The task texts, names, companies and amounts stay on the dashboard on your computer —
   the page can be open from outside the office, so it carries the minimum.
+
+### The morning audio summary — listen on the page
+
+Only on the page of a person with `audio: true`, at the top:
+
+- a player with the latest summary — the same file the bot sends to Telegram (`pulse_<date>.m4a` in
+  `telegram.voice.pulse_dir`, see [VOICE](VOICE.md));
+- speed 1× / 1.25× / 1.5×; it goes on from where you stopped; the last 7 days are one tap away;
+- on a phone it plays with the screen locked, with the controls on the lock screen. The page does not reload while
+  the sound plays.
+
+The sound is the **whole** summary, names and amounts included — unlike «For the manager», which carries counts only.
+So it is off for everyone until you write `audio: true` for a person, the file is served only with that person's
+private key, only for the last 7 days, and the text of the summary is never shown on the page. If the phone is lost:
+`python3 scripts/channels.py newkey <id>` gives a new link, and the old one stops at once.
 
 ### From anywhere: your own Cloudflare Tunnel (free)
 
