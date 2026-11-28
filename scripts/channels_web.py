@@ -597,10 +597,13 @@ def make_handler(cfg):
             return self._send(404, "not found", "text/plain")
 
         def _audio(self, u, name):
-            if not u.get("audio") or not AUDIO_RX.match(name) or name not in {x["file"] for x in audio_list(cfg)}:
+            # the file name is taken from the folder listing, never from the request: the request only chooses among them
+            own = next((x["file"] for x in audio_list(cfg) if x["file"] == name), None) if u.get("audio") else None
+            if not own:
                 return self._send(404, "not found", "text/plain")
+            name = own
             try:
-                with open(os.path.join(audio_dir(cfg), name), "rb") as fh:
+                with open(os.path.join(audio_dir(cfg), own), "rb") as fh:
                     data = fh.read()
             except OSError:
                 return self._send(404, "not found", "text/plain")
